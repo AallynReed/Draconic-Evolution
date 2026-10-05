@@ -29,7 +29,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
@@ -117,12 +117,12 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack bowStack = player.getItemInHand(hand);
         boolean infinity = hasInfinity(level, bowStack);
         boolean hasAmmo = infinity || !player.getProjectile(bowStack).isEmpty();
 
-        InteractionResultHolder<ItemStack> ret = net.neoforged.neoforge.event.EventHooks.onArrowNock(bowStack, level, player, hand, hasAmmo);
+        InteractionResult ret = net.neoforged.neoforge.event.EventHooks.onArrowNock(bowStack, level, player, hand, hasAmmo);
         if (ret != null) return ret;
 
         if (EnergyUtils.getEnergyStored(bowStack) < calculateShotEnergy(bowStack, player.registryAccess())) {
@@ -130,10 +130,10 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
         }
 
         if (!player.hasInfiniteMaterials() && !hasAmmo) {
-            return InteractionResultHolder.fail(bowStack);
+            return InteractionResult.FAIL;
         } else {
             player.startUsingItem(hand);
-            return InteractionResultHolder.consume(bowStack);
+            return InteractionResult.CONSUME;
         }
     }
 

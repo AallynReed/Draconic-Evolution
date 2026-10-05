@@ -20,7 +20,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -134,9 +133,9 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack heldStack, BlockState state, Player player, InteractionHand hand, BlockHitResult hitIn) {
+    public InteractionResult useItemOn(ItemStack heldStack, BlockState state, Player player, InteractionHand hand, BlockHitResult hitIn) {
         if (level.isClientSide()) {
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         HitResult hit = RayTracer.retrace(player);
@@ -146,7 +145,7 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
             if (!stack.isEmpty() && heldStack.isEmpty()) {
                 player.setItemInHand(hand, stack);
                 itemsCombined.setStackInSlot(slot, ItemStack.EMPTY);
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             } else if (stack.isEmpty() && !heldStack.isEmpty()) {
                 if (itemsCombined.isItemValid(slot, heldStack)) {
                     if (heldStack.getCount() > 1) {
@@ -158,7 +157,7 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
                         itemsCombined.setStackInSlot(slot, heldStack);
                         player.setItemInHand(hand, ItemStack.EMPTY);
                     }
-                    return ItemInteractionResult.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
             }
         }
@@ -166,7 +165,7 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
         if (player instanceof ServerPlayer) {
             player.openMenu(this, worldPosition);
         }
-        return ItemInteractionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Nullable

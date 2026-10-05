@@ -15,7 +15,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -72,7 +72,7 @@ public class TileStabilizedSpawner extends TileBCore implements IInteractTile, I
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult useItemOn(ItemStack stack, BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
         if (stack.is(DEContent.MOB_SOUL.get())) {
             if (!level.isClientSide()) {
                 (mobSoul.set(stack.copy())).setCount(1);
@@ -80,7 +80,7 @@ public class TileStabilizedSpawner extends TileBCore implements IInteractTile, I
                     InventoryUtils.consumeHeldItem(player, stack, hand);
                 }
             }
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         } else if (stack.getItem() instanceof SpawnEggItem) {
             EntityType<?> type = ((SpawnEggItem) stack.getItem()).getType(stack);
             ItemStack soul = new ItemStack(DEContent.MOB_SOUL.get());
@@ -89,23 +89,23 @@ public class TileStabilizedSpawner extends TileBCore implements IInteractTile, I
             if (!player.getAbilities().instabuild) {
                 stack.shrink(1);
             }
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         } else if (!stack.isEmpty()) {
             SpawnerTier prevTier = spawnerTier.get();
             if (stack.is(DEContent.CORE_DRACONIUM.get())) {
-                if (spawnerTier.get() == SpawnerTier.BASIC) return ItemInteractionResult.FAIL;
+                if (spawnerTier.get() == SpawnerTier.BASIC) return InteractionResult.FAIL;
                 spawnerTier.set(SpawnerTier.BASIC);
             } else if (stack.is(DEContent.CORE_WYVERN.get())) {
-                if (spawnerTier.get() == SpawnerTier.WYVERN) return ItemInteractionResult.FAIL;
+                if (spawnerTier.get() == SpawnerTier.WYVERN) return InteractionResult.FAIL;
                 spawnerTier.set(SpawnerTier.WYVERN);
             } else if (stack.is(DEContent.CORE_AWAKENED.get())) {
-                if (spawnerTier.get() == SpawnerTier.DRACONIC) return ItemInteractionResult.FAIL;
+                if (spawnerTier.get() == SpawnerTier.DRACONIC) return InteractionResult.FAIL;
                 spawnerTier.set(SpawnerTier.DRACONIC);
             } else if (stack.is(DEContent.CORE_CHAOTIC.get())) {
-                if (spawnerTier.get() == SpawnerTier.CHAOTIC) return ItemInteractionResult.FAIL;
+                if (spawnerTier.get() == SpawnerTier.CHAOTIC) return InteractionResult.FAIL;
                 spawnerTier.set(SpawnerTier.CHAOTIC);
             } else {
-                return ItemInteractionResult.FAIL;
+                return InteractionResult.FAIL;
             }
 
             ItemStack dropStack = switch (prevTier) {
@@ -122,7 +122,7 @@ public class TileStabilizedSpawner extends TileBCore implements IInteractTile, I
             }
         }
 
-        return ItemInteractionResult.FAIL;
+        return InteractionResult.FAIL;
     }
 
     @Override

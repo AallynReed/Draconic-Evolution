@@ -16,7 +16,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -128,20 +127,20 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack heldStack, BlockState state, Player player, InteractionHand hand, BlockHitResult traceIn) {
-        if (player.level().isClientSide()) return ItemInteractionResult.SUCCESS;
+    public InteractionResult useItemOn(ItemStack heldStack, BlockState state, Player player, InteractionHand hand, BlockHitResult traceIn) {
+        if (player.level().isClientSide()) return InteractionResult.SUCCESS;
         List<ItemStack> stacks = getStacksInOrder();
 
         HitResult hit = RayTracer.retrace(player);
         if (!(hit instanceof SubHitBlockHitResult)){
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
         int index = ((SubHitBlockHitResult) hit).subHit - 1;
         if (!heldStack.isEmpty() && heldStack.getItem() == DEContent.CRYSTAL_BINDER.get() && getStacksInOrder().size() == 1) {
             toolMode.invert();
             tick();
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (player.isShiftKeyDown()) {
@@ -150,13 +149,13 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
                 BCoreNetwork.sendSound(level, worldPosition, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundSource.PLAYERS, 1.0F, 0.9F + level.getRandom().nextFloat() * 0.2F, false);
                 tick();
             }
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (index == -1) {
             onBroken(player, player.getOnPos().above(), true);
             level.removeBlock(getBlockPos(), false);
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (index < stacks.size()) {
@@ -167,7 +166,7 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
             }
         }
 
-        return ItemInteractionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override

@@ -18,7 +18,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -95,10 +94,10 @@ public class BoundDislocator extends Dislocator {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (player.level().isClientSide()) {
-            return new InteractionResultHolder<>(InteractionResult.PASS, stack);
+            return InteractionResult.PASS;
         }
 
         if (stack.getItem() == DEContent.DISLOCATOR_P2P_UNBOUND.get()) {
@@ -108,7 +107,7 @@ public class BoundDislocator extends Dislocator {
             player.setItemInHand(hand, ItemStack.EMPTY);
             InventoryUtils.givePlayerStack(player, boundA);
             InventoryUtils.givePlayerStack(player, boundB);
-            return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+            return InteractionResult.SUCCESS;
         } else if (stack.getItem() == DEContent.DISLOCATOR_PLAYER_UNBOUND.get()) {
             ItemStack bound = new ItemStack(DEContent.DISLOCATOR_PLAYER.get());
             setPlayerID(bound, player.getUUID());
@@ -116,7 +115,7 @@ public class BoundDislocator extends Dislocator {
             bound.set(ItemData.DISLOCATOR_PLAYER_NAME, player.getName().getString());
             player.setItemInHand(hand, ItemStack.EMPTY);
             InventoryUtils.givePlayerStack(player, bound);
-            return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+            return InteractionResult.SUCCESS;
         } else {
             TargetPos location = getTargetPos(stack, level);
             if (location == null) {
@@ -125,7 +124,7 @@ public class BoundDislocator extends Dislocator {
                 } else {
                     player.sendSystemMessage(Component.translatable("dislocate.draconicevolution.bound.cant_find_target").withStyle(ChatFormatting.RED));
                 }
-                return new InteractionResultHolder<>(InteractionResult.PASS, stack);
+                return InteractionResult.PASS;
             }
 
             BCoreNetwork.sendSound(player.level(), player.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, player.level().getRandom().nextFloat() * 0.1F + 0.9F, false);
@@ -133,7 +132,7 @@ public class BoundDislocator extends Dislocator {
             location.teleport(player);
             BCoreNetwork.sendSound(player.level(), player.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, player.level().getRandom().nextFloat() * 0.1F + 0.9F, false);
 
-            return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+            return InteractionResult.SUCCESS;
         }
     }
 

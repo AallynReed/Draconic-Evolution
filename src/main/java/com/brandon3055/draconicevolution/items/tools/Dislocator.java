@@ -13,7 +13,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
@@ -103,10 +102,10 @@ public class Dislocator extends Item implements IHudItem {
 
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!(level instanceof ServerLevel serverLevel)) {
-            return new InteractionResultHolder<>(InteractionResult.PASS, stack);
+            return InteractionResult.PASS;
         }
 
         TargetPos targetPos = getTargetPos(stack, level);
@@ -118,11 +117,11 @@ public class Dislocator extends Item implements IHudItem {
             } else {
                 messageUser(player, Component.translatable("dislocate.draconicevolution.already_bound").withStyle(ChatFormatting.RED));
             }
-            return new InteractionResultHolder<>(InteractionResult.PASS, stack);
+            return InteractionResult.PASS;
         } else {
             if (targetPos == null) {
                 messageUser(player, Component.translatable("dislocate.draconicevolution.not_set").withStyle(ChatFormatting.RED));
-                return new InteractionResultHolder<>(InteractionResult.PASS, stack);
+                return InteractionResult.PASS;
             }
             if (player.getHealth() > 2 || player.getAbilities().instabuild) {
                 player.getCooldowns().addCooldown(this, 20);
@@ -135,7 +134,7 @@ public class Dislocator extends Item implements IHudItem {
             } else {
                 messageUser(player, Component.translatable("dislocate.draconicevolution.low_health").withStyle(ChatFormatting.RED));
             }
-            return new InteractionResultHolder<>(InteractionResult.PASS, stack);
+            return InteractionResult.PASS;
         }
     }
 
