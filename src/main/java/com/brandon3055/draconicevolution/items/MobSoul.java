@@ -14,6 +14,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -26,6 +27,8 @@ import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.event.EventHooks;
@@ -113,12 +116,12 @@ public class MobSoul extends Item {
             EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.getValue(getEntity(stack));
             Entity entity;
 
-            entity = type.create(level);
+            entity = type.create(level, EntitySpawnReason.SPAWN_ITEM_USE);
             if (entity == null) {
-                return EntityType.PIG.create(level);
+                return EntityType.PIG.create(level, EntitySpawnReason.SPAWN_ITEM_USE);
             }
             if (entityData != null) {
-                entity.load(entityData);
+                entity.load(TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), entityData));
             } else {
                 if (entity instanceof Mob mob && level instanceof ServerLevel serverLevel) {
                     EventHooks.finalizeMobSpawn(mob, serverLevel, serverLevel.getCurrentDifficultyAt(new BlockPos(0, 0, 0)), EntitySpawnReason.SPAWN_ITEM_USE, null);
@@ -126,7 +129,7 @@ public class MobSoul extends Item {
             }
             return entity;
         } catch (Throwable e) {
-            return EntityType.PIG.create(level);
+            return EntityType.PIG.create(level, EntitySpawnReason.SPAWN_ITEM_USE);
         }
     }
 
@@ -136,8 +139,9 @@ public class MobSoul extends Item {
         setEntity(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()), soul);
 
         if (saveEntityData) {
-            CompoundTag compound = new CompoundTag();
-            entity.saveWithoutId(compound);
+            TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, entity.registryAccess());
+            entity.saveWithoutId(output);
+            CompoundTag compound = output.buildResult();
             setEntityData(compound, soul);
         }
 
@@ -153,7 +157,7 @@ public class MobSoul extends Item {
         if (name == null || name.equals(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "random_display_entity"))) {
             if (randomDisplayList == null) {
                 randomDisplayList = new ArrayList<>();
-                SpawnEggItem.BY_ID.keySet().forEach(type -> randomDisplayList.add(BuiltInRegistries.ENTITY_TYPE.getKey(type)));
+                BuiltInRegistries.ITEM.stream().filter(item -> item instanceof SpawnEggItem).forEach(item -> randomDisplayList.add(BuiltInRegistries.ENTITY_TYPE.getKey(SpawnEggItem.getType(item.getDefaultInstance()))));
             }
 
             if (!randomDisplayList.isEmpty()) {
@@ -166,12 +170,12 @@ public class MobSoul extends Item {
             Entity entity;
             try {
                 EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.getValue(name);
-                entity = type.create(level);
+                entity = type.create(level, EntitySpawnReason.LOAD);
                 if (entity == null) {
-                    entity = EntityType.PIG.create(level);
+                    entity = EntityType.PIG.create(level, EntitySpawnReason.LOAD);
                 }
             } catch (Throwable e) {
-                entity = EntityType.PIG.create(level);
+                entity = EntityType.PIG.create(level, EntitySpawnReason.LOAD);
             }
             renderEntityMap.put(name, entity);
         }
