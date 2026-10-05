@@ -24,7 +24,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -211,13 +211,13 @@ public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHo
     }
 
     @Override
-    public void clicked(int slotId, int button, ClickType clickTypeIn, Player player) {
+    public void clicked(int slotId, int button, ContainerInput clickTypeIn, Player player) {
         if (slotId >= 0 && slotId < slots.size()) {
             Slot slot = this.slots.get(slotId);
             if (slot != null && !slot.getItem().isEmpty()) {
                 if (slot.getItem() == hostStack) {
                     return;
-                } else if (clickTypeIn == ClickType.PICKUP && button == 0 && player.containerMenu.getCarried().isEmpty()) {
+                } else if (clickTypeIn == ContainerInput.PICKUP && button == 0 && player.containerMenu.getCarried().isEmpty()) {
                     if (slot.getItem().getCapability(DECapabilities.Host.ITEM) != null) {
                         if (player instanceof ServerPlayer) {
                             PlayerSlot playerSlot;

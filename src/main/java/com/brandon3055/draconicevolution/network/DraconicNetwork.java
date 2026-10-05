@@ -22,7 +22,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
@@ -106,7 +106,7 @@ public class DraconicNetwork {
         packet.sendToServer();
     }
 
-    public static void sendModuleContainerClick(RegistryAccess registryAccess, ModuleGrid.GridPos cell, float mouseX, float mouseY, int mouseButton, ClickType type) {
+    public static void sendModuleContainerClick(RegistryAccess registryAccess, ModuleGrid.GridPos cell, float mouseX, float mouseY, int mouseButton, ContainerInput type) {
         PacketCustom packet = new PacketCustom(CHANNEL_NAME, S_MODULE_CONTAINER_CLICK, registryAccess);
         packet.writeByte(cell.getGridX());
         packet.writeByte(cell.getGridY());

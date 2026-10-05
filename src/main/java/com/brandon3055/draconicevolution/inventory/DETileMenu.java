@@ -11,7 +11,7 @@ import com.brandon3055.draconicevolution.api.modules.lib.TileModuleContext;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
@@ -83,7 +83,7 @@ public abstract class DETileMenu<T extends TileBCore> extends ContainerBCTile<T>
     }
 
     @Override
-    public void clicked(int p_150400_, int p_150401_, ClickType p_150402_, Player p_150403_) {
+    public void clicked(int p_150400_, int p_150401_, ContainerInput p_150402_, Player p_150403_) {
         super.clicked(p_150400_, p_150401_, p_150402_, p_150403_);
     }
 

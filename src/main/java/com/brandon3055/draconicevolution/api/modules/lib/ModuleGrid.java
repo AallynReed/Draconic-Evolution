@@ -7,7 +7,7 @@ import com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallRe
 import com.google.common.collect.ImmutableList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -66,7 +66,7 @@ public class ModuleGrid {
         this.cellSize = cellSize;
     }
 
-    public InstallResult cellClicked(ModuleHost host, GridPos pos, double x, double y, int button, ClickType clickType) {
+    public InstallResult cellClicked(ModuleHost host, GridPos pos, double x, double y, int button, ContainerInput clickType) {
         ItemStack stack = player.player.containerMenu.getCarried();
         Module<?> module = ModuleItem.getModule(stack);
         boolean holdingStack = !stack.isEmpty();
@@ -83,7 +83,7 @@ public class ModuleGrid {
         }
 
         //Really this could be pick up or drop off
-        if (clickType == ClickType.PICKUP) {
+        if (clickType == ContainerInput.PICKUP) {
             if (holdingStack) { //Try to insert module
                 ModuleEntity<?> entity = module.createEntity();
                 entity.setPos(pos.gridX, pos.gridY);
@@ -108,7 +108,7 @@ public class ModuleGrid {
                 player.player.containerMenu.setCarried(extracted);
                 onGridChange();
             }
-        } else if (clickType == ClickType.QUICK_MOVE) {
+        } else if (clickType == ContainerInput.QUICK_MOVE) {
             if (pos.hasEntity()) { //Try to transfer module
                 ModuleEntity<?> entity = pos.getEntity();
                 ItemStack extracted = new ItemStack(entity.getModule().getItem());
@@ -122,7 +122,7 @@ public class ModuleGrid {
                     onGridChange();
                 }
             }
-        } else if (clickType == ClickType.PICKUP_ALL && module != null) {
+        } else if (clickType == ContainerInput.PICKUP_ALL && module != null) {
             for (ModuleEntity<?> entity : ImmutableList.copyOf(host.getModuleEntities())) {
                 if (entity.module == module) {
                     ItemStack modStack = new ItemStack(module.getItem());
@@ -138,7 +138,7 @@ public class ModuleGrid {
                 }
                 onGridChange();
             }
-        } else if (clickType == ClickType.CLONE) {
+        } else if (clickType == ContainerInput.CLONE) {
             if (player.player.getAbilities().instabuild && player.player.inventoryMenu.getCarried().isEmpty() && pos.hasEntity()) {
                 ModuleEntity<?> entity = pos.getEntity();
                 ItemStack modStack = new ItemStack(entity.module.getItem());

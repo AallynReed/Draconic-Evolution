@@ -26,7 +26,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
@@ -190,7 +190,7 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
             if (grid != null) {
                 try (ModuleHost host = container.getModuleHost()) {
                     ModuleGrid.GridPos pos = grid.getCell(host, input.readByte(), input.readByte());
-                    grid.cellClicked(host, pos, input.readFloat(), input.readFloat(), input.readByte(), input.readEnum(ClickType.class));
+                    grid.cellClicked(host, pos, input.readFloat(), input.readFloat(), input.readByte(), input.readEnum(ContainerInput.class));
                 }
             }
         }

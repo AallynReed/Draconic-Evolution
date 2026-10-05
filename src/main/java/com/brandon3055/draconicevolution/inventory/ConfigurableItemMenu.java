@@ -23,7 +23,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
@@ -86,13 +86,13 @@ public class ConfigurableItemMenu extends ModularGuiContainerMenu implements Mod
     }
 
     @Override
-    public void clicked(int slotId, int button, ClickType clickTypeIn, Player player) {
+    public void clicked(int slotId, int button, ContainerInput clickTypeIn, Player player) {
         if (slotId >= 0 && slotId < slots.size()) {
             Slot slot = this.slots.get(slotId);
             if (slot != null && !slot.getItem().isEmpty()) {
                 try (PropertyProvider provider = DECapabilities.getHost(slot.getItem())) {
                     if (provider != null) {
-                        if (clickTypeIn == ClickType.PICKUP && button == 0 && player.containerMenu.getCarried().isEmpty()) {
+                        if (clickTypeIn == ContainerInput.PICKUP && button == 0 && player.containerMenu.getCarried().isEmpty()) {
                             selectedIdentity = provider.getIdentity();
                             if (onSelectionMade != null) {
                                 onSelectionMade.accept(false);

@@ -11,7 +11,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -44,13 +44,13 @@ public class ReactorMenu extends DETileMenu<TileReactorCore> {
     }
 
     @Override
-    public void clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
+    public void clicked(int slotId, int dragType, ContainerInput clickTypeIn, Player player) {
         int maxFuel = 10368 + 15;
         int installedFuel = (int) (tile.reactableFuel.get() + tile.convertedFuel.get());
         int free = maxFuel - installedFuel;
 
         Slot slot = getSlot(slotId);
-        if (slot instanceof SlotReactor && clickTypeIn == ClickType.PICKUP) {
+        if (slot instanceof SlotReactor && clickTypeIn == ContainerInput.PICKUP) {
             ItemStack stackInSlot = slot.getItem();
             ItemStack heldStack = player.containerMenu.getCarried();
 
