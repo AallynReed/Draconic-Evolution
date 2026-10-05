@@ -1,18 +1,16 @@
 package com.brandon3055.draconicevolution.client;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.particle.ParticleRenderType;
+import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
+import com.mojang.blaze3d.pipeline.DepthStencilState;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.platform.CompareOp;
+import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.TextureAtlasStitchedEvent;
 
@@ -37,20 +35,11 @@ public class AtlasTextureHelper {
     public static TextureAtlasSprite PORTAL_PARTICLE;
     public static TextureAtlasSprite ENERGY_CORE_OVERLAY;
 
-    public static ParticleRenderType PARTICLE_SHEET_TRANSLUCENT = new ParticleRenderType() {
-        public BufferBuilder begin(Tesselator tesselator, TextureManager manager) {
-            RenderSystem.depthMask(false);
-            RenderSystem.enableBlend();
-            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
-            return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
-        }
-
-//        public void end(Tesselator tessellator) {
-//            tessellator.end();
-//        }
-
-    };
+    public static SingleQuadParticle.Layer PARTICLE_SHEET_TRANSLUCENT = new SingleQuadParticle.Layer(true, TextureAtlas.LOCATION_PARTICLES, RenderPipeline.builder(RenderPipelines.PARTICLE_SNIPPET)
+            .withLocation(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "pipeline/particle_sheet_translucent"))
+            .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
+            .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))
+            .build());
 
     public static void init(IEventBus modBus) {
         modBus.addListener(AtlasTextureHelper::textureStitch);
@@ -74,7 +63,7 @@ public class AtlasTextureHelper {
             ORB_PARTICLE = atlas.getSprite(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "white_orb"));
             PORTAL_PARTICLE = atlas.getSprite(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "portal"));
         }
-        if (atlas.location().equals(InventoryMenu.BLOCK_ATLAS)) {
+        if (atlas.location().equals(TextureAtlas.LOCATION_BLOCKS)) {
             ENERGY_CORE_OVERLAY = atlas.getSprite(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "block/energy_core/energy_core_overlay"));
         }
     }
