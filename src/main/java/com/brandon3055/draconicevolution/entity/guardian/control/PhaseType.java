@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.entity.guardian.control;
 
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
-import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.util.random.WeightedList;
 
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
@@ -20,15 +20,15 @@ public class PhaseType<T extends IPhase> {
     public static final PhaseType<GroundEffectPhase> GROUND_EFFECTS = create(GroundEffectPhase.class, "GroundEffects");
     public static final PhaseType<ArialBombardPhase> ARIAL_BOMBARD = create(ArialBombardPhase.class, "ArialBombard");
 
-    public static SimpleWeightedRandomList<PhaseType<?>> NORMAL_WEIGHTED;
-    public static SimpleWeightedRandomList<PhaseType<?>> AGGRESSIVE_WEIGHTED;
+    public static WeightedList<PhaseType<?>> NORMAL_WEIGHTED;
+    public static WeightedList<PhaseType<?>> AGGRESSIVE_WEIGHTED;
 
     static {
         initPhaseWeights();
     }
 
     public static void initPhaseWeights() {
-        NORMAL_WEIGHTED = SimpleWeightedRandomList.<PhaseType<?>>builder()
+        NORMAL_WEIGHTED = WeightedList.<PhaseType<?>>builder()
                 .add(CHARGE_PLAYER, 100)   //Guardian "Melee" attack. Has to make contact with the player to "take a bite out of them"
                 .add(BOMBARD_PLAYER, 200)   //Standard fireball attack
                 .add(LASER_BEAM, 60)    //Self-explanatory
@@ -39,7 +39,7 @@ public class PhaseType<T extends IPhase> {
         //Attacking the guardian increases an "aggression level" Once this level reaches maximum (usually after 5-10 minutes of fighting)
         //The guardian switches to these weights.
 
-        AGGRESSIVE_WEIGHTED = SimpleWeightedRandomList.<PhaseType<?>>builder()
+        AGGRESSIVE_WEIGHTED = WeightedList.<PhaseType<?>>builder()
                 .add(BOMBARD_PLAYER, 50)
                 .add(LASER_BEAM, 150)
                 .add(GROUND_EFFECTS, 50)

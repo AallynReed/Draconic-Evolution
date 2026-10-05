@@ -8,7 +8,7 @@ import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
-import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
@@ -140,7 +140,7 @@ public class StartPhase extends Phase {
 
         boolean aggressive = agroModifier > maxAgroModifier * 0.75 || failedAttacks > 3;
 
-        SimpleWeightedRandomList<PhaseType<?>> phases = aggressive ? PhaseType.AGGRESSIVE_WEIGHTED : PhaseType.NORMAL_WEIGHTED;
+        WeightedList<PhaseType<?>> phases = aggressive ? PhaseType.AGGRESSIVE_WEIGHTED : PhaseType.NORMAL_WEIGHTED;
 
         Vec3 focus = Vec3.atCenterOf(guardian.getArenaOrigin());
         List<Player> targetOptions = guardian.level().players()
@@ -156,7 +156,7 @@ public class StartPhase extends Phase {
         GuardianFightManager manager = guardian.getFightManager();
         if (manager == null) return false;
 
-        PhaseType phaseType = phases.getRandomValue(random).get();
+        PhaseType phaseType = phases.getRandom(random).get();
         IPhase phase = guardian.getPhaseManager().getPhase(phaseType);
         if (phase instanceof ChargeUpPhase) {
             failedAttacks = 0;
