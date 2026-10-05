@@ -1,7 +1,8 @@
 package com.brandon3055.draconicevolution.client.render.hud;
 
-import codechicken.lib.gui.modular.SpriteSupplier;
 import codechicken.lib.gui.modular.elements.GuiContextMenu;
+import codechicken.lib.gui.modular.lib.GuiRender;
+import codechicken.lib.gui.modular.sprite.Material;
 import com.brandon3055.brandonscore.api.hud.AbstractHudElement;
 import com.brandon3055.brandonscore.api.math.Vector2;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
@@ -18,14 +19,10 @@ import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.items.equipment.IModularArmor;
 import com.brandon3055.draconicevolution.items.tools.DraconiumCapacitor;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 
@@ -64,7 +61,7 @@ public class ShieldHudElement extends AbstractHudElement {
     private int energyMode = 2;
     private float scale = 1;
 
-    private SpriteSupplier[] _effectMats = null;
+    private Material[] _effectMats = null;
 
     public ShieldHudElement() {
         super(new Vector2(0.0136, 0.9787));
@@ -225,11 +222,11 @@ public class ShieldHudElement extends AbstractHudElement {
     }
 
     @Override
-    public void render(GuiGraphicsExtractor render, float partialTicks, boolean configuring) {
+    public void render(GuiRender render, float partialTicks, boolean configuring) {
         if (!renderHud) return;
-        render.pose().pushMatrix();
-        render.pose().translate((float) xPos(), (float) yPos());
-        render.pose().scale(scale, scale);
+        render.pose().pushPose();
+        render.pose().translate(xPos(), yPos(), 0);
+        render.pose().scale(scale, scale, scale);
 
         hudOpacity = 1;
 
@@ -237,8 +234,8 @@ public class ShieldHudElement extends AbstractHudElement {
         double height = height() - (extended() ? (10 * scale) : 0);
         double iconSize = height - 2;
 
-        render.cc$blitSprite(RenderPipelines.GUI_TEXTURED, DEGuiTextures.get("hud/shield_icon").get(), 0D, (height / 2) - (iconSize / 2), iconSize, iconSize - ((height / 2) - (iconSize / 2)), ARGB.colorFromFloat(hudOpacity, 1F, 1F, 1F));
-        render.pose().translate((float) iconSize, 0);
+        render.tex(DEGuiTextures.get("hud/shield_icon"), 0, (height / 2) - (iconSize / 2), iconSize, iconSize, 1F, 1F, 1F, hudOpacity);
+        render.pose().translate(iconSize, 0, 0);
 
         boolean xl = false; //size == 2;
         int shH = xl ? 11 : 7;
@@ -249,32 +246,32 @@ public class ShieldHudElement extends AbstractHudElement {
         int backgroundColor = scaleAlpha(0xFF01001b);
         int borderColor = scaleAlpha(0xFF450f57);
         int borderColorEnd = (borderColor & 0xFEFEFE) >> 1 | borderColor & 0xFF000000;
-        render.cc$tooltipBackground(0, 0, width, height, backgroundColor, backgroundColor, borderColor, borderColorEnd, false);
+        render.toolTipBackground(0, 0, width, height, backgroundColor, borderColor, borderColorEnd);
 
         //Draw Shield
         float charge = (float) (shieldCharge >= 0 ? shieldCharge : 0);
         double bw = width - 4;
-        TextureAtlasSprite sprite = DEGuiTextures.get("hud/ryg_bar").get();
-        render.cc$blitPartialSprite(RenderPipelines.GUI_TEXTURED, 2, 2, 2 + (bw * charge), 2 + shH, sprite, 0, 0, charge, 1, ARGB.colorFromFloat(hudOpacity, 1F, 1F, 1F));
-        render.cc$fill(2D + (bw * charge), 2, 2D + (bw * charge) + bw * (1D - charge), 2 + shH, scaleAlpha(0xFF01001b));
+        Material mat = DEGuiTextures.get("hud/ryg_bar");
+        render.partialSprite(2, 2, 2 + (bw * charge), 2 + shH, mat.sprite(), 0, 0, charge, 1, 1F, 1F, 1F, hudOpacity);
+        render.rect(2D + (bw * charge), 2, bw * (1D - charge), shH, scaleAlpha(0xFF01001b));
 
-        render.cc$fill(2, 2 + shH, 2 + width - 4, 2 + shH + divH, scaleAlpha(0xff22072b));
+        render.rect(2, 2 + shH, width - 4, divH, scaleAlpha(0xff22072b));
 
         //Draw Shield Cool Down
-        render.cc$fill(2D, 2 + shH + divH, 2D + bw * coolDown, 2 + shH + divH + reH, scaleAlpha(0xFF840000));
-        render.cc$fill(2D + (bw * coolDown), 2 + shH + divH, 2D + (bw * coolDown) + bw * (1D - coolDown), 2 + shH + divH + reH, scaleAlpha(0xFF00b014));
+        render.rect(2D, 2 + shH + divH, bw * coolDown, reH, scaleAlpha(0xFF840000));
+        render.rect(2D + (bw * coolDown), 2 + shH + divH, bw * (1D - coolDown), reH, scaleAlpha(0xFF00b014));
 
-        render.cc$fill(2, 2 + shH + divH + reH, 2 + width - 4, 2 + shH + divH + reH + divH, scaleAlpha(0xff22072b));
+        render.rect(2, 2 + shH + divH + reH, width - 4, divH, scaleAlpha(0xff22072b));
 
         //Draw Energy Bar
-        render.cc$fill(2D, 2 + shH + divH + reH + divH, 2D + bw * energyBar, 2 + shH + divH + reH + divH + reH, scaleAlpha(0xFF07ced8));
-        render.cc$fill(2D + (bw * energyBar), 2 + shH + divH + reH + divH, 2D + (bw * energyBar) + bw * (1D - energyBar), 2 + shH + divH + reH + divH + reH, scaleAlpha(0xFF01001b));
+        render.rect(2D, 2 + shH + divH + reH + divH, bw * energyBar, reH, scaleAlpha(0xFF07ced8));
+        render.rect(2D + (bw * energyBar), 2 + shH + divH + reH + divH, bw * (1D - energyBar), reH, scaleAlpha(0xFF01001b));
 
         //Draw Totems
         if (totemStatus.length > 0) {
             double x = width - 8;
             for (double state : totemStatus) {
-                render.cc$blitSprite(RenderPipelines.GUI_TEXTURED, DEGuiTextures.get("hud/undying").get(), x, height + 1, 8, 8, scaleAlpha(state != -1 ? 0xFFFF0000 : 0xFFFFFFFF));
+                render.texRect(DEGuiTextures.get("hud/undying"), x, height + 1, 8, 8, scaleAlpha(state != -1 ? 0xFFFF0000 : 0xFFFFFFFF));
                 if (state != -1) {
                     RenderUtils.drawPieProgress(render, x, height + 1, 8, state, 0, 0x80FFFFFF);
                 }
@@ -287,18 +284,20 @@ public class ShieldHudElement extends AbstractHudElement {
             particleExplosion(render, width - 4 - (totemEffectIndex * 9), height + 5, progress, rand);
         }
 
+        render.flush(); //TODO, is this needed?
+
         //Draw Text (after end batch otherwise font rendering will break)
         double tPos = width / 2D - mc.font.width(shieldText) / 2D;
 //        mc.font.drawInBatch(shieldText, (float) tPos, xl ? 4 : 2, scaleAlpha(0xFF0000FF));
-        render.cc$drawString(mc.font, shieldText, (float) tPos, xl ? 4 : 2, scaleAlpha(0xFF0000FF), false);
+        render.drawString(shieldText, (float) tPos, xl ? 4 : 2, scaleAlpha(0xFF0000FF), false);
         if (numericEnergy && !energyText.getString().isEmpty()) {
 //            mc.font.drawShadow(mStack, energyText, 2, (float) height + 1F, scaleAlpha(0xFFFFFFFF));
-            render.cc$drawString(mc.font, energyText, 2, (float) height + 1F, scaleAlpha(0xFFFFFFFF), true);
+            render.drawString(energyText, 2, (float) height + 1F, scaleAlpha(0xFFFFFFFF), true);
         }
-        render.pose().popMatrix();
+        render.pose().popPose();
     }
 
-    public void particleExplosion(GuiGraphicsExtractor render, double x, double y, float progress, Random rand) {
+    public void particleExplosion(GuiRender render, double x, double y, float progress, Random rand) {
         rand.setSeed(totemEffectSeed);
         int pCount = 128;
         int size = 100;
@@ -318,7 +317,7 @@ public class ShieldHudElement extends AbstractHudElement {
             double ps = scale * (0.75 + rand.nextDouble() * 0.5) * fadeOut;
             int index = Math.min((int) (age * 8), 7);
             if (age >= 1) continue; //Still need to do the math above, so we don't throw off the seeded random
-            render.cc$blitSprite(RenderPipelines.GUI_TEXTURED, getEffectMats()[index].get(), pX - (ps/2), pY-(ps/2), ps - (pX - (ps/2)), ps - (pY-(ps/2)), ARGB.colorFromFloat(1F, red, green, blue));
+            render.tex(getEffectMats()[index], pX - (ps/2), pY-(ps/2), ps, ps, red, green, blue, 1F);
         }
     }
 
@@ -344,9 +343,9 @@ public class ShieldHudElement extends AbstractHudElement {
         scale = nbt.getFloatOr("scale", 0);
     }
 
-    private SpriteSupplier[] getEffectMats() {
+    private Material[] getEffectMats() {
         if (_effectMats == null) {
-            _effectMats = new SpriteSupplier[8];
+            _effectMats = new Material[8];
             for (int i = 0; i < 8; i++) {
                 _effectMats[i] = DEGuiTextures.get("effect/glitter_" + i);
             }

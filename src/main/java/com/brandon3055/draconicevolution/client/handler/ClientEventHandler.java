@@ -1,15 +1,16 @@
 package com.brandon3055.draconicevolution.client.handler;
 
 
+import codechicken.lib.gui.modular.lib.GuiRender;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.client.ProcessHandlerClient;
+import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.brandonscore.lib.DelayedExecutor;
 import com.brandon3055.draconicevolution.api.energy.ICrystalBinder;
 import com.brandon3055.draconicevolution.client.DEShaders;
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
@@ -75,7 +76,7 @@ public class ClientEventHandler {
     private static void registerOverlays(RegisterGuiLayersEvent event) {
         event.registerBelowAll(Identifier.fromNamespaceAndPath(MODID, "explosion_overlay"), (graphics, deltaTracker) -> {
             if (explosionPos != null) {
-                updateExplosionAnimation(mc, graphics, mc.getWindow(), deltaTracker.getGameTimeDeltaPartialTick(false));
+                updateExplosionAnimation(mc, GuiRender.convert(graphics), mc.getWindow(), deltaTracker.getGameTimeDeltaPartialTick(false));
             }
         });
     }
@@ -299,7 +300,7 @@ public class ClientEventHandler {
 //        explosionAnimation = explosionTime * 0.05;
     }
 
-    private static void updateExplosionAnimation(Minecraft mc, GuiGraphicsExtractor render, Window window, float partialTick) {
+    private static void updateExplosionAnimation(Minecraft mc, GuiRender render, Window window, float partialTick) {
         if (/*true || */explosionRetreating) {
             float alpha;
             if (explosionAnimation <= 0) {
@@ -310,7 +311,7 @@ public class ClientEventHandler {
                 alpha = (float) explosionAnimation + (partialTick * 0.05F);
             }
             if (alpha > 1) alpha = 1;
-            render.cc$fill(0, 0, window.getGuiScaledWidth(), window.getGuiScaledHeight(), 0x00FFFFFF | (int) (alpha * 255F) << 24);
+            render.rect(0, 0, window.getGuiScaledWidth(), window.getGuiScaledHeight(), 0x00FFFFFF | (int) (alpha * 255F) << 24);
 
         } else {
             Vec3 camPos = mc.gameRenderer.getMainCamera().position();
@@ -325,7 +326,7 @@ public class ClientEventHandler {
             int width = window.getGuiScaledWidth();
             int height = window.getGuiScaledHeight();
             int colour = ARGB.colorFromFloat((float) explosionAnimation, 1F, 1F, 1F);
-            render.cc$submitCustom(DEShaders.EXPLOSION_FLASH, TextureSetup.noTexture(), 0, width, 0, height, (buffer, pose) -> {
+            render.submitCustom(DEShaders.EXPLOSION_FLASH, TextureSetup.noTexture(), 0, width, 0, height, (buffer, pose) -> {
                 buffer.addVertexWith2DPose(pose, 0, height).setUv(screenX, screenY).setColor(colour);
                 buffer.addVertexWith2DPose(pose, width, height).setUv(screenX, screenY).setColor(colour);
                 buffer.addVertexWith2DPose(pose, width, 0).setUv(screenX, screenY).setColor(colour);

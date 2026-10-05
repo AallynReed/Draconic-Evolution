@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.client;
 
 import codechicken.lib.data.MCDataInput;
+import codechicken.lib.gui.modular.lib.GuiRender;
 import codechicken.lib.render.buffer.TransformingVertexConsumer;
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.client.shader.BCRenderType;
@@ -80,19 +81,19 @@ public class CustomBossInfoHandler {
         event.setCanceled(true);
         BossShieldInfo shieldInfo = events.get(info.getId());
         Minecraft mc = Minecraft.getInstance();
-        GuiGraphicsExtractor render = event.getGuiGraphics();
+        GuiRender render = GuiRender.convert(event.getGuiGraphics());
         float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(false);
 
         int width = event.getWindow().getGuiScaledWidth();
         int x = event.getX();
         int y = event.getY();
 
-        drawBar(render, x, y, info);
+        drawBar(event.getGuiGraphics(), x, y, info);
 
         float shield = shieldInfo.isImmune() ? 1 : shieldInfo.getShield();
 
         if (DEConfig.guardianShaders) {
-            GuiModelRenderer.submit(render, x, y, x + 182, y + 5, (poseStack, getter) -> {
+            GuiModelRenderer.submit(render, x, y, x + 182, y + 6, (poseStack, getter) -> {
                 if (shieldInfo.isImmune()) {
                     DEShaders.shieldColour.glUniform4f(0F, 1F, 1F, 2F);
                 } else {
@@ -155,14 +156,15 @@ public class CustomBossInfoHandler {
                 }
             });
 
-            render.cc$drawString(mc.font, Component.literal("x" + shieldInfo.crystals), x + 182 - countWidth, (float) y - 9, 0xffFFFF);
+            render.drawString(Component.literal("x" + shieldInfo.crystals), x + 182 - countWidth, (float) y - 9, 0xffFFFF);
         }
 
         Component itextcomponent = info.getName();
         int stringWidth = mc.font.width(itextcomponent);
         int stringX = shieldInfo.crystals > 0 ? x : width / 2 - stringWidth / 2;
         int stringY = y - 9;
-        render.cc$drawString(mc.font, itextcomponent, (float) stringX, (float) stringY, 0xff0000);
+        render.pose().translate(0, 0, 16);
+        render.drawString(itextcomponent, (float) stringX, (float) stringY, 0xff0000);
     }
 
     private static void drawBar(GuiGraphicsExtractor graphics, int x, int y, BossEvent info) {
