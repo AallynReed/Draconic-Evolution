@@ -10,7 +10,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.event.RenderHighlightEvent;
+import net.neoforged.neoforge.client.event.ExtractBlockOutlineRenderStateEvent;
 
 /**
  * The primary purpose of this class is to allow a TileStructureBlock to check the status of its controller
@@ -42,7 +42,7 @@ public interface MultiBlockController {
     }
 
     @OnlyIn (Dist.CLIENT)
-    default boolean renderSelectionBox(RenderHighlightEvent.Block event) {
+    default boolean renderSelectionBox(ExtractBlockOutlineRenderStateEvent event) {
         return true;
     }
 }

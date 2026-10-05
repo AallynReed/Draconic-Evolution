@@ -31,7 +31,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.client.event.RenderHighlightEvent;
+import net.neoforged.neoforge.client.event.ExtractBlockOutlineRenderStateEvent;
 import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.Nullable;
 
@@ -404,7 +404,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
     }
 
     @Override
-    public boolean renderSelectionBox(RenderHighlightEvent.Block event) {
+    public boolean renderSelectionBox(ExtractBlockOutlineRenderStateEvent event) {
         return false;
     }
 

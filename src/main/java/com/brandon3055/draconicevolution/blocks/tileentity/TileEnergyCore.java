@@ -37,7 +37,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.client.event.RenderHighlightEvent;
+import net.neoforged.neoforge.client.event.ExtractBlockOutlineRenderStateEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -439,7 +439,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     }
 
     @Override
-    public boolean renderSelectionBox(RenderHighlightEvent.Block event) {
+    public boolean renderSelectionBox(ExtractBlockOutlineRenderStateEvent event) {
         return false;
     }
 
