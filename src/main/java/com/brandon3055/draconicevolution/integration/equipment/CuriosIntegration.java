@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.CuriosCapability;
 import top.theillusivec4.curios.api.SlotResult;
+import top.theillusivec4.curios.api.type.ISlotType;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 
 import java.util.ArrayList;
@@ -75,7 +76,7 @@ public class CuriosIntegration extends EquipmentManager {
             List<Identifier> icons = new ArrayList<>();
             handler.getCurios().forEach((s, h) -> {
                 for (int i = 0; i < h.getSlots(); i++) {
-                    Identifier icon = CuriosApi.getSlotIcon(s); //Why couldnt this just be the full path?
+                    Identifier icon = CuriosApi.getSlot(s, entity.level()).map(ISlotType::getIcon).orElse(ISlotType.GENERIC_ICON); //Why couldnt this just be the full path?
                     icons.add(Identifier.fromNamespaceAndPath(icon.getNamespace(), "textures/" + icon.getPath() + ".png"));
                 }
             });

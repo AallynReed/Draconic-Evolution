@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.integration.equipment;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
@@ -32,7 +33,7 @@ public class CurioWrapper implements ICurio {
     }
 
     @Override
-    public List<Component> getSlotsTooltip(List<Component> tooltips) {
+    public List<Component> getSlotsTooltip(List<Component> tooltips, Item.TooltipContext context) {
         return item.getTagsTooltip(stack, tooltips);
     }
 
