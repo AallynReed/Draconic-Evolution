@@ -105,7 +105,7 @@ public class DislocatorAdvanced extends Dislocator {
         }
 
         ServerLevel targetLevel = serverLevel.getServer().getLevel(location.getDimension());
-        if ((serverLevel != targetLevel && !entity.canChangeDimensions(serverLevel, targetLevel)) || !(entity instanceof LivingEntity)) {
+        if ((serverLevel != targetLevel && !entity.canTeleport(serverLevel, targetLevel)) || !(entity instanceof LivingEntity)) {
             return true;
         }
 

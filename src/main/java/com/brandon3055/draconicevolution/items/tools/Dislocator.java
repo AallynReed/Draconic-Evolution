@@ -84,7 +84,7 @@ public class Dislocator extends Item implements IHudItem {
         }
         TargetPos location = getTargetPos(stack, player.level());
         ServerLevel targetLevel = serverLevel.getServer().getLevel(location.getDimension());
-        if (entity.level() != targetLevel && !entity.canChangeDimensions(entity.level(), targetLevel)) {
+        if (entity.level() != targetLevel && !entity.canTeleport(entity.level(), targetLevel)) {
             return true;
         }
 

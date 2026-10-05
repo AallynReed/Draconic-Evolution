@@ -85,7 +85,7 @@ public class BoundDislocator extends Dislocator {
         if (server == null || !(server.getLevel(location.getDimension()) instanceof Level targetLevel)) {
             return true;
         }
-        if (!entity.canChangeDimensions(entity.level(), targetLevel) || !(entity instanceof LivingEntity)) {
+        if (!entity.canTeleport(entity.level(), targetLevel) || !(entity instanceof LivingEntity)) {
             return true;
         }
 
