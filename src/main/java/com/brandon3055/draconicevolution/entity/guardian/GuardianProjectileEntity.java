@@ -5,14 +5,16 @@ import com.brandon3055.draconicevolution.init.DEDamage;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.PowerParticleOption;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.hurtingprojectile.AbstractHurtingProjectile;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerExplosion;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -82,7 +84,7 @@ public class GuardianProjectileEntity extends AbstractHurtingProjectile {
             if (df <= 0) {
                 continue;
             }
-            df *= Explosion.getSeenPercent(position(), entity);
+            df *= ServerExplosion.getSeenPercent(position(), entity);
             float damage = (float) ((int) ((df * df + df) / 2.0D * 6.0D * power + 1.0D));
             entity.hurt(DEDamage.guardianProjectile(level(), this, shooter), damage);
         }
@@ -106,13 +108,13 @@ public class GuardianProjectileEntity extends AbstractHurtingProjectile {
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
         return false;
     }
 
     @Override
     protected ParticleOptions getTrailParticle() {
-        return ParticleTypes.DRAGON_BREATH;
+        return PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1.0F);
     }
 
     @Override
