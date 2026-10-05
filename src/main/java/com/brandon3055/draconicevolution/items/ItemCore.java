@@ -6,6 +6,7 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileStabilizedSpawner
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -54,7 +55,7 @@ public class ItemCore extends Item {
 
                 ItemStack spawner = new ItemStack(DEContent.STABILIZED_SPAWNER.get());
                 CompoundTag saveData = new CompoundTag();
-                saveData.put("mob_soul", soul.save(world.registryAccess()));
+                saveData.put("mob_soul", ItemStack.CODEC.encodeStart(world.registryAccess().createSerializationContext(NbtOps.INSTANCE), soul).getOrThrow());
                 CompoundTag tierData = new CompoundTag();
                 tierData.putByte("value", (byte) tier.ordinal());
                 saveData.put("spawner_tier", tierData);
