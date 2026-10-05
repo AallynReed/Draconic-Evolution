@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.client.model;
 
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
-import codechicken.lib.render.buffer.VBORenderType;
 import codechicken.lib.render.model.OBJParser;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Translation;
@@ -10,6 +9,7 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.client.model.ExtendedModelPart;
 import com.brandon3055.brandonscore.client.render.EquippedItemModel;
 import com.brandon3055.brandonscore.client.shader.BCShaders;
+import com.brandon3055.brandonscore.client.shader.BCRenderType;
 import com.brandon3055.brandonscore.handlers.contributor.ContributorHandler;
 import com.brandon3055.brandonscore.handlers.contributor.ContributorProperties;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -24,15 +24,19 @@ import com.brandon3055.draconicevolution.client.shader.ShieldShader;
 import com.brandon3055.draconicevolution.client.shader.ToolShader;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.textures.FilterMode;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.OutputTarget;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -45,11 +49,29 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 /**
  * Created by brandon3055 on 13/11/2022
  */
-public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidModel<T> implements EquippedItemModel {
+public class ModularChestpieceModel<T extends HumanoidRenderState> extends HumanoidModel<T> implements EquippedItemModel {
+    private static final PoseStack IDENTITY = new PoseStack();
+    private static final RenderPipeline BASE_PIPELINE = DEShaders.TOOL_BASE_SHADER.pipeline("chestpiece_base", builder -> builder.withVertexFormat(DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES));
+    private static final RenderPipeline CHAOS_PIPELINE = BCShaders.CHAOS_ENTITY_SHADER.pipeline("de_chestpiece_chaos", builder -> builder.withVertexFormat(DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES));
+    private static final RenderPipeline GEM_PIPELINE = DEShaders.TOOL_GEM_SHADER.pipeline("chestpiece_gem", builder -> builder.withVertexFormat(DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES));
+    private static final RenderPipeline CORE_GEM_PIPELINE = DEShaders.CHESTPIECE_GEM_SHADER.pipeline("chestpiece_core_gem", builder -> builder.withVertexFormat(DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES));
+    private static final RenderPipeline SHIELD_PIPELINE = DEShaders.CHESTPIECE_SHIELD_SHADER.pipeline("armor_shield", builder -> builder.withVertexFormat(DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES));
+    private static final float BABY_Y_HEAD_OFFSET = 16.0F;
+    private static final float BABY_Z_HEAD_OFFSET = 0.0F;
+    private static final float BABY_HEAD_SCALE = 2.0F;
+    private static final float BABY_BODY_SCALE = 2.0F;
+    private static final float BODY_Y_OFFSET = 24.0F;
+    private static int submitOrder;
 
     private final TechLevel techLevel;
     private int shieldColour;
     private float shieldState;
+    private final ExtendedModelPart extHead;
+    private final ExtendedModelPart extBody;
+    private final ExtendedModelPart extLeftArm;
+    private final ExtendedModelPart extRightArm;
+    private final ExtendedModelPart extLeftLeg;
+    private final ExtendedModelPart extRightLeg;
 
     public ModularChestpieceModel(TechLevel techLevel, boolean isOnArmor) {
         super(createMesh(new CubeDeformation(1), 0).getRoot().bake(64, 64));
@@ -74,45 +96,46 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
         }
 
         String levelName = techLevel.name().toLowerCase(Locale.ROOT);
-        RenderType baseType = RenderType.create(MODID + ":base", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, true, false, RenderType.CompositeState.builder()
-                .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.TOOL_BASE_SHADER::getShaderInstance))
-                .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/" + levelName + "_chestpeice.png"), false, false))
-                .setLightmapState(RenderStateShard.LIGHTMAP)
-                .setOverlayState(RenderStateShard.OVERLAY)
-                .createCompositeState(true)
+        BCRenderType baseType = DEShaders.TOOL_BASE_SHADER.renderType(MODID + ":base", RenderSetup.builder(BASE_PIPELINE)
+                .withTexture("Sampler0", Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/" + levelName + "_chestpeice.png"))
+                .useLightmap()
+                .useOverlay()
+                .affectsCrumbling()
+                .setOutline(RenderSetup.OutlineProperty.AFFECTS_OUTLINE)
+                .bufferSize(256)
+                .createRenderSetup()
         );
 
-        RenderType chaoticType = RenderType.create(MODID + ":tool_chaos", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
-                .setShaderState(new RenderStateShard.ShaderStateShard(BCShaders.CHAOS_ENTITY_SHADER::getShaderInstance))
-                .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/chaos_shader.png"), true, false))
-                .setLightmapState(RenderStateShard.LIGHTMAP)
-                .setOverlayState(RenderStateShard.OVERLAY)
-                .createCompositeState(false)
+        BCRenderType chaoticType = BCShaders.CHAOS_ENTITY_SHADER.renderType(MODID + ":tool_chaos", RenderSetup.builder(CHAOS_PIPELINE)
+                .withTexture("Sampler0", Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/chaos_shader.png"), () -> RenderSystem.getSamplerCache().getRepeat(FilterMode.LINEAR))
+                .useLightmap()
+                .useOverlay()
+                .bufferSize(256)
+                .createRenderSetup()
         );
 
-        RenderType gemType = RenderType.create(MODID + ":tool_gem", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
-                .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.TOOL_GEM_SHADER::getShaderInstance))
-                .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
-                .setLightmapState(RenderStateShard.LIGHTMAP)
-                .setOverlayState(RenderStateShard.OVERLAY)
-                .createCompositeState(false)
+        BCRenderType gemType = DEShaders.TOOL_GEM_SHADER.renderType(MODID + ":tool_gem", RenderSetup.builder(GEM_PIPELINE)
+                .withTexture("Sampler0", Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"))
+                .useLightmap()
+                .useOverlay()
+                .bufferSize(256)
+                .createRenderSetup()
         );
 
-        RenderType coreGemType = RenderType.create(MODID + ":core_gem", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
-                .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.CHESTPIECE_GEM_SHADER::getShaderInstance))
-                .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
-                .setLightmapState(RenderStateShard.LIGHTMAP)
-                .setOverlayState(RenderStateShard.OVERLAY)
-                .createCompositeState(false)
+        BCRenderType coreGemType = DEShaders.CHESTPIECE_GEM_SHADER.renderType(MODID + ":core_gem", RenderSetup.builder(CORE_GEM_PIPELINE)
+                .withTexture("Sampler0", Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"))
+                .useLightmap()
+                .useOverlay()
+                .bufferSize(256)
+                .createRenderSetup()
         );
 
-        RenderType shieldType = RenderType.create(MODID + ":armor_shield", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
-                .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.CHESTPIECE_SHIELD_SHADER::getShaderInstance))
-                .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-                .setOutputState(RenderStateShard.ITEM_ENTITY_TARGET)
-                .setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE)
-                .setLightmapState(RenderStateShard.LIGHTMAP)
-                .createCompositeState(false)
+        BCRenderType shieldType = DEShaders.CHESTPIECE_SHIELD_SHADER.renderType(MODID + ":armor_shield", RenderSetup.builder(SHIELD_PIPELINE)
+                .setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET)
+                .useLightmap()
+                .useOverlay()
+                .bufferSize(256)
+                .createRenderSetup()
         );
 
         ExtendedModelPart body = new ExtendedModelPart();
@@ -126,31 +149,43 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
         }
         body.addChild(new ChestpieceModelPart(gemModel, gemType, DEShaders.TOOL_GEM_SHADER));
         body.addChild(new CoreGemModelPart(coreGemModel, coreGemType, DEShaders.CHESTPIECE_GEM_SHADER));
-        this.body = body;
+        this.extBody = body;
 
-        head = new ShieldModelPart(shieldHeadModel, shieldType, DEShaders.CHESTPIECE_SHIELD_SHADER);
+        extHead = new ShieldModelPart(shieldHeadModel, shieldType, DEShaders.CHESTPIECE_SHIELD_SHADER);
         body.addChild(new ShieldModelPart(shieldBodyModel, shieldType, DEShaders.CHESTPIECE_SHIELD_SHADER));
-        leftArm = new ShieldModelPart(shieldLeftArmModel, shieldType, DEShaders.CHESTPIECE_SHIELD_SHADER);
-        rightArm = new ShieldModelPart(shieldRightArmModel, shieldType, DEShaders.CHESTPIECE_SHIELD_SHADER);
-        leftLeg = new ShieldModelPart(shieldLeftLegModel, shieldType, DEShaders.CHESTPIECE_SHIELD_SHADER);
-        rightLeg = new ShieldModelPart(shieldRightLegModel, shieldType, DEShaders.CHESTPIECE_SHIELD_SHADER);
+        extLeftArm = new ShieldModelPart(shieldLeftArmModel, shieldType, DEShaders.CHESTPIECE_SHIELD_SHADER);
+        extRightArm = new ShieldModelPart(shieldRightArmModel, shieldType, DEShaders.CHESTPIECE_SHIELD_SHADER);
+        extLeftLeg = new ShieldModelPart(shieldLeftLegModel, shieldType, DEShaders.CHESTPIECE_SHIELD_SHADER);
+        extRightLeg = new ShieldModelPart(shieldRightLegModel, shieldType, DEShaders.CHESTPIECE_SHIELD_SHADER);
+    }
+
+    protected Iterable<ExtendedModelPart> headParts() {
+        return ImmutableList.of(extHead);
+    }
+
+    protected Iterable<ExtendedModelPart> bodyParts() {
+        return ImmutableList.of(extBody, extLeftArm, extRightArm, extLeftLeg, extRightLeg);
+    }
+
+    private static void copyPose(ModelPart from, ModelPart to) {
+        to.visible = from.visible;
+        to.x = from.x;
+        to.y = from.y;
+        to.z = from.z;
+        to.xRot = from.xRot;
+        to.yRot = from.yRot;
+        to.zRot = from.zRot;
+        to.xScale = from.xScale;
+        to.yScale = from.yScale;
+        to.zScale = from.zScale;
+    }
+
+    private static OrderedSubmitNodeCollector nextOrder(SubmitNodeCollector collector) {
+        return collector.order(submitOrder++);
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer consumer, int packedLight, int packedOverlay, int colour) {}
-
-    @Override
-    protected Iterable<ModelPart> headParts() {
-        return ImmutableList.of(head);
-    }
-
-    @Override
-    protected Iterable<ModelPart> bodyParts() {
-        return ImmutableList.of(body, leftArm, rightArm, leftLeg, rightLeg);
-    }
-
-    @Override
-    public void render(LivingEntity entity, PoseStack poseStack, MultiBufferSource buffers, ItemStack stack, int packedLight, int packedOverlay, float partialTicks) {
+    public void render(LivingEntity entity, PoseStack poseStack, SubmitNodeCollector collector, ItemStack stack, int packedLight, int packedOverlay, float partialTicks) {
         shieldColour = 0xFFFFFFFF;
         shieldState = 0;
         try (ModuleHost host = DECapabilities.getHost(stack)) {
@@ -169,52 +204,63 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
             }
         }
 
-        if (this.young) {
-            poseStack.pushPose();
-            if (this.scaleHead) {
-                float f = 1.5F / this.babyHeadScale;
-                poseStack.scale(f, f, f);
-            }
+        copyPose(head, extHead);
+        copyPose(body, extBody);
+        copyPose(leftArm, extLeftArm);
+        copyPose(rightArm, extRightArm);
+        copyPose(leftLeg, extLeftLeg);
+        copyPose(rightLeg, extRightLeg);
+        submitOrder = 1;
 
-            poseStack.translate(0.0D, this.babyYHeadOffset / 16.0F, this.babyZHeadOffset / 16.0F);
-            this.headParts().forEach(part -> ((ExtendedModelPart) part).render(poseStack, buffers, packedLight, packedOverlay));
+        if (entity.isBaby()) {
+            poseStack.pushPose();
+            float f = 1.5F / BABY_HEAD_SCALE;
+            poseStack.scale(f, f, f);
+
+            poseStack.translate(0.0D, BABY_Y_HEAD_OFFSET / 16.0F, BABY_Z_HEAD_OFFSET / 16.0F);
+            this.headParts().forEach(part -> part.render(poseStack, collector, packedLight, packedOverlay));
             poseStack.popPose();
             poseStack.pushPose();
-            float f1 = 1.0F / this.babyBodyScale;
+            float f1 = 1.0F / BABY_BODY_SCALE;
             poseStack.scale(f1, f1, f1);
-            poseStack.translate(0.0D, this.bodyYOffset / 16.0F, 0.0D);
-            this.bodyParts().forEach(part -> ((ExtendedModelPart) part).render(poseStack, buffers, packedLight, packedOverlay));
+            poseStack.translate(0.0D, BODY_Y_OFFSET / 16.0F, 0.0D);
+            this.bodyParts().forEach(part -> part.render(poseStack, collector, packedLight, packedOverlay));
             poseStack.popPose();
         } else {
-            this.headParts().forEach(part -> ((ExtendedModelPart) part).render(poseStack, buffers, packedLight, packedOverlay));
-            this.bodyParts().forEach(part -> ((ExtendedModelPart) part).render(poseStack, buffers, packedLight, packedOverlay));
+            this.headParts().forEach(part -> part.render(poseStack, collector, packedLight, packedOverlay));
+            this.bodyParts().forEach(part -> part.render(poseStack, collector, packedLight, packedOverlay));
         }
     }
 
     public class ChestpieceModelPart extends ExtendedModelPart {
-        protected final VBORenderType renderType;
+        protected final CCModel model;
+        protected final BCRenderType renderType;
         protected final BCShader<?> shader;
 
-        public ChestpieceModelPart(CCModel model, RenderType baseType, BCShader<?> shader) {
+        public ChestpieceModelPart(CCModel model, BCRenderType baseType, BCShader<?> shader) {
+            this.model = model;
             this.shader = shader;
-            renderType = new VBORenderType(baseType, (format, builder) -> {
+            this.renderType = baseType;
+        }
+
+        protected void submit(SubmitNodeCollector collector) {
+            nextOrder(collector).submitCustomGeometry(IDENTITY, renderType.withCurrentUniforms(), (pose, consumer) -> {
                 CCRenderState ccrs = CCRenderState.instance();
                 ccrs.reset();
-                ccrs.bind(builder, format);
+                ccrs.bind(consumer, DefaultVertexFormat.ENTITY);
                 model.render(ccrs);
             });
         }
 
         @Override
-        public void render(PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedOverlay, float r, float g, float b, float a) {
+        public void render(PoseStack poseStack, SubmitNodeCollector collector, int packedLight, int packedOverlay, float r, float g, float b, float a) {
             if (this.visible) {
                 poseStack.pushPose();
                 this.translateAndRotate(poseStack);
                 Matrix4 mat = new Matrix4(poseStack);
-                renderType.withCallback(() -> {
-                    ToolRenderBase.glUniformBaseColor(shader, techLevel, 1F);
-                    shader.getModelMatUniform().glUniformMatrix4f(mat);
-                }).draw(buffers);
+                ToolRenderBase.glUniformBaseColor(shader, techLevel, 1F);
+                shader.getModelMatUniform().glUniformMatrix4f(mat);
+                submit(collector);
 
                 poseStack.popPose();
             }
@@ -224,22 +270,21 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
     public class CoreGemModelPart extends ChestpieceModelPart {
         private final ToolShader shader;
 
-        public CoreGemModelPart(CCModel model, RenderType baseType, ToolShader shader) {
+        public CoreGemModelPart(CCModel model, BCRenderType baseType, ToolShader shader) {
             super(model, baseType, shader);
             this.shader = shader;
         }
 
         @Override
-        public void render(PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedOverlay, float r, float g, float b, float a) {
+        public void render(PoseStack poseStack, SubmitNodeCollector collector, int packedLight, int packedOverlay, float r, float g, float b, float a) {
             if (this.visible) {
                 poseStack.pushPose();
                 this.translateAndRotate(poseStack);
                 Matrix4 mat = new Matrix4(poseStack);
                 int color = shieldColour;
-                renderType.withCallback(() -> {
-                    shader.getBaseColorUniform().glUniform4f(((color >> 16) & 0xFF) / 255F, ((color >> 8) & 0xFF) / 255F, (color & 0xFF) / 255F, ((color >> 24) & 0xFF) / 255F);
-                    shader.getModelMatUniform().glUniformMatrix4f(mat);
-                }).draw(buffers);
+                shader.getBaseColorUniform().glUniform4f(((color >> 16) & 0xFF) / 255F, ((color >> 8) & 0xFF) / 255F, (color & 0xFF) / 255F, ((color >> 24) & 0xFF) / 255F);
+                shader.getModelMatUniform().glUniformMatrix4f(mat);
+                submit(collector);
 
                 poseStack.popPose();
             }
@@ -249,24 +294,23 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
     public class ShieldModelPart extends ChestpieceModelPart {
         private final ShieldShader shader;
 
-        public ShieldModelPart(CCModel model, RenderType baseType, ShieldShader shader) {
+        public ShieldModelPart(CCModel model, BCRenderType baseType, ShieldShader shader) {
             super(model, baseType, shader);
             this.shader = shader;
         }
 
         @Override
-        public void render(PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedOverlay, float r, float g, float b, float a) {
+        public void render(PoseStack poseStack, SubmitNodeCollector collector, int packedLight, int packedOverlay, float r, float g, float b, float a) {
             if (shieldState > 0) {
                 poseStack.pushPose();
                 this.translateAndRotate(poseStack);
                 Matrix4 mat = new Matrix4(poseStack);
                 int color = shieldColour;
                 float state = shieldState;
-                renderType.withCallback(() -> {
-                    shader.getBaseColourUniform().glUniform4f(((color >> 16) & 0xFF) / 255F, ((color >> 8) & 0xFF) / 255F, (color & 0xFF) / 255F, ((color >> 24) & 0xFF) / 255F);
-                    shader.getActivationUniform().glUniform1f(state);
-                    shader.getModelMatUniform().glUniformMatrix4f(mat);
-                }).draw(buffers);
+                shader.getBaseColourUniform().glUniform4f(((color >> 16) & 0xFF) / 255F, ((color >> 8) & 0xFF) / 255F, (color & 0xFF) / 255F, ((color >> 24) & 0xFF) / 255F);
+                shader.getActivationUniform().glUniform1f(state);
+                shader.getModelMatUniform().glUniformMatrix4f(mat);
+                submit(collector);
 
                 poseStack.popPose();
             }
