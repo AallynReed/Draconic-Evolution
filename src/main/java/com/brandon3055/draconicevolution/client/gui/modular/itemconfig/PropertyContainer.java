@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.client.gui.modular.itemconfig;
 import codechicken.lib.gui.modular.elements.*;
 import codechicken.lib.gui.modular.lib.Constraints;
 import codechicken.lib.gui.modular.lib.ForegroundRender;
+import codechicken.lib.gui.modular.lib.GuiRender;
 import codechicken.lib.gui.modular.lib.TextState;
 import codechicken.lib.gui.modular.lib.geometry.Axis;
 import codechicken.lib.gui.modular.lib.geometry.GeoParam;
@@ -199,13 +200,13 @@ public class PropertyContainer extends GuiManipulable {
                 .bindSliderWidth()
                 .bindSliderLength();
 
-        GuiButton toggleHidden = ConfigurableItemGui.TOOLKIT.createIconButton(root, 8, () -> BCGuiTextures.getThemed(collapsed ? "expand_content" : "collapse_content").get())
+        GuiButton toggleHidden = ConfigurableItemGui.TOOLKIT.createIconButton(root, 8, () -> BCGuiTextures.getThemed(collapsed ? "expand_content" : "collapse_content"))
                 .setEnabled(isGroup)
                 .onPress(this::toggleCollapsed)
                 .setTooltipSingle(() -> presetMode ? Component.translatable("gui.draconicevolution.item_config.edit_preset.info") : Component.translatable("gui.draconicevolution.item_config." + (collapsed ? "expand_group" : "collapse_group") + ".info"));
         Constraints.placeInside(toggleHidden, root, Constraints.LayoutPos.TOP_LEFT, 2, 2);
 
-        GuiButton dragZone = ConfigurableItemGui.TOOLKIT.createIconButton(root, 8, () -> Minecraft.getInstance().hasShiftDown() ? BCGuiTextures.get("dark/copy").get() : Minecraft.getInstance().hasControlDown() ? BCGuiTextures.get("delete").get() : BCGuiTextures.getThemed("reposition").get())
+        GuiButton dragZone = ConfigurableItemGui.TOOLKIT.createIconButton(root, 8, () -> Minecraft.getInstance().hasShiftDown() ? BCGuiTextures.get("dark/copy") : Minecraft.getInstance().hasControlDown() ? BCGuiTextures.get("delete") : BCGuiTextures.getThemed("reposition"))
                 .setTooltip(() -> isMoving() ? Collections.emptyList() : Collections.singletonList(Component.translatable(Minecraft.getInstance().hasShiftDown() ? "gui.draconicevolution.item_config.copy_group.info" : Minecraft.getInstance().hasControlDown() ? "gui.draconicevolution.item_config.delete_group.info" : "gui.draconicevolution.item_config.move_group.info")))
                 .onClick(() -> {
                     if (Minecraft.getInstance().hasShiftDown()) {
@@ -318,7 +319,7 @@ public class PropertyContainer extends GuiManipulable {
                     for (PropertyContainer element : gui.propertyContainers) {
                         if (element == this) continue;
                         Rectangle other = element.getContentElement().getRectangle();
-                        if (!isGroup && MathHelper.isInRect(other.x() + 8, other.y() + 8, other.width() - 16, other.height() - 16, mouseX, mouseY)) {
+                        if (!isGroup && GuiRender.isInRect(other.x() + 8, other.y() + 8, other.width() - 16, other.height() - 16, mouseX, mouseY)) {
                             dropTarget = element;
                             dropTargetElement = element.propertyElements.stream()
                                     .filter(GuiElement::isMouseOver)
@@ -346,7 +347,7 @@ public class PropertyContainer extends GuiManipulable {
                 if (element == this) continue;
                 Rectangle other = element.getContentElement().getRectangle();
                 if (newPos.intersects(other) && !prevBounds.intersects(other)) {
-                    if (!isGroup && MathHelper.isInRect(other.x() + 8, other.y() + 8, other.width() - 16, other.height() - 16, getModularGui().computeMouseX(), getModularGui().computeMouseY())) {
+                    if (!isGroup && GuiRender.isInRect(other.x() + 8, other.y() + 8, other.width() - 16, other.height() - 16, getModularGui().computeMouseX(), getModularGui().computeMouseY())) {
                         setPos((int) originalPos.x(), (int) originalPos.y());
                         return;
                     }
@@ -483,7 +484,7 @@ public class PropertyContainer extends GuiManipulable {
         });
 
         //TODO I think this is redundant?
-        GuiButton dragZone = ConfigurableItemGui.TOOLKIT.createIconButton(element, 8, () -> Minecraft.getInstance().hasShiftDown() ? BCGuiTextures.get("dark/copy").get() : Minecraft.getInstance().hasControlDown() ? BCGuiTextures.get("delete").get() : BCGuiTextures.get("reposition_gray").get())
+        GuiButton dragZone = ConfigurableItemGui.TOOLKIT.createIconButton(element, 8, () -> Minecraft.getInstance().hasShiftDown() ? BCGuiTextures.get("dark/copy") : Minecraft.getInstance().hasControlDown() ? BCGuiTextures.get("delete") : BCGuiTextures.get("reposition_gray"))
                 .setTooltip(() -> isMoving() ? Collections.emptyList() : Collections.singletonList(Component.translatable(Minecraft.getInstance().hasShiftDown() ? "gui.draconicevolution.item_config.copy_group.info" : Minecraft.getInstance().hasControlDown() ? "gui.draconicevolution.item_config.delete_group.info" : "gui.draconicevolution.item_config.move_group.info")));
         Constraints.placeInside(dragZone, element, Constraints.LayoutPos.TOP_RIGHT, -1, 1);
 
@@ -941,19 +942,20 @@ public class PropertyContainer extends GuiManipulable {
         }
 
         @Override
-        public void renderInFront(GuiGraphicsExtractor render, double mouseX, double mouseY, float partialTicks) {
+        public void renderInFront(GuiGraphicsExtractor graphics, double mouseX, double mouseY, float partialTicks) {
+            GuiRender render = GuiRender.convert(graphics);
             if (dropTarget != null) {
                 if (dropTargetElement != null) {
                     Rectangle rect = dropTargetElement.getRectangle();
                     if (mouseY < rect.y() + (rect.height() / 2D)) {
-                        render.cc$fillGradientV(rect.x(), rect.y(), rect.x() + rect.width(), rect.y() + 6, 0xFF00FF00, 0x0000FF00);
+                        render.gradientFillV(rect.x(), rect.y(), rect.x() + rect.width(), rect.y() + 6, 0xFF00FF00, 0x0000FF00);
                     } else {
-                        render.cc$fillGradientV(rect.x(), rect.y() + rect.height() - 6, rect.x() + rect.width(), rect.y() + rect.height(), 0x0000FF00, 0xFF00FF00);
+                        render.gradientFillV(rect.x(), rect.y() + rect.height() - 6, rect.x() + rect.width(), rect.y() + rect.height(), 0x0000FF00, 0xFF00FF00);
                     }
                 } else {
                     GuiElement<?> ce = dropTarget.getContentElement();
-                    render.cc$fillGradientV(ce.xMin() + 3, ce.yMin() + 13, ce.xMax() - 3, ce.yMin() + 15, 0xFF00FF00, 0x0000FF00);
-                    render.cc$fillGradientV(ce.xMin() + 3, ce.yMax() - 6, ce.xMax() - 3, ce.yMax() - 3, 0x0000FF00, 0xFF00FF00);
+                    render.gradientFillV(ce.xMin() + 3, ce.yMin() + 13, ce.xMax() - 3, ce.yMin() + 15, 0xFF00FF00, 0x0000FF00);
+                    render.gradientFillV(ce.xMin() + 3, ce.yMax() - 6, ce.xMax() - 3, ce.yMax() - 3, 0x0000FF00, 0xFF00FF00);
                 }
             }
         }

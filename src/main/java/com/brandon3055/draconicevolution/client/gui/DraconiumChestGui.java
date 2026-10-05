@@ -128,7 +128,7 @@ public class DraconiumChestGui extends ContainerGuiProvider<DraconiumChestMenu> 
                 .setTooltipSingle(() -> TOOLKIT.translate("feed." + tile.smeltingLogic.feedMode.get().localKey() + ".info"));
         Constraints.size(feedButton, 18, 18);
         Constraints.placeOutside(feedButton, furnaceIn, Constraints.LayoutPos.MIDDLE_LEFT, -3, 0);
-        Constraints.bind(new GuiTexture(feedButton, () -> DEGuiTextures.get(tile.smeltingLogic.feedMode.get().getSprite()).get()), feedButton, 1);
+        Constraints.bind(new GuiTexture(feedButton, () -> DEGuiTextures.get(tile.smeltingLogic.feedMode.get().getSprite())), feedButton, 1);
 
         feedButton.onPress(() -> {
             GuiListDialog<FeedMode> dialog = GuiListDialog.<FeedMode>createNoSearch(furnaceContainer)

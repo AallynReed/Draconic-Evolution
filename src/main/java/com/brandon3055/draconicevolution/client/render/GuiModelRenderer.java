@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.client.render;
 
+import codechicken.lib.gui.modular.lib.GuiRender;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -11,6 +12,7 @@ import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
 import net.neoforged.neoforge.client.event.RegisterPictureInPictureRenderersEvent;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2f;
+import org.joml.Matrix4f;
 
 /**
  * Renders 3D models into a GUI area, in GUI coordinates (z towards the viewer), as the old GuiRender buffers allowed.
@@ -25,8 +27,13 @@ public class GuiModelRenderer extends PictureInPictureRenderer<GuiModelRenderer.
         event.register(State.class, GuiModelRenderer::new);
     }
 
-    public static void submit(GuiGraphicsExtractor graphics, int x0, int y0, int x1, int y1, ModelRender render) {
-        Matrix3x2f pose = new Matrix3x2f(graphics.pose());
+    /**
+     * Bounds and model are in {@code guiRender.pose()} space.
+     */
+    public static void submit(GuiRender guiRender, int x0, int y0, int x1, int y1, ModelRender render) {
+        GuiGraphicsExtractor graphics = guiRender.guiGraphics();
+        Matrix4f m = guiRender.pose().last().pose();
+        Matrix3x2f pose = new Matrix3x2f(graphics.pose()).mul(new Matrix3x2f(m.m00(), m.m01(), m.m10(), m.m11(), m.m30(), m.m31()));
         ScreenRectangle scissor = graphics.peekScissorStack();
         ScreenRectangle bounds = new ScreenRectangle(x0, y0, x1 - x0, y1 - y0).transformMaxBounds(pose);
         graphics.submitPictureInPictureRenderState(new State(render, x0, y0, x1, y1, pose, scissor, scissor != null ? scissor.intersection(bounds) : bounds));

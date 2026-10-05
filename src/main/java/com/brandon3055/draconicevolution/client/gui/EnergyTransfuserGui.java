@@ -5,6 +5,7 @@ import codechicken.lib.gui.modular.ModularGuiContainer;
 import codechicken.lib.gui.modular.elements.*;
 import codechicken.lib.gui.modular.lib.Constraints;
 import codechicken.lib.gui.modular.lib.ForegroundRender;
+import codechicken.lib.gui.modular.lib.GuiRender;
 import codechicken.lib.gui.modular.lib.container.ContainerGuiProvider;
 import codechicken.lib.gui.modular.lib.container.ContainerScreenAccess;
 import codechicken.lib.gui.modular.lib.geometry.Direction;
@@ -86,7 +87,7 @@ public class EnergyTransfuserGui extends ContainerGuiProvider<TransfuserMenu> {
                     .onPress(() -> tile.ioModes[fi].set(tile.ioModes[fi].get().nextMode(true)), GuiButton.RIGHT_CLICK);
             Constraints.size(button, 16, 16);
             Constraints.placeOutside(button, slot, Constraints.LayoutPos.TOP_CENTER, 0, -1);
-            Constraints.bind(new GuiTexture(button, () -> DEGuiTextures.get(tile.ioModes[fi].get().getSpriteName()).get()), button);
+            Constraints.bind(new GuiTexture(button, () -> DEGuiTextures.get(tile.ioModes[fi].get().getSpriteName())), button);
 
             var energyBar = TOOLKIT.createEnergyBar(root, null);
             energyBar.container()
@@ -107,7 +108,7 @@ public class EnergyTransfuserGui extends ContainerGuiProvider<TransfuserMenu> {
                 .setTooltipSingle(() -> TOOLKIT.translate(tile.balancedMode.get() ? "balanced_charge" : "sequential_charge"))
                 .onPress(() -> tile.balancedMode.invert());
         Constraints.size(modeButton, 20, 20);
-        Constraints.bind(new GuiTexture(modeButton, () -> DEGuiTextures.get("transfuser/" + (tile.balancedMode.get() ? "balanced_charge" : "sequential_charge")).get()), modeButton, 1);
+        Constraints.bind(new GuiTexture(modeButton, () -> DEGuiTextures.get("transfuser/" + (tile.balancedMode.get() ? "balanced_charge" : "sequential_charge"))), modeButton, 1);
     }
 
     private static class SlotLetter extends GuiElement<SlotLetter> implements ForegroundRender {
@@ -121,12 +122,13 @@ public class EnergyTransfuserGui extends ContainerGuiProvider<TransfuserMenu> {
         }
 
         @Override
-        public void renderInFront(GuiGraphicsExtractor render, double mouseX, double mouseY, float partialTicks) {
-            render.pose().pushMatrix();
-            render.pose().translate((float) (xMin() + (index == 0 ? 5 : index == 2 ? 7 : 4)), (float) (yMin() + 2));
-            render.pose().scale(2, 2);
-            render.cc$drawString(font(), RenderTileEnergyTransfuser.TEXT[index].getVisualOrderText(), 0, 0, tile.ioModes[index].get().getColour(), false);
-            render.pose().popMatrix();
+        public void renderInFront(GuiGraphicsExtractor graphics, double mouseX, double mouseY, float partialTicks) {
+            GuiRender render = GuiRender.convert(graphics);
+            render.pose().pushPose();
+            render.pose().translate(xMin() + (index == 0 ? 5 : index == 2 ? 7 : 4), yMin() + 2, 0);
+            render.pose().scale(2, 2, 2);
+            render.drawString(RenderTileEnergyTransfuser.TEXT[index].getVisualOrderText(), 0, 0, tile.ioModes[index].get().getColour(), false);
+            render.pose().popPose();
         }
     }
 

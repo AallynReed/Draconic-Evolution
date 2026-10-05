@@ -5,6 +5,7 @@ import codechicken.lib.gui.modular.ModularGuiContainer;
 import codechicken.lib.gui.modular.elements.*;
 import codechicken.lib.gui.modular.lib.ColourState;
 import codechicken.lib.gui.modular.lib.Constraints;
+import codechicken.lib.gui.modular.lib.GuiRender;
 import codechicken.lib.gui.modular.lib.TextState;
 import codechicken.lib.gui.modular.lib.container.ContainerGuiProvider;
 import codechicken.lib.gui.modular.lib.container.ContainerScreenAccess;
@@ -337,8 +338,9 @@ public class EnergyCoreGui extends ContainerGuiProvider<EnergyCoreMenu> {
         Supplier<Integer> borderEndColor = () -> (borderColour.get() & 0xFEFEFE) >> 1 | borderColour.get() & 0xFF000000;
         return new GuiRectangle(parent) {
             @Override
-            public void renderBehind(GuiGraphicsExtractor render, double mouseX, double mouseY, float partialTicks) {
-                render.cc$tooltipBackground(xMin(), yMin(), xSize(), ySize(), backgroundColour, backgroundColour, borderColour.get(), borderEndColor.get(), false);
+            public void renderBehind(GuiGraphicsExtractor graphics, double mouseX, double mouseY, float partialTicks) {
+                GuiRender render = GuiRender.convert(graphics);
+                render.toolTipBackground(xMin(), yMin(), xSize(), ySize(), backgroundColour, backgroundColour, borderColour.get(), borderEndColor.get(), false);
             }
         };
     }

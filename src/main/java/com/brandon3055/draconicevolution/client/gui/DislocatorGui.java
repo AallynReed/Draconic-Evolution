@@ -2,12 +2,12 @@ package com.brandon3055.draconicevolution.client.gui;
 
 import codechicken.lib.gui.modular.ModularGui;
 import codechicken.lib.gui.modular.ModularGuiScreen;
-import codechicken.lib.gui.modular.SpriteSupplier;
 import codechicken.lib.gui.modular.elements.*;
 import codechicken.lib.gui.modular.lib.*;
 import codechicken.lib.gui.modular.lib.geometry.Align;
 import codechicken.lib.gui.modular.lib.geometry.Axis;
 import codechicken.lib.gui.modular.lib.geometry.Direction;
+import codechicken.lib.gui.modular.sprite.Material;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.BCConfig;
 import com.brandon3055.brandonscore.client.BCGuiTextures;
@@ -23,7 +23,6 @@ import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
@@ -358,7 +357,7 @@ public class DislocatorGui implements GuiProvider {
                     TOOLKIT.translate("drag_to_move").withStyle(GRAY)
             ));
 
-            lock = TOOLKIT.createIconButton(this, 8, 8, () -> DEGuiTextures.get("dislocator/" + (isLocked() ? "locked" : "unlocked")).get())
+            lock = TOOLKIT.createIconButton(this, 8, 8, () -> DEGuiTextures.get("dislocator/" + (isLocked() ? "locked" : "unlocked")))
                     .setTooltip(TOOLKIT.translate("edit_lock.info"))
                     .constrain(LEFT, relative(get(RIGHT), -9))
                     .constrain(TOP, relative(get(TOP), 2))
@@ -460,7 +459,8 @@ public class DislocatorGui implements GuiProvider {
         }
 
         @Override
-        public void renderBehind(GuiGraphicsExtractor render, double mouseX, double mouseY, float partialTicks) {
+        public void renderBehind(GuiGraphicsExtractor graphics, double mouseX, double mouseY, float partialTicks) {
+            GuiRender render = GuiRender.convert(graphics);
             boolean selected = false;
             boolean hovered = false;
             if (hasTarget() && (dragging || !draggingTarget)) {
@@ -470,12 +470,12 @@ public class DislocatorGui implements GuiProvider {
                 selected = index == selectedIndex;
             }
 
-            SpriteSupplier mat = DEGuiTextures.get("dislocator/slot");
-            SpriteSupplier matSelect = DEGuiTextures.get("dislocator/slot_selected");
+            Material mat = DEGuiTextures.get("dislocator/slot");
+            Material matSelect = DEGuiTextures.get("dislocator/slot_selected");
 
-            render.cc$blitSprite(RenderPipelines.GUI_TEXTURED, (selected ? matSelect : mat).get(), xMin(), yMin(), xSize(), ySize());
+            render.texRect((selected ? matSelect : mat), xMin(), yMin(), xSize(), ySize());
             if ((hovered && !selected)) {
-                render.cc$blitSprite(RenderPipelines.GUI_TEXTURED, matSelect.get(), xMin(), yMin(), xSize(), ySize(), 0x30FFFFFF);
+                render.texRect(matSelect, xMin(), yMin(), xSize(), ySize(), 0x30FFFFFF);
             }
 //
 //            if (lock.isMouseOver() || (delete.isEnabled() && delete.isMouseOver())) {
@@ -484,21 +484,22 @@ public class DislocatorGui implements GuiProvider {
         }
 
         @Override
-        public boolean renderOverlay(GuiGraphicsExtractor render, double mouseX, double mouseY, float partialTicks, boolean consumed) {
+        public boolean renderOverlay(GuiGraphicsExtractor graphics, double mouseX, double mouseY, float partialTicks, boolean consumed) {
+            GuiRender render = GuiRender.convert(graphics);
             if (dragging) {
                 double yPos = MathHelper.clip(mouseY - 6, getParent().yMin(), getParent().yMax() - 12);
                 TargetElement hovered = getHovered();
                 if (hovered != null) {
                     double y = mouseY > hovered.yMin() + (hovered.ySize() / 2) ? hovered.yMax() : hovered.yMin() - 1;
-                    render.cc$fill(xMin(), y, xMin() + xSize(), y + 3, 0x6000FF00);
+                    render.rect(xMin(), y, xSize(), 3, 0x6000FF00);
                 }
 
-                render.cc$blitSprite(RenderPipelines.GUI_TEXTURED, DEGuiTextures.get("dislocator/slot_selected").get(), xMin(), yPos, xSize(), ySize(), 0x60FFFFFF);
+                render.texRect(DEGuiTextures.get("dislocator/slot_selected"), xMin(), yPos, xSize(), ySize(), 0x60FFFFFF);
                 return true;
             } else if (draggingTarget) {
                 return false;
             }
-            return super.renderOverlay(render, mouseX, mouseY, partialTicks, consumed);
+            return super.renderOverlay(graphics, mouseX, mouseY, partialTicks, consumed);
         }
 
         private TargetElement getHovered() {

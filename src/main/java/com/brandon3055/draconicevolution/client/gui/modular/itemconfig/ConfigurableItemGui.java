@@ -4,6 +4,7 @@ import codechicken.lib.gui.modular.ModularGui;
 import codechicken.lib.gui.modular.ModularGuiContainer;
 import codechicken.lib.gui.modular.elements.*;
 import codechicken.lib.gui.modular.lib.Constraints;
+import codechicken.lib.gui.modular.lib.GuiRender;
 import codechicken.lib.gui.modular.lib.container.ContainerGuiProvider;
 import codechicken.lib.gui.modular.lib.container.ContainerScreenAccess;
 import codechicken.lib.gui.modular.lib.geometry.Axis;
@@ -353,19 +354,20 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
         }
     }
 
-    private void renderSlotOverlay(Slot slot, Position pos, GuiGraphicsExtractor render) {
+    private void renderSlotOverlay(Slot slot, Position pos, GuiGraphicsExtractor graphics) {
+        GuiRender render = GuiRender.convert(graphics);
         ItemStack stack = slot.getItem();
         PropertyProvider provider = DECapabilities.getHost(stack);
         if (!stack.isEmpty() && provider != null) {
             int light = 0xFFfbe555;
             int dark = 0xFFf45905;
-            render.cc$shadedRect(pos.x() - 1, pos.y() - 1, 18, 18, 1, dark, light, 0);
+            render.shadedRect(pos.x() - 1, pos.y() - 1, 18, 18, 1, dark, light, 0);
             if (!advancedUI && provider.getIdentity().equals(menu.getSelectedIdentity())) {
-                render.cc$fill(pos.x(), pos.y(), pos.x() + 16, pos.y() + 16, 0x80FF0000);
+                render.rect(pos.x(), pos.y(), 16, 16, 0x80FF0000);
             } else if (DEConfig.configUiEnableVisualization && hoveredData != null) {
                 ConfigProperty prop = hoveredData.getPropIfApplicable(provider);
                 if (prop != null) {
-                    render.cc$fill(pos.x(), pos.y(), pos.x() + 16, pos.y() + 16, hoveredData.doesDataMatch(prop) ? 0x8000FF00 : 0x80ff9100);
+                    render.rect(pos.x(), pos.y(), 16, 16, hoveredData.doesDataMatch(prop) ? 0x8000FF00 : 0x80ff9100);
                 }
             }
 
@@ -376,8 +378,8 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
             }
 
         } else {
-//            render.cc$fill(pos.x() - 1, pos.y() - 1, pos.x() - 1 + 18, pos.y() - 1 + 18, 0xB0000000);
-            render.cc$fill(pos.x() - 1, pos.y() - 1, pos.x() - 1 + 18, pos.y() - 1 + 18, darkMode ? 0xB0000000 : 0xA0FFFFFF);
+//            render.rect(pos.x() - 1, pos.y() - 1, 18, 18, 0xB0000000);
+            render.rect(pos.x() - 1, pos.y() - 1, 18, 18, darkMode ? 0xB0000000 : 0xA0FFFFFF);
         }
     }
 
@@ -504,10 +506,10 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
             return tick >= 10;
         }
 
-        public void render(double x, double y, GuiGraphicsExtractor render) {
+        public void render(double x, double y, GuiRender render) {
             if (!isFinished()) {
                 float offset = (tick / 10F) * 8;
-                render.cc$fill(x + offset, y + offset, x + 16 - offset, y + 16 - offset, 0x5000FFFF);
+                render.fill(x + offset, y + offset, x + 16 - offset, y + 16 - offset, 0x5000FFFF);
             }
         }
     }

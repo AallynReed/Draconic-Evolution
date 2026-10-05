@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
+import codechicken.lib.gui.modular.lib.GuiRender;
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
@@ -23,9 +24,9 @@ import com.brandon3055.draconicevolution.client.render.GuiModelRenderer;
 import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.DepthStencilState;
 import com.mojang.blaze3d.platform.CompareOp;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -159,7 +160,7 @@ public class RenderTileReactorCore implements DETileRenderer<TileReactorCore>, B
         collector.cc$submitCCRS(mat, REACTOR_SHIELD_TYPE.withCurrentUniforms(), (m, ccrs) -> model.render(ccrs, m));
     }
 
-    public static void renderGUI(GuiGraphicsExtractor render, TileReactorCore te) {
+    public static void renderGUI(GuiRender render, TileReactorCore te) {
         double diameter = 100;
         float t = (float) (te.temperature.get() / TileReactorCore.MAX_TEMPERATURE);
         float intensity = t <= 0.2 ? (float) MathUtils.map(t, 0, 0.2, 0, 0.3) : t <= 0.8 ? (float) MathUtils.map(t, 0.2, 0.8, 0.3, 1) : (float) MathUtils.map(t, 0.8, 1, 1, 1.3);
@@ -167,8 +168,8 @@ public class RenderTileReactorCore implements DETileRenderer<TileReactorCore>, B
         float shieldPower = (float) (te.maxShieldCharge.get() > 0 ? te.shieldCharge.get() / te.maxShieldCharge.get() : 0);
         Minecraft mc = Minecraft.getInstance();
         float partialTicks = mc.getDeltaTracker().getGameTimeDeltaPartialTick(false);
-        GuiModelRenderer.submit(render, (int) -diameter, (int) -diameter, (int) diameter, (int) diameter, (poseStack, buffers) -> {
-            Matrix4 mat = new Matrix4(poseStack);
+        GuiModelRenderer.submit(render, (int) -diameter, (int) -diameter, (int) diameter, (int) diameter, (pose, buffers) -> {
+            Matrix4 mat = new Matrix4(pose);
             mat.scale(diameter);
             mat.rotate((TimeKeeper.getClientTick() + partialTicks) / 400F, Vector3.Y_POS);
             CCRenderState ccrs = CCRenderState.instance();

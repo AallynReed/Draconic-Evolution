@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.client.gui;
 import codechicken.lib.gui.modular.elements.GuiElement;
 import codechicken.lib.gui.modular.lib.BackgroundRender;
 import codechicken.lib.gui.modular.lib.Constraints;
+import codechicken.lib.gui.modular.lib.GuiRender;
 import codechicken.lib.gui.modular.lib.geometry.GuiParent;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.api.TechLevel;
@@ -92,12 +93,13 @@ public class ModuleGridPanel extends GuiElement<ModuleGridPanel> implements Back
     }
 
     @Override
-    public void renderBehind(GuiGraphicsExtractor render, double mouseX, double mouseY, float partialTicks) {
+    public void renderBehind(GuiGraphicsExtractor graphics, double mouseX, double mouseY, float partialTicks) {
+        GuiRender render = GuiRender.convert(graphics);
         double fadeAlpha = MathHelper.clip((animState - 0.1) * 1.1, 0, 1);
         int backgroundCol = 0x100010 | (int) (0xf0 * fadeAlpha) << 24;
         int borderCol = colour | (int) (0xB0 * fadeAlpha) << 24;
         int borderColorEnd = (borderCol & 0xFEFEFE) >> 1 | borderCol & 0xFF000000;
-        render.cc$tooltipBackground(xMin(), yMin(), xSize(), ySize(), backgroundCol, backgroundCol, borderCol, borderColorEnd, false);
+        render.toolTipBackground(xMin(), yMin(), xSize(), ySize(), backgroundCol, borderCol, borderColorEnd);
     }
 
     public enum GridPos {

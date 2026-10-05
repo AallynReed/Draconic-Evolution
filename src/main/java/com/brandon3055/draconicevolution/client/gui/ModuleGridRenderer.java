@@ -2,9 +2,9 @@ package com.brandon3055.draconicevolution.client.gui;
 
 import codechicken.lib.gui.modular.elements.GuiElement;
 import codechicken.lib.gui.modular.lib.BackgroundRender;
+import codechicken.lib.gui.modular.lib.GuiRender;
 import codechicken.lib.gui.modular.lib.geometry.Constraint;
 import codechicken.lib.gui.modular.lib.geometry.GuiParent;
-import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.BCConfig;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit.Palette;
 import com.brandon3055.brandonscore.client.render.RenderUtils;
@@ -20,7 +20,6 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.ARGB;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerInput;
@@ -62,29 +61,31 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> implement
     }
 
     @Override
-    public void renderBehind(GuiGraphicsExtractor render, double mouseX, double mouseY, float partialTicks) {
+    public void renderBehind(GuiGraphicsExtractor graphics, double mouseX, double mouseY, float partialTicks) {
+        GuiRender render = GuiRender.convert(graphics);
         int light = Palette.BG.accentLight();
         int dark = Palette.BG.accentDark();
         int fill = Palette.BG.fill();
         if (renderBorder) {
-            render.cc$shadedRect(xMin() - 2, yMin() - 2, xSize() + 4, ySize() + 4, 1, light, dark, fill);
-            render.cc$shadedRect(xMin() - 1, yMin() - 1, xSize() + 2, ySize() + 2, 1, dark, light, fill);
+            render.shadedRect(xMin() - 2, yMin() - 2, xSize() + 4, ySize() + 4, 1, light, dark, fill);
+            render.shadedRect(xMin() - 1, yMin() - 1, xSize() + 2, ySize() + 2, 1, dark, light, fill);
         }
-        render.cc$fill(xMin(), yMin(), xMax(), yMax(), ARGB.average(light, dark));
+        render.rect(xMin(), yMin(), xSize(), ySize(), GuiRender.midColour(light, dark));
 
         int s = grid.getCellSize();
         for (int x = 0; x < grid.getWidth(); x++) {
             for (int y = 0; y < grid.getHeight(); y++) {
                 int xPos = (int) xMin() + (x * s);
                 int yPos = (int) yMin() + (y * s);
-                renderCell(render, xPos, yPos, s, x, y, mouseX, mouseY, MathHelper.isInRect(xPos, yPos, s, s, mouseX, mouseY), partialTicks);
+                renderCell(render, xPos, yPos, s, x, y, mouseX, mouseY, GuiRender.isInRect(xPos, yPos, s, s, mouseX, mouseY), partialTicks);
             }
         }
     }
 
     @Override
-    public boolean renderOverlay(GuiGraphicsExtractor render, double mouseX, double mouseY, float partialTicks, boolean consumed) {
-        if (consumed) return super.renderOverlay(render, mouseX, mouseY, partialTicks, consumed);
+    public boolean renderOverlay(GuiGraphicsExtractor graphics, double mouseX, double mouseY, float partialTicks, boolean consumed) {
+        GuiRender render = GuiRender.convert(graphics);
+        if (consumed) return super.renderOverlay(graphics, mouseX, mouseY, partialTicks, consumed);
 
         for (ModuleEntity<?> entity : grid.container.getModuleHost().getModuleEntities()) {
             int cs = grid.getCellSize();
@@ -92,16 +93,16 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> implement
             int mh = entity.getHeight() * cs;
             int x = (int) xMin() + (entity.getGridX() * cs);
             int y = (int) yMin() + (entity.getGridY() * cs);
-            boolean mouseOver = MathHelper.isInRect(x, y, mw, mh, mouseX, mouseY) && isMouseOver();
+            boolean mouseOver = GuiRender.isInRect(x, y, mw, mh, mouseX, mouseY) && isMouseOver();
             if (entity.renderModuleOverlay(this, grid.container.getModuleContext(), render, x, y, mw, mh, mouseX, mouseY, partialTicks, mouseOver ? hoverTime : 0)) {
                 return true;
             }
         }
 
-        return super.renderOverlay(render, mouseX, mouseY, partialTicks, consumed);
+        return super.renderOverlay(graphics, mouseX, mouseY, partialTicks, consumed);
     }
 
-    public void renderCell(GuiGraphicsExtractor render, int x, int y, int size, int cellX, int cellY, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
+    public void renderCell(GuiRender render, int x, int y, int size, int cellX, int cellY, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
         ModuleGrid.GridPos cell = grid.getCell(grid.container.getModuleHost(), cellX, cellY);
         if (cell.hasEntity()) {
             ModuleEntity<?> entity = cell.getEntity();
@@ -112,14 +113,14 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> implement
                 entity.renderModule(this, render, x, y, mw, mh, mouseX, mouseY, false, partialTicks);
             }
         } else {
-            render.cc$fill(x + 1, y + 1, x + size - 1, y + size - 1, BCConfig.darkMode ? 0xFF808080 : 0xFF505050);
+            render.rect(x + 1, y + 1, size - 2, size - 2, BCConfig.darkMode ? 0xFF808080 : 0xFF505050);
             if (mouseOver) {
-                render.cc$fill(x, y, x + size, y + size, 0x50FFFFFF);
+                render.rect(x, y, size, size, 0x50FFFFFF);
             }
         }
     }
 
-    public boolean renderStackOverride(GuiGraphicsExtractor render, ItemStack stack, int x, int y, String altText) {
+    public boolean renderStackOverride(GuiRender render, ItemStack stack, int x, int y, String altText) {
         x += 8;
         y += 8;
         if (isMouseOver()) {//GuiRender.isInRect(getModularGui().xMin(), getModularGui().yMin(), getModularGui().xSize(), getModularGui().ySize(), x + getModularGui().xMin(), y + getModularGui().yMin())) {
@@ -131,13 +132,13 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> implement
                 int mh = module.getProperties().getHeight() * cs;
 
 
-                render.pose().pushMatrix();
+                render.pose().pushPose();
                 entity.renderModule(this, render, x - (mw / 2), y - (mh / 2), mw, mh, x, y, true, RenderUtils.partialTick());
                 if (stack.getCount() > 1 || altText != null) {
                     String s = altText == null ? String.valueOf(stack.getCount()) : altText;
-                    render.cc$drawString(font(), s, (float) (x - font().width(s)) + (mw / 2F) + 1, (float) (y - font().lineHeight) + (mh / 2F) + 2, 0xffffff, true);
+                    render.drawString(s, (float) (x - font().width(s)) + (mw / 2F) + 1, (float) (y - font().lineHeight) + (mh / 2F) + 2, 0xffffff, true);
                 }
-                render.pose().popMatrix();
+                render.pose().popPose();
                 return true;
             }
         }

@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.client.gui.modular.itemconfig;
 import codechicken.lib.gui.modular.elements.*;
 import codechicken.lib.gui.modular.lib.BackgroundRender;
 import codechicken.lib.gui.modular.lib.Constraints;
+import codechicken.lib.gui.modular.lib.GuiRender;
 import codechicken.lib.gui.modular.lib.SliderState;
 import codechicken.lib.gui.modular.lib.geometry.Axis;
 import codechicken.lib.gui.modular.lib.geometry.GuiParent;
@@ -108,7 +109,7 @@ public class PropertyElement extends GuiElement<PropertyElement> {
         valueLabel.setTextSupplier(() -> Component.literal(data.displayValue).withStyle(valueLabel.isMouseOver() ? AQUA : DARK_AQUA));
 
         if (advanced && data.propUniqueName == null) {
-            GuiButton globalButton = ConfigurableItemGui.TOOLKIT.createIconButton(this, 8, 8, () -> BCGuiTextures.get(data.isGlobal ? "dark/global_icon" : "dark/global_icon_inactive").get())
+            GuiButton globalButton = ConfigurableItemGui.TOOLKIT.createIconButton(this, 8, 8, () -> BCGuiTextures.get(data.isGlobal ? "dark/global_icon" : "dark/global_icon_inactive"))
                     .setTooltip(Component.translatable("gui.draconicevolution.item_config.global.info"))
                     .onPress(() -> data.toggleGlobal());
             Constraints.placeInside(globalButton, this, Constraints.LayoutPos.TOP_LEFT, 1, 1);
@@ -304,13 +305,14 @@ public class PropertyElement extends GuiElement<PropertyElement> {
         }
 
         @Override
-        public void renderBehind(GuiGraphicsExtractor render, double mouseX, double mouseY, float partialTicks) {
+        public void renderBehind(GuiGraphicsExtractor graphics, double mouseX, double mouseY, float partialTicks) {
+            GuiRender render = GuiRender.convert(graphics);
             if (slider != null && (slider.isDragging() || slider.isMouseOver())) {
-                render.cc$fill(xMin(), yMin(), xMin() + xSize(), yMin() + ySize(), 0x60475b6a);
+                render.rect(xMin(), yMin(), xSize(), ySize(), 0x60475b6a);
             }
-            render.cc$fill(xMin(), yMin() + (ySize() / 2F) - 1, xMin() + xSize(), yMin() + (ySize() / 2F) - 1 + 2, 0xFF808080);
-            render.cc$fill(xMin(), yMin(), xMin() + 1, yMin() + ySize(), 0xFF808080);
-            render.cc$fill(xMin() + xSize() - 1, yMin(), xMin() + xSize() - 1 + 1, yMin() + ySize(), 0xFF808080);
+            render.rect(xMin(), yMin() + (ySize() / 2F) - 1, xSize(), 2, 0xFF808080);
+            render.rect(xMin(), yMin(), 1, ySize(), 0xFF808080);
+            render.rect(xMin() + xSize() - 1, yMin(), 1, ySize(), 0xFF808080);
         }
     }
 }

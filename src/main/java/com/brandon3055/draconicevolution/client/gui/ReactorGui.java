@@ -4,6 +4,7 @@ import codechicken.lib.gui.modular.ModularGui;
 import codechicken.lib.gui.modular.ModularGuiContainer;
 import codechicken.lib.gui.modular.elements.*;
 import codechicken.lib.gui.modular.lib.Constraints;
+import codechicken.lib.gui.modular.lib.GuiRender;
 import codechicken.lib.gui.modular.lib.SliderState;
 import codechicken.lib.gui.modular.lib.container.ContainerGuiProvider;
 import codechicken.lib.gui.modular.lib.container.ContainerScreenAccess;
@@ -283,12 +284,13 @@ public class ReactorGui extends ContainerGuiProvider<ReactorMenu> {
         //Core Render
         GuiTexture coreBg = new GuiTexture(root, DEGuiTextures.get("reactor/core")) {
             @Override
-            public void renderBehind(GuiGraphicsExtractor render, double mouseX, double mouseY, float partialTicks) {
-                super.renderBehind(render, mouseX, mouseY, partialTicks);
-                render.pose().pushMatrix();
-                render.pose().translate((float) xCenter(), (float) yCenter());
+            public void renderBehind(GuiGraphicsExtractor graphics, double mouseX, double mouseY, float partialTicks) {
+                GuiRender render = GuiRender.convert(graphics);
+                super.renderBehind(graphics, mouseX, mouseY, partialTicks);
+                render.pose().pushPose();
+                render.pose().translate(xCenter(), yCenter(), 100);
                 RenderTileReactorCore.renderGUI(render, tile);
-                render.pose().popMatrix();
+                render.pose().popPose();
             }
         };
         Constraints.size(coreBg, 128, 128);

@@ -5,6 +5,7 @@ import codechicken.lib.gui.modular.ModularGuiContainer;
 import codechicken.lib.gui.modular.elements.*;
 import codechicken.lib.gui.modular.lib.BackgroundRender;
 import codechicken.lib.gui.modular.lib.Constraints;
+import codechicken.lib.gui.modular.lib.GuiRender;
 import codechicken.lib.gui.modular.lib.container.ContainerGuiProvider;
 import codechicken.lib.gui.modular.lib.container.ContainerScreenAccess;
 import codechicken.lib.gui.modular.lib.geometry.Direction;
@@ -128,18 +129,17 @@ public class GeneratorGui extends ContainerGuiProvider<GeneratorMenu> {
         }
 
         @Override
-        public void renderBehind(GuiGraphicsExtractor render, double mouseX, double mouseY, float partialTicks) {
-            double mx = (((mouseX - getModularGui().xMin()) / (float) getModularGui().xSize()) - 0.5F) * .1F;
-            double my = (((mouseY - getModularGui().yMin()) / (float) getModularGui().ySize()) - 0.5F) * .1F;
-            double x = xMin() + 90;
-            double y = yMin() + 45;
-            GuiModelRenderer.submit(render, (int) xMin(), (int) yMin(), (int) xMax(), (int) yMax(), (poseStack, buffers) -> {
+        public void renderBehind(GuiGraphicsExtractor graphics, double mouseX, double mouseY, float partialTicks) {
+            GuiRender render = GuiRender.convert(graphics);
+            GuiModelRenderer.submit(render, (int) xMin(), (int) yMin(), (int) xMax(), (int) yMax(), (pose, buffers) -> {
                 CCRenderState ccrs = CCRenderState.instance();
                 ccrs.reset();
                 ccrs.bind(modelType, buffers);
 
-                Matrix4 mat = new Matrix4(poseStack);
-                mat.translate(x, y, 50);
+                Matrix4 mat = new Matrix4(pose);
+                mat.translate(xMin() + 90, yMin() + 45, 50);
+                double mx = (((mouseX - getModularGui().xMin()) / (float) getModularGui().xSize()) - 0.5F) * .1F;
+                double my = (((mouseY - getModularGui().yMin()) / (float) getModularGui().ySize()) - 0.5F) * .1F;
                 mat.apply(new Rotation(150 * MathHelper.torad, 1, 0, 0).with(new Rotation(10 * MathHelper.torad, -my, 1 + mx, 0)));
                 mat.scale(7.5);
                 storageModel.render(ccrs, mat);
