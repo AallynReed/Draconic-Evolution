@@ -168,7 +168,7 @@ public class LootEventHandler {
     }
 
     private static boolean canEntityDropSoul(LivingEntity entity) {
-        if (entity.getType().is(Tags.EntityTypes.BOSSES) && !DEConfig.allowBossSouls) {
+        if (entity.is(Tags.EntityTypes.BOSSES) && !DEConfig.allowBossSouls) {
             return false;
         }
         //noinspection DataFlowIssue
