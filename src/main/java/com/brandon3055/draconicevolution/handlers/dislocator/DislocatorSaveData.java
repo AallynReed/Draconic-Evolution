@@ -1,15 +1,17 @@
 package com.brandon3055.draconicevolution.handlers.dislocator;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.items.tools.BoundDislocator;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -20,7 +22,7 @@ import java.util.UUID;
  * Created by brandon3055 on 28/8/21
  */
 public class DislocatorSaveData extends SavedData {
-    private static final String FILE_NAME = "draconic_dislocator_data";
+    public static final SavedDataType<DislocatorSaveData> TYPE = new SavedDataType<>(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "dislocator_data"), DislocatorSaveData::new, CompoundTag.CODEC.xmap(DislocatorSaveData::load, DislocatorSaveData::save));
 
     private Map<UUID, Map<UUID, DislocatorTarget>> linkTargetMap = new HashMap<>();
 
@@ -74,13 +76,13 @@ public class DislocatorSaveData extends SavedData {
         if (world instanceof ServerLevel && world.getServer() != null) {
             ServerLevel level = world.getServer().getLevel(Level.OVERWORLD);
             if (level != null) {
-                return level.getDataStorage().computeIfAbsent(new Factory<>(DislocatorSaveData::new, DislocatorSaveData::load), FILE_NAME);
+                return level.getDataStorage().computeIfAbsent(TYPE);
             }
         }
         return null;
     }
 
-    public static DislocatorSaveData load(CompoundTag nbt, HolderLookup.Provider provider) {
+    public static DislocatorSaveData load(CompoundTag nbt) {
         DislocatorSaveData data = new DislocatorSaveData();
         ListTag linkList = nbt.getListOrEmpty("link_map");
         for (Tag lnbt : linkList) {
@@ -98,8 +100,8 @@ public class DislocatorSaveData extends SavedData {
         return data;
     }
 
-    @Override
-    public CompoundTag save(CompoundTag nbt, HolderLookup.Provider provider) {
+    private CompoundTag save() {
+        CompoundTag nbt = new CompoundTag();
         ListTag linkList = new ListTag();
         for (UUID linkID : linkTargetMap.keySet()) {
             Map<UUID, DislocatorTarget> targetMap = linkTargetMap.get(linkID);
