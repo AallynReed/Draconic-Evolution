@@ -114,7 +114,7 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
             Magnet.toggleEnabled(stack, player);
             boolean enabled = Magnet.isEnabled(stack);
 //            ChatHelper.sendIndexed(player, new TranslationTextComponent("item_dislocate.draconicevolution." + (enabled ? "activate" : "deactivate")), 567);
-            player.displayClientMessage(Component.translatable("item_dislocate.draconicevolution." + (enabled ? "activate" : "deactivate")).withStyle(enabled ? ChatFormatting.GREEN : ChatFormatting.RED), true);
+            player.sendOverlayMessage(Component.translatable("item_dislocate.draconicevolution." + (enabled ? "activate" : "deactivate")).withStyle(enabled ? ChatFormatting.GREEN : ChatFormatting.RED));
         }
     }
 
