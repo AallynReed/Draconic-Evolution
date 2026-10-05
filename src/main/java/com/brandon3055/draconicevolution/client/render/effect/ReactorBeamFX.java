@@ -15,7 +15,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.Direction;
@@ -43,11 +43,12 @@ public class ReactorBeamFX extends Particle {
     private int boltSeed = -1;
     private int ttl = 10;
 
-    public static RenderType REACTOR_BEAM_TYPE = RenderType.create(MODID + "beam_type", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.TRIANGLE_STRIP, 256, false, true, RenderType.CompositeState.builder()
-            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-            .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.reactorBeamShader))
-            .setCullState(RenderStateShard.NO_CULL)
-            .createCompositeState(false)
+    public static RenderType REACTOR_BEAM_TYPE = DEShaders.reactorBeamShader.renderType(MODID + "beam_type", RenderSetup.builder(DEShaders.reactorBeamShader.pipeline("beam_type", builder -> builder
+                    .withCull(false)
+                    .withVertexFormat(DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.TRIANGLE_STRIP)))
+            .bufferSize(256)
+            .sortOnUpload()
+            .createRenderSetup()
     );
 
     public ReactorBeamFX(ClientLevel worldIn, Vec3D pos, Direction facing, TileReactorCore tile, boolean isInjectorEffect) {
@@ -82,7 +83,6 @@ public class ReactorBeamFX extends Particle {
         ttl = 10;
     }
 
-    @Override
     public void render(VertexConsumer b, Camera renderInfo, float partialTicks) {
         if (tile.roller != null || true) {
             return;
@@ -95,7 +95,7 @@ public class ReactorBeamFX extends Particle {
         BufferSource buffers = Minecraft.getInstance().renderBuffers().bufferSource();
         VertexConsumer buffer = bindBuffer(ccrs, buffers);
 
-        Vec3 viewVec = renderInfo.getPosition();
+        Vec3 viewVec = renderInfo.position();
         Vec3D pos1 = new Vec3D(x - viewVec.x, y - viewVec.y, z - viewVec.z).offset(facing, -0.35D);
 
         float coreSize = (float) tile.getCoreDiameter() / 2.3F;
@@ -175,7 +175,7 @@ public class ReactorBeamFX extends Particle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
+    public ParticleRenderType getGroup() {
         return FX_HANDLER;
     }
 

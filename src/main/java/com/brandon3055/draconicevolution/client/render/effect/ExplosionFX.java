@@ -5,10 +5,6 @@ import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.RenderUtils;
 import codechicken.lib.render.model.OBJParser;
-import codechicken.lib.render.shader.ShaderObject;
-import codechicken.lib.render.shader.ShaderProgram;
-import codechicken.lib.render.shader.ShaderProgramBuilder;
-import codechicken.lib.render.shader.UniformType;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Scale;
@@ -17,16 +13,15 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.DEShaders;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.handlers.DESounds;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.Identifier;
@@ -36,10 +31,10 @@ import net.minecraft.world.phys.Vec3;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
-import static net.minecraft.client.renderer.RenderStateShard.COLOR_WRITE;
 
 /**
  * Created by brandon3055 on 12/02/2017.
@@ -51,30 +46,19 @@ public class ExplosionFX extends Particle {
     private LinkedList<EffectPart> effectParts = new LinkedList<>();
     private static final Random rand = new Random();
 
-    private static final RenderStateShard.DepthTestStateShard DISABLE_DEPTH = new RenderStateShard.DepthTestStateShard("none", 519) {
-        @Override
-        public void setupRenderState() {
-            RenderSystem.disableDepthTest();
-        }
-    };
-
-    public static RenderType EXPLOSION_TYPE = RenderType.create(MODID + ":explosion_shader", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-            .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.explosionShader))
-            .setCullState(RenderStateShard.NO_CULL)
-            .setWriteMaskState(COLOR_WRITE)
-            .setDepthTestState(DISABLE_DEPTH)
-            .createCompositeState(false)
+    public static RenderType EXPLOSION_TYPE = DEShaders.explosionShader.renderType(MODID + ":explosion_shader", RenderSetup.builder(DEShaders.explosionShader.pipeline("explosion_shader", builder -> builder
+                    .withCull(false)
+                    .withDepthStencilState(Optional.empty())))
+            .bufferSize(256)
+            .sortOnUpload()
+            .createRenderSetup()
     );
 
 
-    public static RenderType FOG_TYPE = RenderType.create(MODID + ":explosion_fog", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-                    .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getPositionColorShader))
-                    .setCullState(RenderStateShard.NO_CULL)
-                    .setWriteMaskState(COLOR_WRITE)
-//          .setDepthTestState(DISABLE_DEPTH)
-                    .createCompositeState(false)
+    public static RenderType FOG_TYPE = RenderType.create(MODID + ":explosion_fog", RenderSetup.builder(RenderPipelines.DEBUG_QUADS)
+            .bufferSize(256)
+            .sortOnUpload()
+            .createRenderSetup()
     );
 
     static {
@@ -135,9 +119,8 @@ public class ExplosionFX extends Particle {
         this.age++;
     }
 
-    @Override
     public void render(VertexConsumer b, Camera renderInfo, float partialTicks) {
-        Vec3 viewVec = renderInfo.getPosition();
+        Vec3 viewVec = renderInfo.position();
         Vector3 pos = new Vector3(x - viewVec.x, y - viewVec.y, z - viewVec.z);
 
         CCRenderState ccrs = CCRenderState.instance();
@@ -176,7 +159,7 @@ public class ExplosionFX extends Particle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
+    public ParticleRenderType getGroup() {
         return FX_HANDLER;
     }
 
