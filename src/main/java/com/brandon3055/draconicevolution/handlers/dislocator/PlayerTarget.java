@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.handlers.dislocator;
 
 import com.brandon3055.brandonscore.utils.TargetPos;
 import com.brandon3055.draconicevolution.items.tools.BoundDislocator;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -53,14 +54,14 @@ public class PlayerTarget extends DislocatorTarget {
 
     @Override
     public CompoundTag save(CompoundTag nbt) {
-        nbt.putUUID("player_id", playerID);
+        nbt.store("player_id", UUIDUtil.CODEC, playerID);
         return super.save(nbt);
     }
 
     @Override
     protected void loadInternal(CompoundTag nbt) {
         super.loadInternal(nbt);
-        playerID = nbt.getUUID("player_id");
+        playerID = nbt.read("player_id", UUIDUtil.CODEC).orElseThrow();
     }
 
     @Override

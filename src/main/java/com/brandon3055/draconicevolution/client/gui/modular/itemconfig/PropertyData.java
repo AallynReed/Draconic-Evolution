@@ -17,6 +17,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
@@ -307,10 +308,10 @@ public class PropertyData {
     public CompoundTag serialize(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
         nbt.putByte("type", (byte) type.ordinal());
-        nbt.putUUID("prov_id", providerID);
+        nbt.store("prov_id", UUIDUtil.CODEC, providerID);
         nbt.putString("prov_name", providerName);
         if (propUniqueName != null) {
-            nbt.putUUID("prop_name", propUniqueName);
+            nbt.store("prop_name", UUIDUtil.CODEC, propUniqueName);
         } else {
             nbt.putString("prop_name", propName);
         }
@@ -355,17 +356,17 @@ public class PropertyData {
 
     @Nullable
     public static PropertyData deserialize(CompoundTag nbt, HolderLookup.Provider provider) {
-        if (!nbt.hasUUID("prov_id") || !nbt.contains("prov_name") || (!nbt.contains("prop_name") && !nbt.hasUUID("prop_name")) || !nbt.contains("type")) {
+        if (!nbt.read("prov_id", UUIDUtil.CODEC).isPresent() || !nbt.contains("prov_name") || (!nbt.contains("prop_name") && !nbt.read("prop_name", UUIDUtil.CODEC).isPresent()) || !nbt.contains("type")) {
             return null;
         }
 
         PropertyData data = new PropertyData(
-                nbt.getUUID("prov_id"),
+                nbt.read("prov_id", UUIDUtil.CODEC).orElseThrow(),
                 nbt.getString("prov_name"),
                 Type.getSafe(nbt.getByteOr("type", (byte) 0)));
 
-        if (nbt.hasUUID("prop_name")) {
-            data.propUniqueName = nbt.getUUID("prop_name");
+        if (nbt.read("prop_name", UUIDUtil.CODEC).isPresent()) {
+            data.propUniqueName = nbt.read("prop_name", UUIDUtil.CODEC).orElseThrow();
         } else {
             data.propName = nbt.getStringOr("prop_name", "");
         }
@@ -410,7 +411,7 @@ public class PropertyData {
 //                }
 //                if (nbt.contains("name_values")) {
 //                    CompoundTag nameValues = nbt.getCompound("name_values");
-//                    data.enumDisplayValues = nameValues.getAllKeys().stream().collect(Collectors.toMap(Utils::parseInt, nameValues::getString));
+//                    data.enumDisplayValues = nameValues.keySet().stream().collect(Collectors.toMap(Utils::parseInt, nameValues::getString));
 //                }
 //            }
         }

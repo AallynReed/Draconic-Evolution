@@ -12,6 +12,7 @@ import com.brandon3055.draconicevolution.init.DEModules;
 import com.brandon3055.draconicevolution.init.ItemData;
 import net.covers1624.quack.collection.FastStream;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
@@ -186,7 +187,7 @@ public class SimpleModuleHost implements ModuleHost, INBTSerializable<CompoundTa
         var result = ModuleEntity.CODEC.listOf().encodeStart(ops, moduleEntities);
         CompoundTag nbt = new CompoundTag();
         result.ifSuccess(tag -> nbt.put("modules", tag));
-        nbt.putUUID("identity", getIdentity());
+        nbt.store("identity", UUIDUtil.CODEC, getIdentity());
         return nbt;
     }
 
@@ -200,9 +201,7 @@ public class SimpleModuleHost implements ModuleHost, INBTSerializable<CompoundTa
             ModuleEntity.CODEC.listOf().parse(ops, modules).ifSuccess(moduleEntities::addAll);
 
         }
-        if (nbt.hasUUID("identity")) {
-            identity = nbt.getUUID("identity");
-        }
+        nbt.read("identity", UUIDUtil.CODEC).ifPresent(uuid -> identity = uuid);
     }
 
     public void saveData(DataComponentAccessor.Setter setter) {

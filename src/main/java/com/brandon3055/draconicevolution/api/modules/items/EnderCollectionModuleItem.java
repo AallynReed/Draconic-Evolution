@@ -10,6 +10,7 @@ import com.brandon3055.draconicevolution.init.ItemData;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -72,7 +73,7 @@ public class EnderCollectionModuleItem extends ModuleItem<NoData> {
         tagCompound.putInt("left", frequency.left().getWoolMeta());
         tagCompound.putInt("middle", frequency.middle().getWoolMeta());
         tagCompound.putInt("right", frequency.right().getWoolMeta());
-        frequency.owner().ifPresent(uuid -> tagCompound.putUUID("owner", uuid));
+        frequency.owner().ifPresent(uuid -> tagCompound.store("owner", UUIDUtil.CODEC, uuid));
         frequency.ownerName().ifPresent(component -> tagCompound.putString("owner_name", Component.Serializer.toJson(component, provider)));
         return tagCompound;
     }

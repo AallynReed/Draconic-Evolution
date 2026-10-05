@@ -16,8 +16,8 @@ import com.google.common.collect.Sets;
 import com.google.common.collect.Streams;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -364,11 +364,11 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
     public void write(CompoundTag nbt) {
         super.write(nbt);
         if (guardianUniqueId != null) {
-            nbt.putUUID("guardian", guardianUniqueId);
+            nbt.store("guardian", UUIDUtil.CODEC, guardianUniqueId);
         }
 
         nbt.putBoolean("guardian_killed", guardianKilled);
-        nbt.put("arena_origin", NbtUtils.writeBlockPos(arenaOrigin));
+        nbt.store("arena_origin", BlockPos.CODEC, arenaOrigin);
         if (respawnState != null) {
             nbt.putBoolean("respawning", true);
         }
@@ -377,11 +377,9 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
     @Override
     public void read(CompoundTag nbt) {
         super.read(nbt);
-        if (nbt.hasUUID("guardian")) {
-            guardianUniqueId = nbt.getUUID("guardian");
-        }
+        nbt.read("guardian", UUIDUtil.CODEC).ifPresent(uuid -> guardianUniqueId = uuid);
         guardianKilled = nbt.getBooleanOr("guardian_killed", false);
-        arenaOrigin = NbtUtils.readBlockPos(nbt, "arena_origin").orElse(arenaOrigin);
+        arenaOrigin = nbt.read("arena_origin", BlockPos.CODEC).orElse(arenaOrigin);
         validPlayer = EntitySelector.ENTITY_STILL_ALIVE.and(EntitySelector.withinDistance(arenaOrigin.getX(), arenaOrigin.getY(), arenaOrigin.getZ(), 192.0D));
         if (nbt.getBooleanOr("respawning", false)) {
             respawnState = GuardianSpawnState.START_WAIT_FOR_PLAYER;

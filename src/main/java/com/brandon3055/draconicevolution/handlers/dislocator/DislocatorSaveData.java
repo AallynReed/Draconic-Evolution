@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.handlers.dislocator;
 
 import com.brandon3055.draconicevolution.items.tools.BoundDislocator;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -84,12 +85,12 @@ public class DislocatorSaveData extends SavedData {
         ListTag linkList = nbt.getListOrEmpty("link_map");
         for (Tag lnbt : linkList) {
             CompoundTag linkNBT = (CompoundTag) lnbt;
-            UUID linkID = linkNBT.getUUID("link_id");
+            UUID linkID = linkNBT.read("link_id", UUIDUtil.CODEC).orElseThrow();
             ListTag targetList = linkNBT.getListOrEmpty("targets");
             Map<UUID, DislocatorTarget> targetMap = data.linkTargetMap.computeIfAbsent(linkID, uuid -> new HashMap<>());
             for (Tag tnbt : targetList) {
                 CompoundTag targetNBT = (CompoundTag) tnbt;
-                UUID targetID = targetNBT.getUUID("target_id");
+                UUID targetID = targetNBT.read("target_id", UUIDUtil.CODEC).orElseThrow();
                 DislocatorTarget target = DislocatorTarget.load(targetNBT);
                 targetMap.put(targetID, target);
             }
@@ -103,13 +104,13 @@ public class DislocatorSaveData extends SavedData {
         for (UUID linkID : linkTargetMap.keySet()) {
             Map<UUID, DislocatorTarget> targetMap = linkTargetMap.get(linkID);
             CompoundTag linkNBT = new CompoundTag();
-            linkNBT.putUUID("link_id", linkID);
+            linkNBT.store("link_id", UUIDUtil.CODEC, linkID);
 
             ListTag targetList = new ListTag();
             for (UUID targetID : targetMap.keySet()) {
                 DislocatorTarget target = targetMap.get(targetID);
                 CompoundTag targetNBT = new CompoundTag();
-                targetNBT.putUUID("target_id", targetID);
+                targetNBT.store("target_id", UUIDUtil.CODEC, targetID);
                 target.save(targetNBT);
                 targetList.add(targetNBT);
             }

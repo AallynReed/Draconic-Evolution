@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.handlers.dislocator;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.utils.TargetPos;
 import com.brandon3055.draconicevolution.items.tools.BoundDislocator;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -63,13 +64,13 @@ public class GroundTarget extends DislocatorTarget {
     protected void loadInternal(CompoundTag nbt) {
         super.loadInternal(nbt);
         entityPos = Vector3.fromNBT(nbt);
-        entityUUID = nbt.getUUID("entity_uuid");
+        entityUUID = nbt.read("entity_uuid", UUIDUtil.CODEC).orElseThrow();
     }
 
     @Override
     public CompoundTag save(CompoundTag nbt) {
         entityPos.writeToNBT(nbt);
-        nbt.putUUID("entity_uuid", entityUUID);
+        nbt.store("entity_uuid", UUIDUtil.CODEC, entityUUID);
         return super.save(nbt);
     }
 
