@@ -233,8 +233,8 @@ public class DraconicNetwork {
 
     public static void sendChunkRelight(LevelChunk chunk) {
         new PacketCustom(CHANNEL_NAME, C_CHUNK_RELIGHT, chunk.getLevel().registryAccess())
-                .writeInt(chunk.getPos().x)
-                .writeInt(chunk.getPos().z)
+                .writeInt(chunk.getPos().x())
+                .writeInt(chunk.getPos().z())
                 .sendToChunk((ServerLevel) chunk.getLevel(), chunk.getPos());
     }
 

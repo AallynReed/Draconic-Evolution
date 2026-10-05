@@ -27,7 +27,7 @@ public class EndIslandDensityFunctionMixin {
         int z = pZ / 2;
         ChunkPos chunkPos = new ChunkPos(x, z);
         ChunkPos closestSpawn = ChaosIslandFeature.getClosestSpawn(chunkPos);
-        if (closestSpawn.x == 0 && closestSpawn.z == 0) return;
+        if (closestSpawn.x() == 0 && closestSpawn.z() == 0) return;
         ChaosIslandFeature.overrideHeightValue(chunkPos, closestSpawn, cir.getReturnValue(), cir::setReturnValue);
     }
 }

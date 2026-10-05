@@ -35,7 +35,7 @@ public class TheEndBiomeSourceMixin {
         int z = QuartPos.toBlock(pZ);
         ChunkPos chunkPos = new ChunkPos(x / 16, z / 16);
         ChunkPos closestSpawn = ChaosIslandFeature.getClosestSpawn(chunkPos);
-        if (closestSpawn.x == 0 && closestSpawn.z == 0) return;
+        if (closestSpawn.x() == 0 && closestSpawn.z() == 0) return;
         if (ChaosIslandFeature.overrideBiome(chunkPos, closestSpawn)) {
             cir.setReturnValue(this.end);
         }

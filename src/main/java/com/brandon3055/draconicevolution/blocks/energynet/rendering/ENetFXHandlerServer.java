@@ -54,7 +54,7 @@ public class ENetFXHandlerServer<T extends BlockEntity & IENetEffectTile> extend
         ServerLevel serverWorld = ((ServerLevel) tile.getLevel());
 
         if (serverWorld != null) {
-            serverWorld.getChunkSource().chunkMap.getPlayers(new ChunkPos(tile.getBlockPos()), false).forEach(player -> CrystalUpdateBatcher.queData(update, player));
+            serverWorld.getChunkSource().chunkMap.getPlayers(ChunkPos.containing(tile.getBlockPos()), false).forEach(player -> CrystalUpdateBatcher.queData(update, player));
         }
     }
 }

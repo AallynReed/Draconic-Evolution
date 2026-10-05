@@ -92,7 +92,7 @@ public class ExplosionHelper {
     }
 
     private LevelChunk getChunk(BlockPos pos) {
-        ChunkPos cp = new ChunkPos(pos);
+        ChunkPos cp = ChunkPos.containing(pos);
         if (!chunkCache.containsKey(cp)) {
             chunkCache.put(cp, serverWorld.getChunk(pos.getX() >> 4, pos.getZ() >> 4));
         }
