@@ -32,6 +32,7 @@ import net.minecraft.network.chat.MessageSignature;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.neoforged.neoforge.client.settings.KeyModifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -632,7 +633,7 @@ public class PropertyContainer extends GuiManipulable {
             for (int i = 0; i < effectedItems.size(); i++) {
                 ItemStack stack = effectedItems.get(i);
                 Component stackComp = stack.getDisplayName().copy();
-                stackComp.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM, new HoverEvent.ItemStackInfo(stack)));
+                stackComp.getStyle().withHoverEvent(new HoverEvent.ShowItem(ItemStackTemplate.fromNonEmptyStack(stack)));
                 message.append(stackComp);
                 if (i < effectedItems.size() - 1) {
                     message.append(", ");
