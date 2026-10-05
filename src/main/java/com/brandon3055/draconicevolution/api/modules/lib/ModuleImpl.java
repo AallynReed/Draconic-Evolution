@@ -47,7 +47,7 @@ public class ModuleImpl<T extends ModuleData<T>> extends BaseModule<T> {
     public Item getItem() {
         if (moduleItem == null) {
             Identifier key = ModuleRegistry.getRegistry().getKey(this);
-            moduleItem = BuiltInRegistries.ITEM.get(Identifier.fromNamespaceAndPath(key.getNamespace(), "item_" + key.getPath()));
+            moduleItem = BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath(key.getNamespace(), "item_" + key.getPath()));
             if (moduleItem == Items.AIR) {
                 throw new IllegalStateException("Module item was not provided and no matching item was found in the item registry.");
             }

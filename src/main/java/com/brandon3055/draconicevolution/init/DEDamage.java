@@ -84,15 +84,15 @@ public class DEDamage {
     }
 
     private static DamageSource getSource(Level level, ResourceKey<DamageType> type, @Nullable Entity attacker) {
-        return new DamageSource(level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(type), attacker);
+        return new DamageSource(level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(type), attacker);
     }
 
     private static DamageSource getSource(Level level, ResourceKey<DamageType> type, @Nullable Entity projectile, @Nullable Entity owner) {
-        return new DamageSource(level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(type), projectile, owner);
+        return new DamageSource(level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(type), projectile, owner);
     }
 
     private static DamageSource getSource(Level level, ResourceKey<DamageType> type) {
-        return SOURCES.computeIfAbsent(type, e -> new DamageSource(level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(e)));
+        return SOURCES.computeIfAbsent(type, e -> new DamageSource(level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(e)));
     }
 
     public static class Tags {

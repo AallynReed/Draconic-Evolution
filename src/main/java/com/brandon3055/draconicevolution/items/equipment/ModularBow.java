@@ -108,9 +108,9 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
     }
 
     private boolean hasInfinity(Level level, ItemStack stack) {
-        Registry<Enchantment> reg = level.registryAccess().registry(Registries.ENCHANTMENT).orElse(null);
+        Registry<Enchantment> reg = level.registryAccess().lookup(Registries.ENCHANTMENT).orElse(null);
         if (reg != null) {
-            Holder<Enchantment> holder = reg.getHolder(Enchantments.INFINITY).orElse(null);
+            Holder<Enchantment> holder = reg.get(Enchantments.INFINITY).orElse(null);
             return holder != null && stack.getEnchantmentLevel(holder) > 0;
         }
         return false;

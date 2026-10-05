@@ -38,7 +38,7 @@ public class DECreativeTabs {
                                 sorted.sort(Identifier::compareNamespaced);
                                 for (Identifier key : sorted) {
                                     if (key.getNamespace().equals(MODID)) {
-                                        Block block = BuiltInRegistries.BLOCK.get(key);
+                                        Block block = BuiltInRegistries.BLOCK.getValue(key);
                                         if (block instanceof CustomTabHandling) continue;
                                         output.accept(block.asItem());
                                         blocksIcons.add(new ItemStack(block));
@@ -55,7 +55,7 @@ public class DECreativeTabs {
                                 sorted.sort(Identifier::compareNamespaced);
                                 for (Identifier key : sorted) {
                                     if (key.getNamespace().equals(MODID)) {
-                                        Item item = BuiltInRegistries.ITEM.get(key);
+                                        Item item = BuiltInRegistries.ITEM.getValue(key);
                                         if (item instanceof CustomTabHandling || item instanceof BlockItem || item instanceof ModuleItem) continue;
                                         output.accept(item);
                                         itemsIcons.add(new ItemStack(item));
@@ -72,7 +72,7 @@ public class DECreativeTabs {
                         sorted.sort(Identifier::compareNamespaced);
                         for (Identifier key : sorted) {
                             if (key.getNamespace().equals(MODID)) {
-                                Item item = BuiltInRegistries.ITEM.get(key);
+                                Item item = BuiltInRegistries.ITEM.getValue(key);
                                 if (!(item instanceof ModuleItem)) continue;
                                 output.accept(item);
                                 modulesIcons.add(new ItemStack(item));

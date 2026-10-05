@@ -80,7 +80,7 @@ public class MobSoul extends Item {
 
     @Override
     public Component getName(ItemStack stack) {
-        EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(getEntity(stack));
+        EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.getValue(getEntity(stack));
         return Component.translatable(type.getDescriptionId()).append(" ").append(super.getName(stack));
     }
 
@@ -110,7 +110,7 @@ public class MobSoul extends Item {
     public Entity createEntity(Level level, ItemStack stack) {
         try {
             CompoundTag entityData = getEntityData(stack);
-            EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(getEntity(stack));
+            EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.getValue(getEntity(stack));
             Entity entity;
 
             entity = type.create(level);
@@ -165,7 +165,7 @@ public class MobSoul extends Item {
             Level level = Minecraft.getInstance().level;
             Entity entity;
             try {
-                EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(name);
+                EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.getValue(name);
                 entity = type.create(level);
                 if (entity == null) {
                     entity = EntityType.PIG.create(level);

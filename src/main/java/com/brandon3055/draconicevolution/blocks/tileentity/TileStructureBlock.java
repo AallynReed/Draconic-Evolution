@@ -75,7 +75,7 @@ public class TileStructureBlock extends TileBCore implements IInteractTile {
     public Block getOriginalBlock() {
         Identifier name = blockName.get();
         if (name != null) {
-            return BuiltInRegistries.BLOCK.get(name);
+            return BuiltInRegistries.BLOCK.getValue(name);
         }
         return Blocks.AIR;
     }

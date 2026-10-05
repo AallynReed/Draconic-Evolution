@@ -87,7 +87,7 @@ public class StructureBlock extends EntityBlockBCore implements StructurePart, C
         if (tile instanceof TileStructureBlock structureTile) {
             Identifier blockName = structureTile.blockName.get();
             if (blockName != null) {
-                Block block = BuiltInRegistries.BLOCK.get(blockName);
+                Block block = BuiltInRegistries.BLOCK.getValue(blockName);
                 MultiBlockController controller = structureTile.getController();
                 world.removeBlock(pos, false);
                 if (block != Blocks.AIR && !player.getAbilities().instabuild) {
@@ -108,7 +108,7 @@ public class StructureBlock extends EntityBlockBCore implements StructurePart, C
         if (tile instanceof TileStructureBlock structureTile) {
             Identifier blockName = structureTile.blockName.get();
             if (blockName != null) {
-                Block block = BuiltInRegistries.BLOCK.get(blockName);
+                Block block = BuiltInRegistries.BLOCK.getValue(blockName);
                 return new ItemStack(block);
             }
         }
@@ -157,7 +157,7 @@ public class StructureBlock extends EntityBlockBCore implements StructurePart, C
         if (level.getBlockEntity(pos) instanceof TileStructureBlock tile) {
             Identifier name = tile.blockName.get();
             if (name != null) {
-                return BuiltInRegistries.BLOCK.get(name);
+                return BuiltInRegistries.BLOCK.getValue(name);
             }
         }
         return Blocks.AIR;

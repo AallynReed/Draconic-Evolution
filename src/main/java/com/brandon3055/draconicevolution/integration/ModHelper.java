@@ -42,7 +42,7 @@ public class ModHelper {
             return false;
         }
         else if (cleaver == null) {
-            cleaver = BuiltInRegistries.ITEM.get(Identifier.fromNamespaceAndPath("tconstruct", "cleaver"));
+            cleaver = BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath("tconstruct", "cleaver"));
         }
         return cleaver != null && HandHelper.getItem(player, cleaver) != null;
     }
@@ -52,7 +52,7 @@ public class ModHelper {
             return false;
         }
         else if (avaritiaSword == null) {
-            avaritiaSword = BuiltInRegistries.ITEM.get(Identifier.fromNamespaceAndPath("avaritia", "infinity_sword"));
+            avaritiaSword = BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath("avaritia", "infinity_sword"));
         }
 
         return avaritiaSword != null && !player.getMainHandItem().isEmpty() && player.getMainHandItem().getItem().equals(avaritiaSword);
@@ -63,7 +63,7 @@ public class ModHelper {
             return false;
         }
         else if (bedrockSword == null) {
-            bedrockSword =  BuiltInRegistries.ITEM.get(Identifier.fromNamespaceAndPath("rotarycraft", "rotarycraft_item_bedsword"));
+            bedrockSword =  BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath("rotarycraft", "rotarycraft_item_bedsword"));
         }
 
         return bedrockSword != null && !player.getMainHandItem().isEmpty() && player.getMainHandItem().getItem().equals(bedrockSword);

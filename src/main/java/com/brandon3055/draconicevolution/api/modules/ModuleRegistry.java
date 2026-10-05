@@ -15,7 +15,7 @@ public class ModuleRegistry {
 
     public static Registry<Module<?>> getRegistry() {
         if (REGISTRY == null) {
-            REGISTRY = (Registry<Module<?>>) BuiltInRegistries.REGISTRY.get(Identifier.fromNamespaceAndPath("draconicevolution", "modules"));
+            REGISTRY = (Registry<Module<?>>) BuiltInRegistries.REGISTRY.getValue(Identifier.fromNamespaceAndPath("draconicevolution", "modules"));
         }
         return REGISTRY;
     }
