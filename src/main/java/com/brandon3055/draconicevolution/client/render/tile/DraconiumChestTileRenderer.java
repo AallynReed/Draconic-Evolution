@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
@@ -75,7 +76,7 @@ public class DraconiumChestTileRenderer implements DETileRenderer<TileDraconiumC
         collector.submitCustomGeometry(mStack, renderType, (pose, buffer) -> {
             PoseStack poseStack = new PoseStack();
             poseStack.last().set(pose);
-            this.render(poseStack, buffer, this.lid, this.lock, this.bottom, lidAngle, packedLight, packedOverlay, colour);
+            this.render(poseStack, buffer, this.lid, this.lock, this.bottom, lidAngle, packedLight, packedOverlay, ARGB.opaque(colour));
         });
         mStack.popPose();
     }
