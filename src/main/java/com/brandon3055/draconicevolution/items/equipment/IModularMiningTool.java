@@ -206,7 +206,7 @@ public interface IModularMiningTool extends IModularTieredItem {
 //            }
 
             if (player.getAbilities().instabuild) {
-                if (block.onDestroyedByPlayer(state, world, pos, player, false, fluidState)) {
+                if (block.onDestroyedByPlayer(state, world, pos, player, stack, false, fluidState)) {
                     block.destroy(world, pos, state);
                 }
             } else {
@@ -215,7 +215,7 @@ public interface IModularMiningTool extends IModularTieredItem {
                 extractEnergy(player, stack, EquipCfg.energyHarvest);
             }
         } else {
-            if (block.onDestroyedByPlayer(state, world, pos, player, true, fluidState)) {
+            if (block.onDestroyedByPlayer(state, world, pos, player, stack, true, fluidState)) {
                 block.destroy(world, pos, state);
             }
 
