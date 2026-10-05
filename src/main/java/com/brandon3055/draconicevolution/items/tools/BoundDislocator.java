@@ -24,13 +24,16 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * Created by brandon3055 on 16/07/2016.
@@ -223,7 +226,8 @@ public class BoundDislocator extends Dislocator {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flagIn) {
+        List<Component> tooltip = new ArrayList<>();
         if (stack.getItem() == DEContent.DISLOCATOR_P2P_UNBOUND.get()) {
             tooltip.add(Component.translatable("dislocate.draconicevolution.bound.click_to_link").withStyle(ChatFormatting.GREEN));
         } else if (stack.getItem() == DEContent.DISLOCATOR_PLAYER_UNBOUND.get()) {
@@ -235,6 +239,7 @@ public class BoundDislocator extends Dislocator {
                 tooltip.add(Component.translatable("dislocate.draconicevolution.bound.link_id").append(": ").append(String.valueOf(getLinkId(stack))).withStyle(ChatFormatting.BLUE));
             }
         }
+        tooltip.forEach(builder);
     }
 
     @Override

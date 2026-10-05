@@ -16,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.api.distmarker.Dist;
@@ -24,6 +25,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Created by brandon3055 on 9/3/2016.
@@ -160,7 +162,7 @@ public class Magnet extends Item /*implements IBauble*/ {
     @OnlyIn(Dist.CLIENT)
     @SuppressWarnings("unchecked")
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List list, TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag tooltipFlag) {
 //        list.add(StatCollector.translateToLocal("info.de.shiftRightClickToActivate.txt"));
 //        int range = stack.getItemDamage() == 0 ? 8 : 32;
 //        list.add(InfoHelper.HITC() + range + InfoHelper.ITC() + " " + StatCollector.translateToLocal("info.de.blockRange.txt"));

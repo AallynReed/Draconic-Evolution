@@ -13,11 +13,14 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.function.Supplier;
+import java.util.function.Consumer;
 
 /**
  * Created by covers1624 on 4/16/20.
@@ -54,14 +57,16 @@ public class ModuleItem<P extends ModuleData<P>> extends Item implements ModuleP
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
-        super.appendHoverText(stack, context, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flagIn) {
+        List<Component> tooltip = new ArrayList<>();
+        super.appendHoverText(stack, context, display, builder, flagIn);
         getModule().addInformation(tooltip, new LimitedModuleContext(stack, null, context.level(), null));
         ModuleEntity<?> entity = getModule().createEntity();
         if (context.level() != null) {
             entity.loadEntityFromStack(stack, new StackModuleContext(stack, null, null));
             entity.addToolTip(tooltip);
         }
+        tooltip.forEach(builder);
     }
 
 //    @Override

@@ -22,6 +22,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -30,6 +31,8 @@ import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.function.Consumer;
 
 /**
  * Created by brandon3055 on 16/07/2016.
@@ -145,7 +148,8 @@ public class Dislocator extends Item implements IHudItem {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flagIn) {
+        List<Component> tooltip = new ArrayList<>();
         TargetPos targetPos = getTargetPos(stack, context.level());
         if (targetPos == null) {
             tooltip.add(Component.translatable("dislocate.draconicevolution.un_set_info1").withStyle(ChatFormatting.RED));
@@ -158,6 +162,7 @@ public class Dislocator extends Item implements IHudItem {
             tooltip.add(Component.literal(ChatFormatting.WHITE + "{" + targetPos.getReadableName(flagIn.isAdvanced()) + "}"));
             tooltip.add(Component.translatable("dislocate.draconicevolution.uses_remain", stack.getMaxDamage() - stack.getDamageValue() + 1).withStyle(ChatFormatting.BLUE));
         }
+        tooltip.forEach(builder);
     }
 
     @Nullable

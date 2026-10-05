@@ -9,8 +9,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class EnergyModuleItem extends ModuleItem<EnergyData> {
@@ -24,8 +27,9 @@ public class EnergyModuleItem extends ModuleItem<EnergyData> {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
-        super.appendHoverText(stack, context, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flagIn) {
+        List<Component> tooltip = new ArrayList<>();
+        super.appendHoverText(stack, context, display, builder, flagIn);
         long energy = stack.getOrDefault(ItemData.ENERGY_MODULE_ENERGY, 0L);
 
         if (energy > 0) {
@@ -37,5 +41,6 @@ public class EnergyModuleItem extends ModuleItem<EnergyData> {
                     .append(Component.translatable("op.brandonscore." + (Minecraft.getInstance().hasShiftDown() ? "operational_potential" : "op")))
                     .withStyle(ChatFormatting.GRAY));
         }
+        tooltip.forEach(builder);
     }
 }

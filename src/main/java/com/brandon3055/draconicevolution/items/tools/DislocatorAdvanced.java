@@ -40,6 +40,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.PathComputationType;
@@ -54,6 +55,7 @@ import net.neoforged.neoforge.common.Tags;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.function.Consumer;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -223,7 +225,8 @@ public class DislocatorAdvanced extends Dislocator {
 
     @OnlyIn (Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flagIn) {
+        List<Component> tooltip = new ArrayList<>();
         DislocatorTarget selected = getSelected(stack);
         int fuel = getFuel(stack);
         if (selected != null) {
@@ -232,6 +235,7 @@ public class DislocatorAdvanced extends Dislocator {
         tooltip.add(Component.translatable("dislocate.draconicevolution.fuel").append(" " + fuel).withStyle(ChatFormatting.WHITE));
         tooltip.add(Component.translatable("dislocate.draconicevolution.to_open_gui").withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.ITALIC));
 //        tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.scroll_change_select").withStyle(TextFormatting.DARK_PURPLE, TextFormatting.ITALIC));
+        tooltip.forEach(builder);
     }
 
     @Override

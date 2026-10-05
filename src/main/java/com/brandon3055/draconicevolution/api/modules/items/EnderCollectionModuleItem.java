@@ -20,14 +20,17 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.function.Consumer;
 
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
@@ -95,8 +98,9 @@ public class EnderCollectionModuleItem extends ModuleItem<NoData> {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
-        super.appendHoverText(stack, context, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flagIn) {
+        List<Component> tooltip = new ArrayList<>();
+        super.appendHoverText(stack, context, display, builder, flagIn);
 
         CompoundTag tag = stack.getOrDefault(ItemData.ENDER_MODULE_FREQUENCY, CustomData.EMPTY).copyTag();
         if (ModHelper.ENDERSTORAGE && tag.contains("frequency")) {
@@ -106,6 +110,7 @@ public class EnderCollectionModuleItem extends ModuleItem<NoData> {
         tooltip.add(Component.translatable("module." + MODID + ".ender_storage.about").withStyle(ChatFormatting.DARK_GRAY));
         tooltip.add(Component.translatable("module." + MODID + ".ender_storage.about_compat").withStyle(ChatFormatting.DARK_GRAY));
         tooltip.add(Component.translatable("module." + MODID + ".ender_storage.about_compat2").withStyle(ChatFormatting.DARK_GRAY));
+        tooltip.forEach(builder);
     }
 
     private void addEnderStorageInfo(CompoundTag tagIn, List<Component> tooltip) {
