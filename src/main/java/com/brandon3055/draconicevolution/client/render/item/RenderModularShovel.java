@@ -6,7 +6,7 @@ import codechicken.lib.render.model.OBJParser;
 import codechicken.lib.vec.Matrix4;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -35,12 +35,12 @@ public class RenderModularShovel extends ToolRenderBase {
     }
 
     @Override
-    public void renderTool(CCRenderState ccrs, ItemStack stack, ItemDisplayContext context, Matrix4 mat, MultiBufferSource buffers, boolean gui) {
+    public void renderTool(CCRenderState ccrs, ItemStack stack, ItemDisplayContext context, Matrix4 mat, SubmitNodeCollector collector, boolean gui) {
         transform(mat, 0.27, 0.27, 0.5, gui ? 1.125 : 1.15);
-        basePart.render(context, buffers, mat);
-        materialPart.render(context, buffers, mat);
-        tracePart.render(context, buffers, mat);
-        gemPart.render(context, buffers, mat);
+        basePart.render(context, collector, mat);
+        materialPart.render(context, collector, mat);
+        tracePart.render(context, collector, mat);
+        gemPart.render(context, collector, mat);
     }
 
     //@formatter:off //This is not cursed at all! idk what your talking about!

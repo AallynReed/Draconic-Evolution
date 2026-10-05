@@ -4,11 +4,16 @@ import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
+import com.mojang.blaze3d.pipeline.DepthStencilState;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.platform.CompareOp;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.resources.Identifier;
 
@@ -19,13 +24,19 @@ import java.awt.*;
  */
 public class StaffModelEffect extends ModelEffect {
 
-    private static final RenderType renderType = RenderType.create("modelEffectType", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
-                    .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getPositionTexColorShader))
-                    .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/white_orb.png"), false, false))
-                    .setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)
-                    .setCullState(RenderStateShard.NO_CULL)
-                    .setWriteMaskState(RenderStateShard.COLOR_WRITE)
-                    .createCompositeState(false)
+    private static final RenderType renderType = RenderType.create("modelEffectType", RenderSetup.builder(RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET)
+                    .withLocation(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "pipeline/model_effect"))
+                    .withVertexShader("core/position_tex_color")
+                    .withFragmentShader("core/position_tex_color")
+                    .withSampler("Sampler0")
+                    .withColorTargetState(new ColorTargetState(BlendFunction.LIGHTNING))
+                    .withCull(false)
+                    .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS)
+                    .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))
+                    .build())
+            .withTexture("Sampler0", Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/white_orb.png"))
+            .bufferSize(256)
+            .createRenderSetup()
     );
 
     @Override

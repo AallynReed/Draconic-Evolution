@@ -1,27 +1,22 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
 import codechicken.lib.math.MathHelper;
-import codechicken.lib.model.PerspectiveModelState;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.model.OBJParser;
-import codechicken.lib.util.TransformUtils;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.modelfx.StaffModelEffect;
 import com.brandon3055.draconicevolution.items.equipment.ModularStaff;
-import com.google.common.collect.ImmutableMap;
-import com.mojang.math.Transformation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.resources.model.cuboid.ItemTransform;
+import net.minecraft.client.resources.model.cuboid.ItemTransforms;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -39,20 +34,20 @@ import java.util.Map;
 public class RenderModularStaff extends ToolRenderBase {
 
     private static final StaffModelEffect effectRenderer = new StaffModelEffect();
-    private static final PerspectiveModelState TRANSFORMATION;
+    private static final ItemTransforms TRANSFORMATION;
 
     static {
         // @formatter:off
-        Map<ItemDisplayContext, Transformation> map = new HashMap<>();
-        map.put(ItemDisplayContext.GROUND,                   TransformUtils.create(   0F,   2F,    0F, 0F,   0F,  0F,  0.5F));
-        map.put(ItemDisplayContext.FIXED,                    TransformUtils.create(   0F,   0F,    0F, 0F, 180F,  0F,    1F));
+        Map<ItemDisplayContext, ItemTransform> map = new HashMap<>();
+        map.put(ItemDisplayContext.GROUND,                   DEItemTransforms.create(   0F,   2F,    0F, 0F,   0F,  0F,  0.5F));
+        map.put(ItemDisplayContext.FIXED,                    DEItemTransforms.create(   0F,   0F,    0F, 0F, 180F,  0F,    1F));
 
-        map.put(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND,  TransformUtils.create(   0F,   1.5F,  -6.5F, 0F,  90F, -15F, 0.85F));
-        map.put(ItemDisplayContext.THIRD_PERSON_LEFT_HAND,   TransformUtils.create(   0F,   1.5F,  -6.5F, 0F, -90F,  15F, 0.85F));
+        map.put(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND,  DEItemTransforms.create(   0F,   1.5F,  -6.5F, 0F,  90F, -15F, 0.85F));
+        map.put(ItemDisplayContext.THIRD_PERSON_LEFT_HAND,   DEItemTransforms.create(   0F,   1.5F,  -6.5F, 0F, -90F,  15F, 0.85F));
 
-        map.put(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND,  TransformUtils.create(1.13F, 3.2F, 1.13F, 0F,  90F, -45F, 0.68F));
-        map.put(ItemDisplayContext.FIRST_PERSON_LEFT_HAND,   TransformUtils.create(1.13F, 3.2F, 1.13F, 0F,  -90F, 45F, 0.68F));
-        TRANSFORMATION = new PerspectiveModelState(ImmutableMap.copyOf(map));
+        map.put(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND,  DEItemTransforms.create(1.13F, 3.2F, 1.13F, 0F,  90F, -45F, 0.68F));
+        map.put(ItemDisplayContext.FIRST_PERSON_LEFT_HAND,   DEItemTransforms.create(1.13F, 3.2F, 1.13F, 0F,  -90F, 45F, 0.68F));
+        TRANSFORMATION = DEItemTransforms.of(map);
         // @formatter:on
     }
 
@@ -91,30 +86,22 @@ public class RenderModularStaff extends ToolRenderBase {
         gemPart = gemPart(CCModel.combine(Arrays.asList(model.get("focus_gem"), model.get("energy_crystal"))).backfacedCopy());
     }
 
-    private final ItemOverrides overrideList = new ItemOverrides() {
-        @Override
-        public BakedModel resolve(BakedModel originalModel, ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int light) {
-            RenderModularStaff.this.entity = entity;
-            RenderModularStaff.this.world = world == null ? entity == null ? null : (ClientLevel) entity.level() : null;
-            return originalModel;
-        }
-    };
-
     @Override
-    public ItemOverrides getOverrides() {
-        return overrideList;
+    public void resolve(ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity) {
+        this.entity = entity;
+        this.world = world == null ? entity == null ? null : (ClientLevel) entity.level() : null;
     }
 
     @Override
-    public @Nullable PerspectiveModelState getModelState() {
+    public ItemTransforms getModelState() {
         return TRANSFORMATION;
     }
 
     //TODO want to combine the swing and equip animation somehow so the 'draw back / return' after a stab corresponds to the equip cooldown
     @Override
-    public void renderTool(CCRenderState ccrs, ItemStack stack, ItemDisplayContext transform, Matrix4 mat, MultiBufferSource buffers, boolean gui) {
+    public void renderTool(CCRenderState ccrs, ItemStack stack, ItemDisplayContext transform, Matrix4 mat, SubmitNodeCollector collector, boolean gui) {
         float flair = 0F;
-        float partialTick = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
+        float partialTick = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
         if (entity != null && entity.getMainHandItem() == stack) {
             flair = MathHelper.interpolate(entity.oAttackAnim, entity.attackAnim, partialTick);
             flair = MathHelper.clip(flair * 5F, 0F, 1F);
@@ -124,11 +111,11 @@ public class RenderModularStaff extends ToolRenderBase {
         if (gui) {
             transform(mat, 0.19, 0.19, 0.5, 1.1);
 
-            baseGuiPart.render(transform, buffers, mat);
-            materialGuiPart.render(transform, buffers, mat);
-            traceGuiPart.render(transform, buffers, mat);
-            bladeGuiPart.render(transform, buffers, mat);
-            gemGuiPart.render(transform, buffers, mat);
+            baseGuiPart.render(transform, collector, mat);
+            materialGuiPart.render(transform, collector, mat);
+            traceGuiPart.render(transform, collector, mat);
+            bladeGuiPart.render(transform, collector, mat);
+            gemGuiPart.render(transform, collector, mat);
             return;
         }
 
@@ -144,18 +131,16 @@ public class RenderModularStaff extends ToolRenderBase {
         }
 
         // TODO flair
-        basePart.render(transform, buffers, mat);
-        materialPart.render(transform, buffers, mat);
-        tracePart.render(transform, buffers, mat, flair);
-        bladePart.render(transform, buffers, mat, flair);
-        gemPart.render(transform, buffers, mat, flair);
-
-        RenderUtils.endBatch(buffers);
+        basePart.render(transform, collector, mat);
+        materialPart.render(transform, collector, mat);
+        tracePart.render(transform, collector, mat, flair);
+        bladePart.render(transform, collector, mat, flair);
+        gemPart.render(transform, collector, mat, flair);
 
         Minecraft mc = Minecraft.getInstance();
         mat.rotate(torad(90), Vector3.X_NEG);
         mat.translate(-0.5, 0.1, -0.5);
-        effectRenderer.renderEffect(mat, buffers, partialTick, techLevel);
+        effectRenderer.renderEffect(mat, nextOrder(collector), partialTick, techLevel);
     }
 
     private void handleArmPose(ItemStack stack, ItemDisplayContext transform, Matrix4 mat) {

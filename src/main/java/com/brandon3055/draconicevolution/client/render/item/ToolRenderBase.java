@@ -1,42 +1,47 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
 import codechicken.lib.math.MathHelper;
-import codechicken.lib.model.PerspectiveModelState;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
-import codechicken.lib.render.buffer.VBORenderType;
-import codechicken.lib.render.item.IItemRenderer;
-import codechicken.lib.util.TransformUtils;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.brandonscore.client.shader.BCRenderType;
 import com.brandon3055.brandonscore.client.shader.BCShader;
 import com.brandon3055.brandonscore.client.shader.BCShaders;
 import com.brandon3055.brandonscore.client.shader.ChaosEntityShader;
 import com.brandon3055.draconicevolution.client.DEShaders;
 import com.brandon3055.draconicevolution.client.shader.ToolShader;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.textures.FilterMode;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.covers1624.quack.util.LazyValue;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.block.dispatch.ModelState;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
+import net.minecraft.client.resources.model.cuboid.ItemTransforms;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
-import java.util.function.Supplier;
 
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
 /**
  * Created by brandon3055 on 22/5/20.
  */
-public abstract class ToolRenderBase implements IItemRenderer {
+public abstract class ToolRenderBase implements DEItemRenderer {
+
+    private static final PoseStack IDENTITY = new PoseStack();
+    private static final RenderPipeline BASE_PIPELINE = DEShaders.TOOL_BASE_SHADER.pipeline("tool_base", builder -> builder.withVertexFormat(DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES));
+    private static final RenderPipeline CHAOS_PIPELINE = BCShaders.CHAOS_ENTITY_SHADER.pipeline("de_tool_chaos", builder -> builder.withVertexFormat(DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES));
+    private static final RenderPipeline GEM_PIPELINE = DEShaders.TOOL_GEM_SHADER.pipeline("tool_gem", builder -> builder.withVertexFormat(DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES));
+    private static final RenderPipeline TRACE_PIPELINE = DEShaders.TOOL_TRACE_SHADER.pipeline("tool_trace", builder -> builder.withVertexFormat(DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES));
+    private static final RenderPipeline BLADE_PIPELINE = DEShaders.TOOL_BLADE_SHADER.pipeline("tool_blade", builder -> builder.withVertexFormat(DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES));
+    private static int submitOrder;
 
     protected final TechLevel techLevel;
     protected final String tool;
@@ -47,7 +52,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
     }
 
     @Override
-    public void renderItem(ItemStack stack, ItemDisplayContext transformType, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
+    public void renderItem(ItemStack stack, ItemDisplayContext transformType, PoseStack mStack, SubmitNodeCollector collector, int packedLight, int packedOverlay) {
         Matrix4 mat = new Matrix4(mStack);
         CCRenderState ccrs = CCRenderState.instance();
         ccrs.reset();
@@ -57,10 +62,11 @@ public abstract class ToolRenderBase implements IItemRenderer {
         DEShaders.TOOL_BASE_SHADER.getUv1OverrideUniform().glUniform2i(packedOverlay & 0xFFFF, (packedOverlay >> 16) & 0xFFFF);
         DEShaders.TOOL_BASE_SHADER.getUv2OverrideUniform().glUniform2i(packedLight & 0xFFFF, (packedLight >> 16) & 0xFFFF);
 
-        renderTool(ccrs, stack, transformType, mat, getter, transformType == ItemDisplayContext.GUI);
+        submitOrder = 1;
+        renderTool(ccrs, stack, transformType, mat, collector, transformType == ItemDisplayContext.GUI);
     }
 
-    public abstract void renderTool(CCRenderState ccrs, ItemStack stack, ItemDisplayContext transform, Matrix4 mat, MultiBufferSource buffers, boolean gui);
+    public abstract void renderTool(CCRenderState ccrs, ItemStack stack, ItemDisplayContext transform, Matrix4 mat, SubmitNodeCollector collector, boolean gui);
 
     public void transform(Matrix4 mat, double x, double y, double z, double scale) {
         mat.translate(x, y, z);
@@ -70,19 +76,8 @@ public abstract class ToolRenderBase implements IItemRenderer {
     }
 
     @Override
-    @Nullable
-    public PerspectiveModelState getModelState() {
-        return TransformUtils.DEFAULT_TOOL;
-    }
-
-    @Override
-    public boolean useAmbientOcclusion() {
-        return false;
-    }
-
-    @Override
-    public boolean isGui3d() {
-        return false;
+    public ItemTransforms getModelState() {
+        return DEItemTransforms.DEFAULT_TOOL;
     }
 
     @Override
@@ -115,22 +110,37 @@ public abstract class ToolRenderBase implements IItemRenderer {
         toolShader.getBaseColorUniform().glUniform4f(r, g, b, a);
     }
 
+    protected static OrderedSubmitNodeCollector nextOrder(SubmitNodeCollector collector) {
+        return collector.order(submitOrder++);
+    }
+
+    protected static void submitModel(SubmitNodeCollector collector, BCRenderType type, CCModel model) {
+        nextOrder(collector).submitCustomGeometry(IDENTITY, type.withCurrentUniforms(), (pose, consumer) -> {
+            CCRenderState ccrs = CCRenderState.instance();
+            ccrs.reset();
+            ccrs.bind(consumer, DefaultVertexFormat.ENTITY);
+            model.render(ccrs);
+        });
+    }
+
     //These parts will always be rendered solid using the model texture.
     protected ToolPart basePart(CCModel model) {
         String levelName = techLevel.name().toLowerCase(Locale.ROOT);
-        RenderType baseType = RenderType.create(MODID + ":base", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, true, false, RenderType.CompositeState.builder()
-                .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.TOOL_BASE_SHADER::getShaderInstance))
-                .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/" + levelName + "_" + tool + ".png"), false, false))
-                .setLightmapState(RenderStateShard.LIGHTMAP)
-                .setOverlayState(RenderStateShard.OVERLAY)
-                .createCompositeState(true));
+        BCRenderType baseType = DEShaders.TOOL_BASE_SHADER.renderType(MODID + ":base", RenderSetup.builder(BASE_PIPELINE)
+                .withTexture("Sampler0", Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/" + levelName + "_" + tool + ".png"))
+                .useLightmap()
+                .useOverlay()
+                .affectsCrumbling()
+                .setOutline(RenderSetup.OutlineProperty.AFFECTS_OUTLINE)
+                .bufferSize(256)
+                .createRenderSetup());
 
-        RenderType guiType = RenderType.create(MODID + ":base_gui", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
-                .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.TOOL_BASE_SHADER::getShaderInstance))
-                .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/" + levelName + "_" + tool + ".png"), false, false))
-                .setLightmapState(RenderStateShard.LIGHTMAP)
-                .setOverlayState(RenderStateShard.OVERLAY)
-                .createCompositeState(false)
+        BCRenderType guiType = DEShaders.TOOL_BASE_SHADER.renderType(MODID + ":base_gui", RenderSetup.builder(BASE_PIPELINE)
+                .withTexture("Sampler0", Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/" + levelName + "_" + tool + ".png"))
+                .useLightmap()
+                .useOverlay()
+                .bufferSize(256)
+                .createRenderSetup()
         );
 
         return new BaseToolPart(model, baseType, guiType, DEShaders.TOOL_BASE_SHADER);
@@ -140,24 +150,24 @@ public abstract class ToolRenderBase implements IItemRenderer {
     protected ToolPart materialPart(CCModel model) {
         if (techLevel != TechLevel.CHAOTIC) return basePart(model);
 
-        RenderType chaoticType = RenderType.create(MODID + ":tool_chaos", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
-                .setShaderState(new RenderStateShard.ShaderStateShard(BCShaders.CHAOS_ENTITY_SHADER::getShaderInstance))
-                .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/chaos_shader.png"), true, false))
-                .setLightmapState(RenderStateShard.LIGHTMAP)
-                .setOverlayState(RenderStateShard.OVERLAY)
-                .createCompositeState(false)
+        BCRenderType chaoticType = BCShaders.CHAOS_ENTITY_SHADER.renderType(MODID + ":tool_chaos", RenderSetup.builder(CHAOS_PIPELINE)
+                .withTexture("Sampler0", Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/chaos_shader.png"), () -> RenderSystem.getSamplerCache().getRepeat(FilterMode.LINEAR))
+                .useLightmap()
+                .useOverlay()
+                .bufferSize(256)
+                .createRenderSetup()
         );
         return new ChaoticToolPart(model, chaoticType, BCShaders.CHAOS_ENTITY_SHADER);
     }
 
     protected ToolPart gemPart(CCModel model) {
         String levelName = techLevel.name().toLowerCase(Locale.ROOT);
-        RenderType gemType = RenderType.create(MODID + ":tool_gem", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
-                .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.TOOL_GEM_SHADER::getShaderInstance))
-                .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
-                .setLightmapState(RenderStateShard.LIGHTMAP)
-                .setOverlayState(RenderStateShard.OVERLAY)
-                .createCompositeState(false)
+        BCRenderType gemType = DEShaders.TOOL_GEM_SHADER.renderType(MODID + ":tool_gem", RenderSetup.builder(GEM_PIPELINE)
+                .withTexture("Sampler0", Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"))
+                .useLightmap()
+                .useOverlay()
+                .bufferSize(256)
+                .createRenderSetup()
         );
 
         return new SimpleToolPart(model, gemType, DEShaders.TOOL_GEM_SHADER);
@@ -166,12 +176,12 @@ public abstract class ToolRenderBase implements IItemRenderer {
     //These are the shaded model "inlays" on the handles of most tools
     protected ToolPart tracePart(CCModel model) {
         String levelName = techLevel.name().toLowerCase(Locale.ROOT);
-        RenderType gemType = RenderType.create(MODID + ":tool_trace", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
-                .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.TOOL_TRACE_SHADER::getShaderInstance))
-                .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
-                .setLightmapState(RenderStateShard.LIGHTMAP)
-                .setOverlayState(RenderStateShard.OVERLAY)
-                .createCompositeState(false)
+        BCRenderType gemType = DEShaders.TOOL_TRACE_SHADER.renderType(MODID + ":tool_trace", RenderSetup.builder(TRACE_PIPELINE)
+                .withTexture("Sampler0", Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"))
+                .useLightmap()
+                .useOverlay()
+                .bufferSize(256)
+                .createRenderSetup()
         );
 
         return new SimpleToolPart(model, gemType, DEShaders.TOOL_TRACE_SHADER);
@@ -179,12 +189,12 @@ public abstract class ToolRenderBase implements IItemRenderer {
 
     protected ToolPart bladePart(CCModel model) {
         String levelName = techLevel.name().toLowerCase(Locale.ROOT);
-        RenderType gemType = RenderType.create(MODID + ":tool_blade", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
-                .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.TOOL_BLADE_SHADER::getShaderInstance))
-                .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
-                .setLightmapState(RenderStateShard.LIGHTMAP)
-                .setOverlayState(RenderStateShard.OVERLAY)
-                .createCompositeState(false)
+        BCRenderType gemType = DEShaders.TOOL_BLADE_SHADER.renderType(MODID + ":tool_blade", RenderSetup.builder(BLADE_PIPELINE)
+                .withTexture("Sampler0", Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"))
+                .useLightmap()
+                .useOverlay()
+                .bufferSize(256)
+                .createRenderSetup()
         );
 
         return new SimpleToolPart(model, gemType, DEShaders.TOOL_BLADE_SHADER);
@@ -198,64 +208,49 @@ public abstract class ToolRenderBase implements IItemRenderer {
             this.shader = shader;
         }
 
-        public final void render(ItemDisplayContext transformType, MultiBufferSource buffers, Matrix4 mat) {
-            render(transformType, buffers, mat, 1F);
+        public final void render(ItemDisplayContext transformType, SubmitNodeCollector collector, Matrix4 mat) {
+            render(transformType, collector, mat, 1F);
         }
 
-        public abstract void render(ItemDisplayContext transformType, MultiBufferSource buffers, Matrix4 mat, float pulse);
+        public abstract void render(ItemDisplayContext transformType, SubmitNodeCollector collector, Matrix4 mat, float pulse);
     }
 
     protected static class BaseToolPart extends ToolPart {
 
-        private final Supplier<VBORenderType> vboType;
-        private final Supplier<VBORenderType> guiVboType;
+        private final CCModel model;
+        private final BCRenderType type;
+        private final BCRenderType guiType;
 
-        public BaseToolPart(CCModel model, RenderType type, RenderType guiType, BCShader<?> shader) {
+        public BaseToolPart(CCModel model, BCRenderType type, BCRenderType guiType, BCShader<?> shader) {
             super(shader);
-            vboType = new LazyValue<>(() -> new VBORenderType(type, (format, builder) -> {
-                CCRenderState ccrs = CCRenderState.instance();
-                ccrs.reset();
-                ccrs.bind(builder, format);
-                model.render(ccrs);
-            }));
-            guiVboType = new LazyValue<>(() -> new VBORenderType(guiType, (format, builder) -> {
-                CCRenderState ccrs = CCRenderState.instance();
-                ccrs.reset();
-                ccrs.bind(builder, format);
-                model.render(ccrs);
-            }));
+            this.model = model;
+            this.type = type;
+            this.guiType = guiType;
         }
 
         @Override
-        public void render(ItemDisplayContext transformType, MultiBufferSource buffers, Matrix4 mat, float pulse) {
-            if (transformType == ItemDisplayContext.GUI) {
-                guiVboType.get().withCallback(() -> shader.getModelMatUniform().glUniformMatrix4f(mat)).draw(buffers);
-            } else {
-                vboType.get().withCallback(() -> shader.getModelMatUniform().glUniformMatrix4f(mat)).draw(buffers);
-            }
+        public void render(ItemDisplayContext transformType, SubmitNodeCollector collector, Matrix4 mat, float pulse) {
+            shader.getModelMatUniform().glUniformMatrix4f(mat);
+            submitModel(collector, transformType == ItemDisplayContext.GUI ? guiType : type, model);
         }
     }
 
     protected class SimpleToolPart extends ToolPart {
 
-        protected final Supplier<VBORenderType> vboType;
+        protected final CCModel model;
+        protected final BCRenderType type;
 
-        public SimpleToolPart(CCModel model, RenderType baseType, BCShader<?> shader) {
+        public SimpleToolPart(CCModel model, BCRenderType baseType, BCShader<?> shader) {
             super(shader);
-            vboType = new LazyValue<>(() -> new VBORenderType(baseType, (format, builder) -> {
-                CCRenderState ccrs = CCRenderState.instance();
-                ccrs.reset();
-                ccrs.bind(builder, format);
-                model.render(ccrs);
-            }));
+            this.model = model;
+            this.type = baseType;
         }
 
         @Override
-        public void render(ItemDisplayContext transformType, MultiBufferSource buffers, Matrix4 mat, float pulse) {
-            vboType.get().withCallback(() -> {
-                glUniformBaseColor(shader, techLevel, pulse);
-                shader.getModelMatUniform().glUniformMatrix4f(mat);
-            }).draw(buffers);
+        public void render(ItemDisplayContext transformType, SubmitNodeCollector collector, Matrix4 mat, float pulse) {
+            glUniformBaseColor(shader, techLevel, pulse);
+            shader.getModelMatUniform().glUniformMatrix4f(mat);
+            submitModel(collector, type, model);
         }
 
     }
@@ -264,19 +259,18 @@ public abstract class ToolRenderBase implements IItemRenderer {
 
         private final ChaosEntityShader shader;
 
-        public ChaoticToolPart(CCModel model, RenderType baseType, ChaosEntityShader shader) {
+        public ChaoticToolPart(CCModel model, BCRenderType baseType, ChaosEntityShader shader) {
             super(model, baseType, shader);
             this.shader = shader;
         }
 
         @Override
-        public void render(ItemDisplayContext transformType, MultiBufferSource buffers, Matrix4 mat, float pulse) {
-            vboType.get().withCallback(() -> {
-                shader.getDisableLightUniform().glUniform1b(true);
-                shader.getDisableOverlayUniform().glUniform1b(true);
-                shader.getAlphaUniform().glUniform1f(0.7F);
-                shader.getModelMatUniform().glUniformMatrix4f(mat);
-            }).draw(buffers);
+        public void render(ItemDisplayContext transformType, SubmitNodeCollector collector, Matrix4 mat, float pulse) {
+            shader.getDisableLightUniform().glUniform1b(true);
+            shader.getDisableOverlayUniform().glUniform1b(true);
+            shader.getAlphaUniform().glUniform1f(0.7F);
+            shader.getModelMatUniform().glUniformMatrix4f(mat);
+            submitModel(collector, type, model);
         }
     }
 }

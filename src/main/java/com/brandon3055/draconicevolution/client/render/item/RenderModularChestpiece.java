@@ -1,14 +1,13 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
 import codechicken.lib.math.MathHelper;
-import codechicken.lib.model.PerspectiveModelState;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.model.OBJParser;
-import codechicken.lib.util.TransformUtils;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.brandonscore.client.shader.BCRenderType;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
@@ -16,12 +15,13 @@ import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.entities.ShieldControlEntity;
 import com.brandon3055.draconicevolution.client.DEShaders;
 import com.brandon3055.draconicevolution.client.shader.ToolShader;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
+import net.minecraft.client.resources.model.cuboid.ItemTransforms;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -36,6 +36,8 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
  * Created by brandon3055 on 22/5/20.
  */
 public class RenderModularChestpiece extends ToolRenderBase {
+
+    private static final RenderPipeline CORE_GEM_PIPELINE = DEShaders.CHESTPIECE_GEM_SHADER.pipeline("core_gem", builder -> builder.withVertexFormat(DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES));
 
     private final ToolPart basePart;
     private final ToolPart materialPart;
@@ -52,13 +54,13 @@ public class RenderModularChestpiece extends ToolRenderBase {
     }
 
     @Override
-    public void renderTool(CCRenderState ccrs, ItemStack stack, ItemDisplayContext context, Matrix4 mat, MultiBufferSource buffers, boolean gui) {
+    public void renderTool(CCRenderState ccrs, ItemStack stack, ItemDisplayContext context, Matrix4 mat, SubmitNodeCollector collector, boolean gui) {
         mat.translate(0.5, 1.05, 0.5);
         mat.rotate(MathHelper.torad * 180, Vector3.Z_POS);
         mat.scale(1.95);
 
-        basePart.render(context, buffers, mat);
-        materialPart.render(context, buffers, mat);
+        basePart.render(context, collector, mat);
+        materialPart.render(context, collector, mat);
 
         int shieldColour = 0xFFFFFFFF;
         try (ModuleHost host = DECapabilities.getHost(stack)) {
@@ -69,23 +71,23 @@ public class RenderModularChestpiece extends ToolRenderBase {
                 }
             }
         }
-        gemPart.render(context, buffers, mat);
-        coreGemPart.render(buffers, mat, shieldColour);
+        gemPart.render(context, collector, mat);
+        coreGemPart.render(collector, mat, shieldColour);
     }
 
     @Override
-    public @Nullable PerspectiveModelState getModelState() {
-        return TransformUtils.DEFAULT_BLOCK;
+    public ItemTransforms getModelState() {
+        return DEItemTransforms.DEFAULT_BLOCK;
     }
 
     protected CoreGemPart coreGemPart(CCModel model) {
         String levelName = techLevel.name().toLowerCase(Locale.ROOT);
-        RenderType gemType = RenderType.create(MODID + ":core_gem", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
-                .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.CHESTPIECE_GEM_SHADER::getShaderInstance))
-                .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
-                .setLightmapState(RenderStateShard.LIGHTMAP)
-                .setOverlayState(RenderStateShard.OVERLAY)
-                .createCompositeState(false)
+        BCRenderType gemType = DEShaders.CHESTPIECE_GEM_SHADER.renderType(MODID + ":core_gem", RenderSetup.builder(CORE_GEM_PIPELINE)
+                .withTexture("Sampler0", Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"))
+                .useLightmap()
+                .useOverlay()
+                .bufferSize(256)
+                .createRenderSetup()
         );
 
         return new CoreGemPart(model, gemType, DEShaders.CHESTPIECE_GEM_SHADER);
@@ -94,21 +96,20 @@ public class RenderModularChestpiece extends ToolRenderBase {
     private class CoreGemPart extends SimpleToolPart {
         private final ToolShader shader;
 
-        public CoreGemPart(CCModel model, RenderType baseType, ToolShader shader) {
+        public CoreGemPart(CCModel model, BCRenderType baseType, ToolShader shader) {
             super(model, baseType, shader);
             this.shader = shader;
         }
 
         @Override
-        public void render(ItemDisplayContext transformType, MultiBufferSource buffers, Matrix4 mat, float pulse) {
-            render(buffers, mat, 0xFFFFFFFF);
+        public void render(ItemDisplayContext transformType, SubmitNodeCollector collector, Matrix4 mat, float pulse) {
+            render(collector, mat, 0xFFFFFFFF);
         }
 
-        public void render(MultiBufferSource buffers, Matrix4 mat, int color) {
-            vboType.get().withCallback(() -> {
-                shader.getBaseColorUniform().glUniform4f(((color >> 16) & 0xFF) / 255F, ((color >> 8) & 0xFF) / 255F, (color & 0xFF) / 255F, ((color >> 24) & 0xFF) / 255F);
-                shader.getModelMatUniform().glUniformMatrix4f(mat);
-            }).draw(buffers);
+        public void render(SubmitNodeCollector collector, Matrix4 mat, int color) {
+            shader.getBaseColorUniform().glUniform4f(((color >> 16) & 0xFF) / 255F, ((color >> 8) & 0xFF) / 255F, (color & 0xFF) / 255F, ((color >> 24) & 0xFF) / 255F);
+            shader.getModelMatUniform().glUniformMatrix4f(mat);
+            submitModel(collector, type, model);
         }
     }
 

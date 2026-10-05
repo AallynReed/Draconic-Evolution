@@ -21,6 +21,7 @@ import com.brandon3055.draconicevolution.client.render.entity.GuardianProjectile
 import com.brandon3055.draconicevolution.client.render.entity.GuardianWitherRenderer;
 import com.brandon3055.draconicevolution.client.render.entity.projectile.DraconicArrowRenderer;
 import com.brandon3055.draconicevolution.client.render.hud.ShieldHudElement;
+import com.brandon3055.draconicevolution.client.render.item.DEItemRendererModel;
 import com.brandon3055.draconicevolution.client.render.tile.*;
 import com.brandon3055.draconicevolution.items.equipment.IModularArmor;
 import net.covers1624.quack.util.CrashLock;
@@ -36,6 +37,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.RegisterItemModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -62,6 +64,7 @@ public class DEClient {
         modBus.addListener(DEClient::onAddRenderLayers);
         modBus.addListener(DEClient::onResourceReload);
         modBus.addListener(DEClient::registerClientExtensions);
+        modBus.addListener(DEClient::registerItemModels);
         modBus.addListener(DEClient::registerMenuScreens);
         modBus.addListener(DEParticles::registerFactories);
         modBus.addListener(DEParticles::registerGroups);
@@ -144,6 +147,10 @@ public class DEClient {
         event.register(DEContent.MENU_FLOW_GATE.get(), FlowGateGui.Screen::new);
         event.register(DEContent.MENU_ENTITY_DETECTOR.get(), EntityDetectorGui.Screen::new);
         event.register(DEContent.MENU_ENERGY_TRANSFUSER.get(), EnergyTransfuserGui.Screen::new);
+    }
+
+    private static void registerItemModels(RegisterItemModelsEvent event) {
+        event.register(DEItemRendererModel.TYPE, DEItemRendererModel.Unbaked.MAP_CODEC);
     }
 
     private static void registerClientExtensions(RegisterClientExtensionsEvent event) {

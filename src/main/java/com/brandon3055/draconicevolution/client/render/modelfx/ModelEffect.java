@@ -4,11 +4,8 @@ import codechicken.lib.render.buffer.TransformingVertexConsumer;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 
 import java.util.Random;
@@ -46,9 +43,8 @@ public abstract class ModelEffect {
 
     protected abstract void doRender(VertexConsumer builder, float partialTicks, TechLevel techLevel);
 
-    public void renderEffect(Matrix4 mat, MultiBufferSource getter, float partialTicks, TechLevel techLevel) {
-        VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(getRenderType()), mat);
-        doRender(builder, partialTicks, techLevel);
+    public void renderEffect(Matrix4 mat, OrderedSubmitNodeCollector collector, float partialTicks, TechLevel techLevel) {
+        collector.cc$submitCustomGeometry(mat, getRenderType(), (m, type, buffer) -> doRender(new TransformingVertexConsumer(buffer, m), partialTicks, techLevel));
     }
 
     protected void drawParticle(VertexConsumer builder, double x, double y, double z, double scale, float red, float green, float blue, float alpha) {

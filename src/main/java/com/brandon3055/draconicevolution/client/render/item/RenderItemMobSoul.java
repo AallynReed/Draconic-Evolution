@@ -1,20 +1,18 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
 import codechicken.lib.math.MathHelper;
-import codechicken.lib.model.PerspectiveModelState;
-import codechicken.lib.render.item.IItemRenderer;
-import codechicken.lib.util.TransformUtils;
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.resources.model.cuboid.ItemTransforms;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
 import java.util.HashSet;
@@ -23,7 +21,7 @@ import java.util.Set;
 /**
  * Created by brandon3055 on 18/04/2017.
  */
-public class RenderItemMobSoul implements IItemRenderer {
+public class RenderItemMobSoul implements DEItemRenderer {
 
     private static Set<Entity> brokenMobs = new HashSet<>();
 
@@ -32,18 +30,7 @@ public class RenderItemMobSoul implements IItemRenderer {
 
     //region Unused
 
-    @Override
-    public boolean useAmbientOcclusion() {
-        return false;
-    }
-
-    @Override
-    public boolean isGui3d() {
-        return true;
-    }
-
     //endregion
-
 
 //    //    Remember GuiInventory.drawEntityOnScreen
 //    @Override
@@ -93,7 +80,7 @@ public class RenderItemMobSoul implements IItemRenderer {
 //    }
 
     @Override
-    public void renderItem(ItemStack stack, ItemDisplayContext transformType, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
+    public void renderItem(ItemStack stack, ItemDisplayContext transformType, PoseStack mStack, SubmitNodeCollector collector, int packedLight, int packedOverlay) {
         Entity mob = DEContent.MOB_SOUL.get().getRenderEntity(stack);
         if (brokenMobs.contains(mob)) return;
 
@@ -101,7 +88,7 @@ public class RenderItemMobSoul implements IItemRenderer {
         mStack.translate(0.5, 0, 0.5);
         mStack.scale(scale, scale, scale);
 
-        DeltaTracker delta = Minecraft.getInstance().getTimer();
+        DeltaTracker delta = Minecraft.getInstance().getDeltaTracker();
         if (transformType != ItemDisplayContext.GROUND && transformType != ItemDisplayContext.FIXED) {
             float rotA = (float) Math.sin((TimeKeeper.getClientTick() + delta.getGameTimeDeltaPartialTick(false)) / 50F) * 15F;
             float rotB = (TimeKeeper.getClientTick() + delta.getGameTimeDeltaPartialTick(false)) * 3;
@@ -111,12 +98,14 @@ public class RenderItemMobSoul implements IItemRenderer {
         }
 
         EntityRenderDispatcher manager = Minecraft.getInstance().getEntityRenderDispatcher();
-        manager.render(mob, 0, 0, 0, 0, 0, mStack, getter, packedLight);
+        EntityRenderState renderState = manager.extractEntity(mob, 0);
+        renderState.lightCoords = packedLight;
+        manager.submit(renderState, Minecraft.getInstance().gameRenderer.getGameRenderState().levelRenderState.cameraRenderState, 0, 0, 0, mStack, collector);
     }
 
     @Override
-    public @Nullable PerspectiveModelState getModelState() {
-        return TransformUtils.DEFAULT_BLOCK;
+    public ItemTransforms getModelState() {
+        return DEItemTransforms.DEFAULT_BLOCK;
     }
 
     @Override

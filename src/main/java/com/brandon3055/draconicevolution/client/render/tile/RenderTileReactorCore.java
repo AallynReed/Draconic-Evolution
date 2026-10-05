@@ -11,6 +11,7 @@ import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.client.render.BlockEntityRendererTransparent;
 import com.brandon3055.brandonscore.client.render.RenderUtils;
+import com.brandon3055.brandonscore.client.shader.BCRenderType;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -47,18 +48,18 @@ public class RenderTileReactorCore implements DETileRenderer<TileReactorCore>, B
 
     private static CCModel model = null;
 
-    public static RenderType REACTOR_CORE_TYPE = DEShaders.reactorShader.renderType("reactor_type", RenderSetup.builder(DEShaders.reactorShader.pipeline("reactor_type", builder -> builder
+    public static BCRenderType REACTOR_CORE_TYPE = DEShaders.reactorShader.renderType("reactor_type", RenderSetup.builder(DEShaders.reactorShader.pipeline("reactor_type", builder -> builder
                     .withColorTargetState(ColorTargetState.DEFAULT)))
             .bufferSize(256)
             .createRenderSetup()
     );
 
-    public static RenderType REACTOR_SHIELD_TYPE = DEShaders.reactorShieldShader.renderType("shield_type", RenderSetup.builder(DEShaders.reactorShieldShader.pipeline("shield_type", builder -> builder))
+    public static BCRenderType REACTOR_SHIELD_TYPE = DEShaders.reactorShieldShader.renderType("shield_type", RenderSetup.builder(DEShaders.reactorShieldShader.pipeline("shield_type", builder -> builder))
             .bufferSize(256)
             .createRenderSetup()
     );
 
-    public static RenderType REACTOR_BEAM_TYPE = DEShaders.reactorBeamShader.renderType(MODID + "beam_typess", RenderSetup.builder(DEShaders.reactorBeamShader.pipeline("beam_typess", builder -> builder
+    public static BCRenderType REACTOR_BEAM_TYPE = DEShaders.reactorBeamShader.renderType(MODID + "beam_typess", RenderSetup.builder(DEShaders.reactorBeamShader.pipeline("beam_typess", builder -> builder
                     .withCull(false)
                     .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.TRIANGLE_STRIP)
                     .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))))
@@ -140,6 +141,22 @@ public class RenderTileReactorCore implements DETileRenderer<TileReactorCore>, B
         ccrs.bind(REACTOR_SHIELD_TYPE, getter);
         model.render(ccrs, mat);
         RenderUtils.endBatch(getter);
+    }
+
+    public static void renderCore(Matrix4 mat, SubmitNodeCollector collector, float animation, double animState, float intensity, float shieldPower) {
+        if (model == null) {
+            Map<String, CCModel> map = new OBJParser(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/reactor/reactor_core.obj")).quads().ignoreMtl().parse();
+            model = CCModel.combine(map.values());
+        }
+        DEShaders.reactorTime.glUniform1f(animation);
+        DEShaders.reactorIntensity.glUniform1f(intensity);
+        collector.cc$submitCCRS(mat, REACTOR_CORE_TYPE.withCurrentUniforms(), (m, ccrs) -> model.render(ccrs, m));
+
+        mat.scale(1.05);
+
+        DEShaders.reactorShieldTime.glUniform1f(animation);
+        DEShaders.reactorShieldIntensity.glUniform1f((0.7F * shieldPower) - (float) (1 - animState));
+        collector.cc$submitCCRS(mat, REACTOR_SHIELD_TYPE.withCurrentUniforms(), (m, ccrs) -> model.render(ccrs, m));
     }
 
     public static void renderGUI(GuiRender render, TileReactorCore te) {

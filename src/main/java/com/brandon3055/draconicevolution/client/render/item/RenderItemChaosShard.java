@@ -1,29 +1,31 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
-import codechicken.lib.model.PerspectiveModelState;
 import codechicken.lib.render.CCModel;
-import codechicken.lib.render.CCRenderState;
-import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.render.model.OBJParser;
-import codechicken.lib.util.TransformUtils;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Scale;
 import codechicken.lib.vec.Vector3;
+import com.brandon3055.brandonscore.client.shader.BCRenderType;
 import com.brandon3055.brandonscore.client.shader.BCShaders;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.textures.FilterMode;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.resources.model.cuboid.ItemTransforms;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -32,23 +34,26 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 /**
  * Created by brandon3055 on 27/2/20.
  */
-public class RenderItemChaosShard implements IItemRenderer {
+public class RenderItemChaosShard implements DEItemRenderer {
 
-    private static final RenderType CHAOS_CRYSTAL_INNER = RenderType.create(MODID + ":chaos_crystal_inner", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
-            .setShaderState(new RenderStateShard.ShaderStateShard(BCShaders.CHAOS_ENTITY_SHADER::getShaderInstance))
-            .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/chaos_shader.png"), true, false))
-            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-            .setCullState(RenderStateShard.NO_CULL)
-            .setLightmapState(RenderStateShard.LIGHTMAP)
-            .setOverlayState(RenderStateShard.OVERLAY)
-            .createCompositeState(false));
-    private static final RenderType CHAOS_CRYSTAL = RenderType.create(MODID + ":chaos_crystal", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
-            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeCutoutShader)) //TODO figure out render type stuff.
-            .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/block/chaos_crystal.png"), false, false))
-            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-            .setLightmapState(RenderStateShard.LIGHTMAP)
-            .setOverlayState(RenderStateShard.OVERLAY)
-            .createCompositeState(false));
+    private static final BCRenderType CHAOS_CRYSTAL_INNER = BCShaders.CHAOS_ENTITY_SHADER.renderType(MODID + ":chaos_crystal_inner", RenderSetup.builder(BCShaders.CHAOS_ENTITY_SHADER.pipeline("de_chaos_shard_inner", builder -> builder
+                    .withCull(false)
+                    .withVertexFormat(DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES)))
+            .withTexture("Sampler0", Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/chaos_shader.png"), () -> RenderSystem.getSamplerCache().getRepeat(FilterMode.LINEAR))
+            .useLightmap()
+            .useOverlay()
+            .bufferSize(256)
+            .createRenderSetup());
+    private static final RenderType CHAOS_CRYSTAL = RenderType.create(MODID + ":chaos_crystal", RenderSetup.builder(RenderPipeline.builder(RenderPipelines.BLOCK_SNIPPET)
+                    .withLocation(Identifier.fromNamespaceAndPath(MODID, "pipeline/chaos_shard"))
+                    .withShaderDefine("ALPHA_CUTOUT", 0.5F)
+                    .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
+                    .withVertexFormat(DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES)
+                    .build())
+            .withTexture("Sampler0", Identifier.fromNamespaceAndPath(MODID, "textures/block/chaos_crystal.png"))
+            .useLightmap()
+            .bufferSize(256)
+            .createRenderSetup());
 
     private final CCModel shard;
     private final Item item;
@@ -64,12 +69,8 @@ public class RenderItemChaosShard implements IItemRenderer {
     }
 
     @Override
-    public void renderItem(ItemStack stack, ItemDisplayContext context, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
+    public void renderItem(ItemStack stack, ItemDisplayContext context, PoseStack mStack, SubmitNodeCollector collector, int packedLight, int packedOverlay) {
         Matrix4 mat = new Matrix4(mStack);
-        CCRenderState ccrs = CCRenderState.instance();
-        ccrs.reset();
-        ccrs.brightness = packedLight;
-        ccrs.overlay = packedOverlay;
         mat.apply(new Scale(item == DEContent.CHAOS_SHARD.get() ? 1 : item == DEContent.CHAOS_FRAG_LARGE.get() ? 0.75 : item == DEContent.CHAOS_FRAG_MEDIUM.get() ? 0.5 : 0.25).at(new Vector3(0.5, 0.5, 0.5)));
 
         BCShaders.CHAOS_ENTITY_SHADER.getModelMatUniform().glUniformMatrix4f(new Matrix4());
@@ -77,20 +78,24 @@ public class RenderItemChaosShard implements IItemRenderer {
         BCShaders.CHAOS_ENTITY_SHADER.getDisableLightUniform().glUniform1b(false);
         BCShaders.CHAOS_ENTITY_SHADER.getDisableOverlayUniform().glUniform1b(false);
 
-        ccrs.bind(CHAOS_CRYSTAL_INNER, getter);
-        shard.render(ccrs, mat);
+        collector.cc$submitCCRS(mat, CHAOS_CRYSTAL_INNER.withCurrentUniforms(), (m, ccrs) -> {
+            ccrs.brightness = packedLight;
+            ccrs.overlay = packedOverlay;
+            shard.render(ccrs, m);
+        });
 
-        ccrs.baseColour = 0xFFFFFFF0;
-        ccrs.bind(CHAOS_CRYSTAL, getter);
         mat.apply(new Scale(1.005).at(new Vector3(0.5, 0.5, 0.5)));
-        shard.render(ccrs, mat);
+        collector.cc$submitCCRS(mat, CHAOS_CRYSTAL, (m, ccrs) -> {
+            ccrs.brightness = packedLight;
+            ccrs.overlay = packedOverlay;
+            ccrs.baseColour = 0xFFFFFFF0;
+            shard.render(ccrs, m);
+        });
     }
 
     // @formatter:off
     @Override
-    public @Nullable PerspectiveModelState getModelState() { return TransformUtils.DEFAULT_ITEM; }
-    @Override public boolean useAmbientOcclusion() { return false; }
-    @Override public boolean isGui3d() { return false; }
+    public ItemTransforms getModelState() { return DEItemTransforms.DEFAULT_ITEM; }
     @Override public boolean usesBlockLight() { return false; }
 
     //This is not cursed at all! idk what your talking about!
