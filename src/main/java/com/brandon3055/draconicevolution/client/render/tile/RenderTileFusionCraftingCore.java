@@ -1,11 +1,11 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
 import codechicken.lib.render.buffer.TransformingVertexConsumer;
+import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Quat;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TimeKeeper;
-import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.brandonscore.client.shader.BCShaders;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -14,21 +14,19 @@ import com.brandon3055.draconicevolution.client.AtlasTextureHelper;
 import com.brandon3055.draconicevolution.client.render.EffectLib;
 import com.brandon3055.draconicevolution.client.render.tile.fxhandlers.FusionTileFXHandler;
 import com.brandon3055.draconicevolution.client.render.tile.fxhandlers.FusionTileFXHandler.IngredFX;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.Identifier;
@@ -46,30 +44,37 @@ import java.util.stream.Stream;
 
 import static com.brandon3055.draconicevolution.client.AtlasTextureHelper.*;
 
-public class RenderTileFusionCraftingCore implements BlockEntityRenderer<TileFusionCraftingCore> {
+public class RenderTileFusionCraftingCore implements DETileRenderer<TileFusionCraftingCore> {
 
     private static Random rand = new Random();
 
-    private RenderType particleType = RenderType.create("particle_type", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
-            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getPositionColorTexLightmapShader))
-            .setTextureState(new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_PARTICLES, false, false))
-            .setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE)
-            .createCompositeState(false)
+    private RenderType particleType = RenderType.create("particle_type", RenderSetup.builder(RenderPipeline.builder(RenderPipelines.TEXT_SNIPPET, RenderPipelines.FOG_SNIPPET)
+                    .withLocation(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "pipeline/fusion_particle"))
+                    .withVertexShader("core/rendertype_text")
+                    .withFragmentShader("core/rendertype_text")
+                    .withSampler("Sampler0")
+                    .withSampler("Sampler2")
+                    .withColorTargetState(ColorTargetState.DEFAULT)
+                    .build())
+            .withTexture("Sampler0", TextureAtlas.LOCATION_PARTICLES)
+            .useLightmap()
+            .bufferSize(256)
+            .createRenderSetup()
     );
 
     public RenderTileFusionCraftingCore(BlockEntityRendererProvider.Context context) {
     }
 
     @Override
-    public void render(TileFusionCraftingCore te, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packetLight, int packetOverlay) {
-        renderContent(te, partialTicks, mStack, getter, packetLight, packetOverlay);
+    public void render(TileFusionCraftingCore te, float partialTicks, PoseStack mStack, SubmitNodeCollector collector, int packetLight, int packetOverlay, CameraRenderState camera) {
+        renderContent(te, partialTicks, mStack, collector, packetLight, packetOverlay);
         FusionTileFXHandler handler = (FusionTileFXHandler) te.fxHandler;
         if (handler.renderActive()) {
-            renderEffects(te, handler, partialTicks, mStack, getter, packetLight, packetOverlay);
+            renderEffects(te, handler, partialTicks, mStack, collector, packetLight, packetOverlay);
         }
     }
 
-    private void renderContent(TileFusionCraftingCore te, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packetLight, int packetOverlay) {
+    private void renderContent(TileFusionCraftingCore te, float partialTicks, PoseStack mStack, SubmitNodeCollector collector, int packetLight, int packetOverlay) {
         ItemStack stack = !te.getOutputStack().isEmpty() && !te.isCrafting() ? te.getOutputStack() : te.getCatalystStack();
         Minecraft mc = Minecraft.getInstance();
         if (!stack.isEmpty()) {
@@ -77,12 +82,12 @@ public class RenderTileFusionCraftingCore implements BlockEntityRenderer<TileFus
             mStack.translate(0.5, 0.5, 0.5);
             mStack.scale(0.5F, 0.5F, 0.5F);
             mStack.mulPose(Axis.YP.rotationDegrees((TimeKeeper.getClientTick() + partialTicks) * 0.8F));
-            mc.getItemRenderer().renderStatic(stack, ItemDisplayContext.FIXED, packetLight, packetOverlay, mStack, getter, te.getLevel(), te.posSeed());
+            DETileRenderer.renderItem(stack, ItemDisplayContext.FIXED, packetLight, packetOverlay, mStack, collector, te.getLevel(), te.posSeed());
             mStack.popPose();
         }
     }
 
-    private void renderEffects(TileFusionCraftingCore core, FusionTileFXHandler handler, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packetLight, int packetOverlay) {
+    private void renderEffects(TileFusionCraftingCore core, FusionTileFXHandler handler, float partialTicks, PoseStack mStack, SubmitNodeCollector collector, int packetLight, int packetOverlay) {
         Minecraft mc = Minecraft.getInstance();
         Camera renderInfo = mc.gameRenderer.getMainCamera();
         mStack.translate(0.5, 0.5, 0.5);
@@ -94,20 +99,38 @@ public class RenderTileFusionCraftingCore implements BlockEntityRenderer<TileFus
         List<IngredFX> ingredFXList = handler.getIngredients(partialTicks);
         int i = 0;
         for (IngredFX ingred : ingredFXList) {
-            renderIngredientEffect(renderInfo, mStack, getter, partialTicks, i++, ingred, maxParticles / ingredFXList.size());
+            renderIngredientEffect(renderInfo, mStack, collector, partialTicks, i++, ingred, maxParticles / ingredFXList.size());
             if (ingred.arcPos != null) {
-                EffectLib.renderLightningP2PRotate(mStack, getter, ingred.pos, ingred.arcPos, 8, (TimeKeeper.getClientTick() / 2), 0.06F, 0.04F, false, 0, 0x6300BD);
+                EffectLib.renderLightningP2PRotate(mStack, collector, ingred.pos, ingred.arcPos, 8, (TimeKeeper.getClientTick() / 2), 0.06F, 0.04F, false, 0, 0x6300BD);
             }
         }
 
         Rotation cameraRotation = new Rotation(new Quat(renderInfo.rotation()));
-        VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(particleType), mStack);
+        collector.cc$submitCustomGeometry(new Matrix4(mStack), particleType, (mat, type, buffer) -> renderCoreParticles(cameraRotation, new TransformingVertexConsumer(buffer, mat), core, handler, partialTicks));
+
+        if (handler.chargeState > 0) {
+            if (handler.injectTime > 0 && TimeKeeper.getClientTick() % 5 == 0) {
+                int pos = rand.nextInt(4);
+                for (i = 0; i < 4; i++) {
+                    if (i != pos) continue;
+                    float loopOffset = ((i / 4F) * ((float) Math.PI * 2F)) + (TimeKeeper.getClientTick() / 100F);
+                    float rot = ((7 / 64F) * (float) Math.PI * 2F) + (TimeKeeper.getClientTick() / 10F) + loopOffset;
+                    double x = Mth.sin(rot) * 2;
+                    double z = Mth.cos(rot) * 2;
+                    double y = Mth.cos(rot + loopOffset) * 1;
+                    EffectLib.renderLightningP2PRotate(mStack, collector, new Vector3(x, y, z), Vector3.ZERO, 8, ((TimeKeeper.getClientTick()) / 2), 0.06F, 0.04F, false, 0, 0x6300BD);
+                }
+            }
+        }
+    }
+
+    private void renderCoreParticles(Rotation cameraRotation, VertexConsumer builder, TileFusionCraftingCore core, FusionTileFXHandler handler, float partialTicks) {
         if (handler.injectTime > 0) {
             rand.setSeed(3055);
             double anim = handler.getRotationAnim(partialTicks);
             int chargePCount = 64;
             float pScale = 0.125F / 2;
-            for (i = 0; i < chargePCount; i++) {
+            for (int i = 0; i < chargePCount; i++) {
                 anim += rand.nextGaussian();
                 float scale = Mth.clamp((handler.injectTime * chargePCount) - i, 0F, 1F) * pScale * (0.7F + (rand.nextFloat() * 0.3F));
                 if (scale <= 0) break;
@@ -123,7 +146,7 @@ public class RenderTileFusionCraftingCore implements BlockEntityRenderer<TileFus
 
         //Outer Loopy Effects
         if (handler.chargeState > 0) {
-            for (i = 0; i < 4; i++) {
+            for (int i = 0; i < 4; i++) {
                 float loopOffset = ((i / 4F) * ((float) Math.PI * 2F)) + (TimeKeeper.getClientTick() / 100F);
                 for (int j = 0; j < 8; j++) {
                     float rot = ((j / 64F) * (float) Math.PI * 2F) + (TimeKeeper.getClientTick() / 10F) + loopOffset;
@@ -135,25 +158,15 @@ public class RenderTileFusionCraftingCore implements BlockEntityRenderer<TileFus
                     EffectLib.drawParticle(cameraRotation, builder, ENERGY_PARTICLE[(TimeKeeper.getClientTick() + j) % ENERGY_PARTICLE.length], 106 / 255F, 13 / 255F, 173 / 255F, x, y, z, scale, 240);
                 }
             }
-            if (handler.injectTime > 0 && TimeKeeper.getClientTick() % 5 == 0) {
-                int pos = rand.nextInt(4);
-                for (i = 0; i < 4; i++) {
-                    if (i != pos) continue;
-                    float loopOffset = ((i / 4F) * ((float) Math.PI * 2F)) + (TimeKeeper.getClientTick() / 100F);
-                    float rot = ((7 / 64F) * (float) Math.PI * 2F) + (TimeKeeper.getClientTick() / 10F) + loopOffset;
-                    double x = Mth.sin(rot) * 2;
-                    double z = Mth.cos(rot) * 2;
-                    double y = Mth.cos(rot + loopOffset) * 1;
-                    EffectLib.renderLightningP2PRotate(mStack, getter, new Vector3(x, y, z), Vector3.ZERO, 8, ((TimeKeeper.getClientTick()) / 2), 0.06F, 0.04F, false, 0, 0x6300BD);
-                }
-            }
         }
     }
 
-    private void renderIngredientEffect(Camera renderInfo, PoseStack mStack, MultiBufferSource getter, float partialTicks, long randSeed, IngredFX ingred, int totalParticles) {
+    private void renderIngredientEffect(Camera renderInfo, PoseStack mStack, SubmitNodeCollector collector, float partialTicks, long randSeed, IngredFX ingred, int totalParticles) {
         Rotation cameraRotation = new Rotation(new Quat(renderInfo.rotation()));
-        VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(this.particleType), mStack);
+        collector.cc$submitCustomGeometry(new Matrix4(mStack), this.particleType, (mat, type, buffer) -> renderIngredientParticles(cameraRotation, new TransformingVertexConsumer(buffer, mat), partialTicks, randSeed, ingred, totalParticles));
+    }
 
+    private void renderIngredientParticles(Rotation cameraRotation, VertexConsumer builder, float partialTicks, long randSeed, IngredFX ingred, int totalParticles) {
         //Charge particle ball
         rand.setSeed(randSeed);
         double anim = ingred.getChargeAnim(partialTicks);
@@ -216,7 +229,7 @@ public class RenderTileFusionCraftingCore implements BlockEntityRenderer<TileFus
 
     @Override
     public AABB getRenderBoundingBox(TileFusionCraftingCore blockEntity) {
-        return BlockEntityRenderer.super.getRenderBoundingBox(blockEntity).inflate(16);
+        return DETileRenderer.super.getRenderBoundingBox(blockEntity).inflate(16);
     }
 
     /*

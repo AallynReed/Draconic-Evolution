@@ -19,13 +19,18 @@ import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCo
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorInjector;
 import com.brandon3055.draconicevolution.client.DEShaders;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
+import com.mojang.blaze3d.pipeline.DepthStencilState;
+import com.mojang.blaze3d.platform.CompareOp;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
@@ -38,27 +43,28 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 /**
  * Created by brandon3055 on 6/11/2016.
  */
-public class RenderTileReactorCore implements BlockEntityRendererTransparent<TileReactorCore> {
+public class RenderTileReactorCore implements DETileRenderer<TileReactorCore>, BlockEntityRendererTransparent<TileReactorCore, DETileRenderer.State<TileReactorCore>> {
 
     private static CCModel model = null;
 
-    public static RenderType REACTOR_CORE_TYPE = RenderType.create("reactor_type", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
-                    .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.reactorShader))
-                    .createCompositeState(false)
+    public static RenderType REACTOR_CORE_TYPE = DEShaders.reactorShader.renderType("reactor_type", RenderSetup.builder(DEShaders.reactorShader.pipeline("reactor_type", builder -> builder
+                    .withColorTargetState(ColorTargetState.DEFAULT)))
+            .bufferSize(256)
+            .createRenderSetup()
     );
 
-    public static RenderType REACTOR_SHIELD_TYPE = RenderType.create("shield_type", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
-                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-                    .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.reactorShieldShader))
-                    .createCompositeState(false)
+    public static RenderType REACTOR_SHIELD_TYPE = DEShaders.reactorShieldShader.renderType("shield_type", RenderSetup.builder(DEShaders.reactorShieldShader.pipeline("shield_type", builder -> builder))
+            .bufferSize(256)
+            .createRenderSetup()
     );
 
-    public static RenderType REACTOR_BEAM_TYPE = RenderType.create(MODID + "beam_typess", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.TRIANGLE_STRIP, 256, false, true, RenderType.CompositeState.builder()
-            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-            .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.reactorBeamShader))
-            .setCullState(RenderStateShard.NO_CULL)
-            .setWriteMaskState(RenderStateShard.COLOR_WRITE)
-            .createCompositeState(false)
+    public static RenderType REACTOR_BEAM_TYPE = DEShaders.reactorBeamShader.renderType(MODID + "beam_typess", RenderSetup.builder(DEShaders.reactorBeamShader.pipeline("beam_typess", builder -> builder
+                    .withCull(false)
+                    .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.TRIANGLE_STRIP)
+                    .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))))
+            .bufferSize(256)
+            .sortOnUpload()
+            .createRenderSetup()
     );
 
     public RenderTileReactorCore(BlockEntityRendererProvider.Context context) {
@@ -69,13 +75,9 @@ public class RenderTileReactorCore implements BlockEntityRendererTransparent<Til
     }
 
     @Override
-    public void render(TileReactorCore te, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
+    public void render(TileReactorCore te, float partialTicks, PoseStack mStack, SubmitNodeCollector collector, int packedLight, int packedOverlay, CameraRenderState camera) {
 //        if (true) return;
         Matrix4 mat = new Matrix4(mStack);
-        CCRenderState ccrs = CCRenderState.instance();
-        ccrs.reset();
-        ccrs.brightness = packedLight;
-        ccrs.overlay = packedOverlay;
 
 
 //        if (HolidayHelper.isAprilFools()) {
@@ -250,7 +252,7 @@ public class RenderTileReactorCore implements BlockEntityRendererTransparent<Til
     }
 
     @Override
-    public boolean shouldRenderOffScreen(TileReactorCore te) {
+    public boolean shouldRenderOffScreen() {
         return true;
     }
 

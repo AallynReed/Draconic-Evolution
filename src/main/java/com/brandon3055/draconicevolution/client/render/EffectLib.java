@@ -10,8 +10,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Camera;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
@@ -45,7 +45,7 @@ public class EffectLib {
      * @param segTaper   Allows you to apply a positive or negative taper to each arc segment. (Default 0)
      * @param colour     The colour of the arc.
      */
-    public static void renderLightningP2P(PoseStack mStack, MultiBufferSource getter, Vector3 startPos, Vector3 endPos, int segCount, long randSeed, float scaleMod, float deflectMod, boolean autoScale, float segTaper, int colour) {
+    public static void renderLightningP2P(PoseStack mStack, SubmitNodeCollector collector, Vector3 startPos, Vector3 endPos, int segCount, long randSeed, float scaleMod, float deflectMod, boolean autoScale, float segTaper, int colour) {
         double height = endPos.y - startPos.y;
         float relScale = autoScale ? (float) height / 128F : 1F; //A scale value calculated by comparing the bolt height to that of vanilla lightning
         float segHeight = (float) height / segCount;
@@ -67,49 +67,52 @@ public class EffectLib {
 
         xOffSum -= (float) (endPos.x - startPos.x);
         zOffSum -= (float) (endPos.z - startPos.z);
+        float xOffTotal = xOffSum;
+        float zOffTotal = zOffSum;
 
-        VertexConsumer builder = getter.getBuffer(RenderType.lightning());
-        Matrix4f matrix4f = mStack.last().pose();
+        collector.submitCustomGeometry(mStack, RenderTypes.lightning(), (pose, builder) -> {
+            Matrix4f matrix4f = pose.pose();
 
-        for (int layer = 0; layer < 4; ++layer) {
-            float red = ((colour >> 16) & 0xFF) / 255F;
-            float green = ((colour >> 8) & 0xFF) / 255F;
-            float blue = (colour & 0xFF) / 255F;
-            float alpha = 0.3F;
-            if (layer == 0) {
-                red = green = blue = alpha = 1;
+            for (int layer = 0; layer < 4; ++layer) {
+                float red = ((colour >> 16) & 0xFF) / 255F;
+                float green = ((colour >> 8) & 0xFF) / 255F;
+                float blue = (colour & 0xFF) / 255F;
+                float alpha = 0.3F;
+                if (layer == 0) {
+                    red = green = blue = alpha = 1;
+                }
+
+                for (int seg = 0; seg < segCount; seg++) {
+                    float pos = seg / (float) (segCount);
+                    float x = segXOffset[seg] - (xOffTotal * pos);
+                    float z = segZOffset[seg] - (zOffTotal * pos);
+
+                    float nextPos = (seg + 1) / (float) (segCount);
+                    float nextX = segXOffset[seg + 1] - (xOffTotal * nextPos);
+                    float nextZ = segZOffset[seg + 1] - (zOffTotal * nextPos);
+
+                    //The size of each shell
+                    float layerOffsetA = (0.1F + (layer * 0.2F * (1F + segTaper))) * relScale * scaleMod;
+                    float layerOffsetB = (0.1F + (layer * 0.2F * (1F - segTaper))) * relScale * scaleMod;
+
+                    addSegmentQuad(matrix4f, builder, x, (float) startPos.y, z, seg, nextX, nextZ, red, green, blue, alpha, layerOffsetA, layerOffsetB, false, false, true, false, segHeight);    //North Side
+                    addSegmentQuad(matrix4f, builder, x, (float) startPos.y, z, seg, nextX, nextZ, red, green, blue, alpha, layerOffsetA, layerOffsetB, true, false, true, true, segHeight);      //East Side
+                    addSegmentQuad(matrix4f, builder, x, (float) startPos.y, z, seg, nextX, nextZ, red, green, blue, alpha, layerOffsetA, layerOffsetB, true, true, false, true, segHeight);      //South Side
+                    addSegmentQuad(matrix4f, builder, x, (float) startPos.y, z, seg, nextX, nextZ, red, green, blue, alpha, layerOffsetA, layerOffsetB, false, true, false, false, segHeight);    //West Side
+                }
             }
-
-            for (int seg = 0; seg < segCount; seg++) {
-                float pos = seg / (float) (segCount);
-                float x = segXOffset[seg] - (xOffSum * pos);
-                float z = segZOffset[seg] - (zOffSum * pos);
-
-                float nextPos = (seg + 1) / (float) (segCount);
-                float nextX = segXOffset[seg + 1] - (xOffSum * nextPos);
-                float nextZ = segZOffset[seg + 1] - (zOffSum * nextPos);
-
-                //The size of each shell
-                float layerOffsetA = (0.1F + (layer * 0.2F * (1F + segTaper))) * relScale * scaleMod;
-                float layerOffsetB = (0.1F + (layer * 0.2F * (1F - segTaper))) * relScale * scaleMod;
-
-                addSegmentQuad(matrix4f, builder, x, (float) startPos.y, z, seg, nextX, nextZ, red, green, blue, alpha, layerOffsetA, layerOffsetB, false, false, true, false, segHeight);    //North Side
-                addSegmentQuad(matrix4f, builder, x, (float) startPos.y, z, seg, nextX, nextZ, red, green, blue, alpha, layerOffsetA, layerOffsetB, true, false, true, true, segHeight);      //East Side
-                addSegmentQuad(matrix4f, builder, x, (float) startPos.y, z, seg, nextX, nextZ, red, green, blue, alpha, layerOffsetA, layerOffsetB, true, true, false, true, segHeight);      //South Side
-                addSegmentQuad(matrix4f, builder, x, (float) startPos.y, z, seg, nextX, nextZ, red, green, blue, alpha, layerOffsetA, layerOffsetB, false, true, false, false, segHeight);    //West Side
-            }
-        }
+        });
     }
 
     /**
-     * This is the same as {@link #renderLightningP2P(PoseStack, MultiBufferSource, Vector3, Vector3, int, long, float, float, boolean, float, int)}
+     * This is the same as {@link #renderLightningP2P(PoseStack, SubmitNodeCollector, Vector3, Vector3, int, long, float, float, boolean, float, int)}
      * Except that it automatically applies the correct transformations in order to render the bolt in an ideal orientation.
      * This means you are free to use this between any two arbitrary points and the bolt will render correctly.
      * But this does come at the cost of increased overhead.
      *
-     * @see #renderLightningP2P(PoseStack, MultiBufferSource, Vector3, Vector3, int, long, float, float, boolean, float, int)
+     * @see #renderLightningP2P(PoseStack, SubmitNodeCollector, Vector3, Vector3, int, long, float, float, boolean, float, int)
      */
-    public static void renderLightningP2PRotate(PoseStack mStack, MultiBufferSource getter, Vector3 startPos, Vector3 endPos, int segCount, long randSeed, float scaleMod, float deflectMod, boolean autoScale, float segTaper, int colour) {
+    public static void renderLightningP2PRotate(PoseStack mStack, SubmitNodeCollector collector, Vector3 startPos, Vector3 endPos, int segCount, long randSeed, float scaleMod, float deflectMod, boolean autoScale, float segTaper, int colour) {
         mStack.pushPose();
         double length = MathUtils.distance(startPos, endPos);
         Vector3 virtualEndPos = startPos.copy().add(0, length, 0);
@@ -123,7 +126,7 @@ public class EffectLib {
         mStack.mulPose(Axis.YP.rotationDegrees(yRot - 90));
         mStack.mulPose(Axis.ZP.rotationDegrees(xRot - 90));
         mStack.translate(-startPos.x, -startPos.y, -startPos.z);
-        renderLightningP2P(mStack, getter, startPos, virtualEndPos, segCount, randSeed, scaleMod, deflectMod, autoScale, segTaper, colour);
+        renderLightningP2P(mStack, collector, startPos, virtualEndPos, segCount, randSeed, scaleMod, deflectMod, autoScale, segTaper, colour);
         mStack.popPose();
     }
 

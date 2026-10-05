@@ -139,7 +139,7 @@ public class FusionTileFXHandler implements ITileFXHandler {
 
             TileFusionCraftingInjector injector = (TileFusionCraftingInjector) iInjector;
             Vector3 injPos = Vector3.fromTileCenter(injector).subtract(corePos);
-            injPos.add(Vector3.fromVec3i(injector.getRotation().getNormal()).multiply(.45));
+            injPos.add(Vector3.fromVec3i(injector.getRotation().getUnitVec3i()).multiply(.45));
 
             float startAngle = ((i / (float)injCount) * (float)Math.PI * 2F);
             startAngle += (rotateAnim >= rotStartTime ? rotateAnim - rotStartTime : 0) * baseRotateSpeed;

@@ -3,12 +3,11 @@ package com.brandon3055.draconicevolution.client.render.tile;
 import codechicken.lib.colour.Colour;
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
-import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.model.OBJParser;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
-import com.brandon3055.brandonscore.client.render.RenderUtils;
+import com.brandon3055.brandonscore.client.shader.BCRenderType;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -16,15 +15,14 @@ import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystal
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalDirectIO;
 import com.brandon3055.draconicevolution.client.DEShaders;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
@@ -34,18 +32,17 @@ import java.util.Map;
 /**
  * Created by brandon3055 on 6/11/2016.
  */
-public class RenderTileEnergyCrystal implements BlockEntityRenderer<TileCrystalBase> {
+public class RenderTileEnergyCrystal implements DETileRenderer<TileCrystalBase> {
 
     public static float[][] COLOURS = {{0.0F, 0.2F, 0.3F}, {0.47F, 0.0F, 0.58F}, {1.0F, 0.4F, 0.1F}};
 
-    private static final RenderType fallBackType = RenderType.entityTranslucent(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/models/crystal_no_shader.png"));
-    private static final RenderType fallBackOverlayType = RenderType.entityTranslucent(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/models/crystal_base.png"));
-    private static final RenderType crystalBaseType = RenderType.entitySolid(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/models/crystal_base.png"));
+    private static final RenderType fallBackType = RenderTypes.entityTranslucent(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/models/crystal_no_shader.png"));
+    private static final RenderType fallBackOverlayType = RenderTypes.entityTranslucent(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/models/crystal_base.png"));
+    private static final RenderType crystalBaseType = RenderTypes.entitySolid(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/models/crystal_base.png"));
 
-    public static RenderType crystalType = RenderType.create("crystal_type", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
-            .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.energyCrystalShader))
-            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-            .createCompositeState(false));
+    public static BCRenderType crystalType = DEShaders.energyCrystalShader.renderType("crystal_type", RenderSetup.builder(DEShaders.energyCrystalShader.pipeline("crystal_type", builder -> builder))
+            .bufferSize(256)
+            .createRenderSetup());
 
     private final CCModel crystalFull;
     private final CCModel crystalHalf;
@@ -60,14 +57,10 @@ public class RenderTileEnergyCrystal implements BlockEntityRenderer<TileCrystalB
     }
 
     @Override
-    public void render(TileCrystalBase te, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
+    public void render(TileCrystalBase te, float partialTicks, PoseStack mStack, SubmitNodeCollector collector, int packedLight, int packedOverlay, CameraRenderState camera) {
         int tier = te.getTier();
 
         Matrix4 mat = new Matrix4(mStack);
-        CCRenderState ccrs = CCRenderState.instance();
-        ccrs.reset();
-        ccrs.brightness = 240;//packedLight;
-        ccrs.overlay = packedOverlay;
 
         Player player = Minecraft.getInstance().player;
         BlockPos pos = te.getBlockPos();
@@ -78,26 +71,35 @@ public class RenderTileEnergyCrystal implements BlockEntityRenderer<TileCrystalB
 //        float xrot = (float) Math.atan2(x + 0.5, z + 0.5);
 //        float dist = (float) Utils.getDistanceAtoB(Vec3D.getCenter(pos).x, Vec3D.getCenter(pos).z, Minecraft.getInstance().player.getX(), Minecraft.getInstance().player.getZ());
 //        float yrot = (float) net.minecraft.util.Mth.atan2(dist, y + 0.5);
-        ccrs.baseColour = 0xFFFFFFFF;
         DEShaders.energyCrystalMipmap.glUniform1f((float) mm);
         DEShaders.energyCrystalColour.glUniform3f(COLOURS[tier][0], COLOURS[tier][1], COLOURS[tier][2]);
 //        DEShaders.energyCrystalAngle.glUniform2f(xrot / -3.125F, yrot / 3.125F);
+        RenderType crystal = crystalType.withCurrentUniforms();
+        int fallBackColour = Colour.packRGBA(r[tier], g[tier], b[tier], 1F);
 
         if (te instanceof TileCrystalDirectIO) {
-            ccrs.bind(crystalBaseType, getter);
             mat.translate(0.5, 1, 0.5);
             mat.scale(-0.5);
             mat.apply(Rotation.sideOrientation(((TileCrystalDirectIO) te).facing.get().getOpposite().get3DDataValue(), 0).at(new Vector3(0, 1, 0)));
-            crystalBase.render(ccrs, mat);
+            collector.cc$submitCCRS(mat, crystalBaseType, (m, ccrs) -> {
+                ccrs.brightness = 240;//packedLight;
+                ccrs.overlay = packedOverlay;
+                crystalBase.render(ccrs, m);
+            });
             mat.rotate((ClientEventHandler.elapsedTicks + partialTicks) / 400F, new Vector3(0, 1, 0));
             if (mm < 1) {
-                ccrs.bind(crystalType, getter);
-                crystalHalf.render(ccrs, mat);
+                collector.cc$submitCCRS(mat, crystal, (m, ccrs) -> {
+                    ccrs.brightness = 240;
+                    ccrs.overlay = packedOverlay;
+                    crystalHalf.render(ccrs, m);
+                });
             } else {
-                ccrs.baseColour = Colour.packRGBA(r[tier], g[tier], b[tier], 1F);
-                ccrs.bind(fallBackType, getter);
-                crystalHalf.render(ccrs, mat);
-                ccrs.baseColour = -1;
+                collector.cc$submitCCRS(mat, fallBackType, (m, ccrs) -> {
+                    ccrs.brightness = 240;
+                    ccrs.overlay = packedOverlay;
+                    ccrs.baseColour = fallBackColour;
+                    crystalHalf.render(ccrs, m);
+                });
             }
         } else {
             mat.translate(Vector3.CENTER);
@@ -105,17 +107,20 @@ public class RenderTileEnergyCrystal implements BlockEntityRenderer<TileCrystalB
             mat.scale(-0.5);
             mat.rotate((ClientEventHandler.elapsedTicks + partialTicks) / 400F, new Vector3(0, 1, 0));
             if (mm < 1) {
-                ccrs.bind(crystalType, getter);
-                crystalFull.render(ccrs, mat);
+                collector.cc$submitCCRS(mat, crystal, (m, ccrs) -> {
+                    ccrs.brightness = 240;
+                    ccrs.overlay = packedOverlay;
+                    crystalFull.render(ccrs, m);
+                });
             } else {
-                ccrs.baseColour = Colour.packRGBA(r[tier], g[tier], b[tier], 1F);
-                ccrs.bind(fallBackType, getter);
-                crystalFull.render(ccrs, mat);
-                ccrs.baseColour = -1;
+                collector.cc$submitCCRS(mat, fallBackType, (m, ccrs) -> {
+                    ccrs.brightness = 240;
+                    ccrs.overlay = packedOverlay;
+                    ccrs.baseColour = fallBackColour;
+                    crystalFull.render(ccrs, m);
+                });
             }
         }
-
-        RenderUtils.endBatch(getter);
     }
 
     private static float[] r = {0.0F, 0.55F, 1.0F};
