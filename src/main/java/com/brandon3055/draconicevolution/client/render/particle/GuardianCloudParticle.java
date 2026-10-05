@@ -4,16 +4,17 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuardianCloudParticle extends TextureSheetParticle {
+public class GuardianCloudParticle extends SingleQuadParticle {
    private final SpriteSet sprites;
 
    private GuardianCloudParticle(ClientLevel p_i232414_1_, double x, double y, double z, double mx, double my, double mz, SpriteSet animatedSprite) {
-      super(p_i232414_1_, x, y, z, 0.0D, 0.0D, 0.0D);
+      super(p_i232414_1_, x, y, z, 0.0D, 0.0D, 0.0D, animatedSprite.first());
       this.sprites = animatedSprite;
       float f = 2.5F;
       this.xd *= (double)0.1F;
@@ -42,8 +43,8 @@ public class GuardianCloudParticle extends TextureSheetParticle {
    }
 
    @Override
-   public ParticleRenderType getRenderType() {
-      return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+   public SingleQuadParticle.Layer getLayer() {
+      return SingleQuadParticle.Layer.TRANSLUCENT;
    }
 
    @Override
@@ -90,7 +91,7 @@ public class GuardianCloudParticle extends TextureSheetParticle {
          this.sprites = p_i50630_1_;
       }
 
-      public Particle createParticle(SimpleParticleType p_199234_1_, ClientLevel p_199234_2_, double p_199234_3_, double p_199234_5_, double p_199234_7_, double p_199234_9_, double p_199234_11_, double p_199234_13_) {
+      public Particle createParticle(SimpleParticleType p_199234_1_, ClientLevel p_199234_2_, double p_199234_3_, double p_199234_5_, double p_199234_7_, double p_199234_9_, double p_199234_11_, double p_199234_13_, RandomSource random) {
          return new GuardianCloudParticle(p_199234_2_, p_199234_3_, p_199234_5_, p_199234_7_, p_199234_9_, p_199234_11_, p_199234_13_, this.sprites);
       }
    }

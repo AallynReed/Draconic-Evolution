@@ -3,23 +3,24 @@ package com.brandon3055.draconicevolution.client.render.particle;
 import com.brandon3055.brandonscore.client.particle.IntParticleData;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
+import net.minecraft.util.RandomSource;
 
 import java.util.List;
 
-public class ParticleEnergyBasic extends TextureSheetParticle {
+public class ParticleEnergyBasic extends SingleQuadParticle {
 
     private final SpriteSet spriteSet;
 
     public ParticleEnergyBasic(ClientLevel world, double xPos, double yPos, double zPos, SpriteSet spriteSet) {
-        super(world, xPos, yPos, zPos);
+        super(world, xPos, yPos, zPos, spriteSet.first());
         this.spriteSet = spriteSet;
         setSprite(spriteSet.get(world.getRandom()));
         hasPhysics = false;
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    public SingleQuadParticle.Layer getLayer() {
+        return SingleQuadParticle.Layer.TRANSLUCENT;
     }
 
     @Override
@@ -35,7 +36,7 @@ public class ParticleEnergyBasic extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(IntParticleData data, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(IntParticleData data, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
             ParticleEnergyBasic particleEnergy = new ParticleEnergyBasic(world, x, y, z, spriteSet);
             particleEnergy.xd = xSpeed;
             particleEnergy.yd = ySpeed;

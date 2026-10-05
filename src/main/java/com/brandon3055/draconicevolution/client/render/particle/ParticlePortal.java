@@ -5,20 +5,20 @@ import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.client.AtlasTextureHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.util.RandomSource;
 
 /**
  * Created by brandon3055 on 17/07/2016.
  */
-public class ParticlePortal extends TextureSheetParticle {
+public class ParticlePortal extends SingleQuadParticle {
 
     public Vector3 target;
     public Vector3 start;
     public float baseScale;
 
     public ParticlePortal(ClientLevel worldIn, Vector3 pos, Vector3 target) {
-        super(worldIn, pos.x, pos.y, pos.z);
+        super(worldIn, pos.x, pos.y, pos.z, AtlasTextureHelper.PORTAL_PARTICLE);
         this.start = pos;
         this.target = target;
         float speed = 0.12F + (random.nextFloat() * 0.2F);
@@ -35,7 +35,7 @@ public class ParticlePortal extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
+    public SingleQuadParticle.Layer getLayer() {
         return AtlasTextureHelper.PARTICLE_SHEET_TRANSLUCENT;
     }
 
@@ -57,7 +57,7 @@ public class ParticlePortal extends TextureSheetParticle {
     }
 
     @Override
-    protected int getLightColor(float p_189214_1_) {
+    protected int getLightCoords(float p_189214_1_) {
         return 0xF000F0;
     }
 }

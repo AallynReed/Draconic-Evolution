@@ -2,14 +2,16 @@ package com.brandon3055.draconicevolution.client.render.particle;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.RandomSource;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class BlinkParticle extends TextureSheetParticle {
-   private BlinkParticle(ClientLevel world, double x, double y, double z, double motionX, double motionY, double motionZ) {
-      super(world, x, y, z, motionX, motionY, motionZ);
+public class BlinkParticle extends SingleQuadParticle {
+   private BlinkParticle(ClientLevel world, double x, double y, double z, double motionX, double motionY, double motionZ, TextureAtlasSprite sprite) {
+      super(world, x, y, z, motionX, motionY, motionZ, sprite);
       this.xd = motionX;
       this.yd = motionY;
       this.zd = motionZ;
@@ -44,8 +46,8 @@ public class BlinkParticle extends TextureSheetParticle {
    }
 
    @Override
-   public ParticleRenderType getRenderType() {
-      return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+   public SingleQuadParticle.Layer getLayer() {
+      return SingleQuadParticle.Layer.OPAQUE;
    }
 
    @OnlyIn(Dist.CLIENT)
@@ -56,9 +58,8 @@ public class BlinkParticle extends TextureSheetParticle {
          this.spriteSet = spriteSet;
       }
 
-      public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-         BlinkParticle reverseportalparticle = new BlinkParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
-         reverseportalparticle.pickSprite(this.spriteSet);
+      public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+         BlinkParticle reverseportalparticle = new BlinkParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet.get(random));
          return reverseportalparticle;
       }
    }

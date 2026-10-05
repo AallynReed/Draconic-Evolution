@@ -3,17 +3,18 @@ package com.brandon3055.draconicevolution.client.render.particle;
 import com.brandon3055.brandonscore.client.particle.IntParticleData;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
+import net.minecraft.util.RandomSource;
 
 import java.util.List;
 
-public class SparkParticle extends TextureSheetParticle {
+public class SparkParticle extends SingleQuadParticle {
     private final SpriteSet spriteSet;
     public float sparkSize = 0.5F;
     public float baseSize = 1;
 
 
     public SparkParticle(ClientLevel level, double xPos, double yPos, double zPos, double xVel, double yVel, double zVel, SpriteSet spriteSet) {
-        super(level, xPos, yPos, zPos);
+        super(level, xPos, yPos, zPos, spriteSet.first());
         this.spriteSet = spriteSet;
         setSprite(spriteSet.get(random));
 
@@ -25,7 +26,7 @@ public class SparkParticle extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
+    public SingleQuadParticle.Layer getLayer() {
         return ParticleEnergyCoreFX.PARTICLE_NO_DEPTH_NO_LIGHT;
     }
 
@@ -52,7 +53,7 @@ public class SparkParticle extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(IntParticleData data, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(IntParticleData data, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
             SparkParticle particle = new SparkParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
 
             List<Integer> list = data.get();

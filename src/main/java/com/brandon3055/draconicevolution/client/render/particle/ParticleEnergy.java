@@ -5,16 +5,17 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
+import net.minecraft.util.RandomSource;
 
 import java.util.List;
 
-public class ParticleEnergy extends TextureSheetParticle {
+public class ParticleEnergy extends SingleQuadParticle {
 
     public Vec3D targetPos;
     private final SpriteSet spriteSet;
 
     public ParticleEnergy(ClientLevel world, double xPos, double yPos, double zPos, Vec3D targetPos, SpriteSet spriteSet) {
-        super(world, xPos, yPos, zPos);
+        super(world, xPos, yPos, zPos, spriteSet.first());
         this.targetPos = targetPos;
         this.spriteSet = spriteSet;
         setSprite(spriteSet.get(world.getRandom()));
@@ -22,8 +23,8 @@ public class ParticleEnergy extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    public SingleQuadParticle.Layer getLayer() {
+        return SingleQuadParticle.Layer.TRANSLUCENT;
     }
 
     @Override
@@ -31,7 +32,7 @@ public class ParticleEnergy extends TextureSheetParticle {
         this.xo = this.x;
         this.yo = this.y;
         this.zo = this.z;
-        setSprite(spriteSet.get(level.random));
+        setSprite(spriteSet.get(level.getRandom()));
 
         Vec3D dir = Vec3D.getDirectionVec(new Vec3D(x, y, z), targetPos);
         double speed = 0.5D;
@@ -53,7 +54,7 @@ public class ParticleEnergy extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(IntParticleData data, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(IntParticleData data, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
             ParticleEnergy particleEnergy = new ParticleEnergy(world, x, y, z, new Vec3D(xSpeed, ySpeed, zSpeed), spriteSet);
 
             List<Integer> list = data.get();

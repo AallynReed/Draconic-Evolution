@@ -4,16 +4,17 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuardianBeamParticle extends TextureSheetParticle {
+public class GuardianBeamParticle extends SingleQuadParticle {
    private final SpriteSet sprites;
 
    private GuardianBeamParticle(ClientLevel world, double x, double y, double z, double power, double my, double mz, SpriteSet animatedSprite) {
-      super(world, x, y, z, 0.0D, 0.0D, 0.0D);
+      super(world, x, y, z, 0.0D, 0.0D, 0.0D, animatedSprite.first());
       this.sprites = animatedSprite;
       this.xd = 0;//*= (double)0.1F;
       this.yd = 0;//*= (double)0.1F;
@@ -34,8 +35,8 @@ public class GuardianBeamParticle extends TextureSheetParticle {
    }
 
    @Override
-   public ParticleRenderType getRenderType() {
-      return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+   public SingleQuadParticle.Layer getLayer() {
+      return SingleQuadParticle.Layer.TRANSLUCENT;
    }
 
    @Override
@@ -82,7 +83,7 @@ public class GuardianBeamParticle extends TextureSheetParticle {
          this.sprites = p_i50630_1_;
       }
 
-      public Particle createParticle(SimpleParticleType type, ClientLevel world, double x, double y, double z, double power, double p_199234_11_, double p_199234_13_) {
+      public Particle createParticle(SimpleParticleType type, ClientLevel world, double x, double y, double z, double power, double p_199234_11_, double p_199234_13_, RandomSource random) {
          return new GuardianBeamParticle(world, x, y, z, power, p_199234_11_, p_199234_13_, this.sprites);
       }
    }

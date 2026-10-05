@@ -4,18 +4,20 @@ import com.brandon3055.brandonscore.client.particle.IntParticleData;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.BCProfiler;
 import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
+import com.mojang.blaze3d.pipeline.DepthStencilState;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.platform.CompareOp;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.RandomSource;
 
 import java.util.List;
 
@@ -23,26 +25,13 @@ import java.util.List;
  * Created by brandon3055 on 2/5/2016.
  * The particle used to render the beams on the Energy Core
  */
-public class ParticleEnergyCoreFX extends TextureSheetParticle {
+public class ParticleEnergyCoreFX extends SingleQuadParticle {
 
-    public static final ParticleRenderType PARTICLE_NO_DEPTH_NO_LIGHT = new ParticleRenderType() {
-        public BufferBuilder begin(Tesselator builder, TextureManager manager) {
-            RenderSystem.depthMask(false);
-//            RenderSystem.setShader(GameRenderer::getParticleShader);
-            RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
-            RenderSystem.enableBlend();
-            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            return builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
-        }
-
-//        public void end(Tesselator tesselator) {
-//            tesselator.end();
-//        }
-
-        public String toString() {
-            return "PARTICLE_NO_DEPTH_NO_LIGHT";
-        }
-    };
+    public static final SingleQuadParticle.Layer PARTICLE_NO_DEPTH_NO_LIGHT = new SingleQuadParticle.Layer(true, TextureAtlas.LOCATION_PARTICLES, RenderPipeline.builder(RenderPipelines.PARTICLE_SNIPPET)
+            .withLocation(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "pipeline/energy_core_fx"))
+            .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
+            .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))
+            .build());
 
     public Vec3D targetPos;
     public boolean toCore = false;
@@ -52,7 +41,7 @@ public class ParticleEnergyCoreFX extends TextureSheetParticle {
     private final SpriteSet spriteSet;
 
     public ParticleEnergyCoreFX(ClientLevel world, double xPos, double yPos, double zPos, Vec3D targetPos, SpriteSet spriteSet) {
-        super(world, xPos, yPos, zPos);
+        super(world, xPos, yPos, zPos, spriteSet.first());
         this.targetPos = targetPos;
         this.spriteSet = spriteSet;
         setSprite(spriteSet.get(world.getRandom()));
@@ -63,12 +52,12 @@ public class ParticleEnergyCoreFX extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
+    public SingleQuadParticle.Layer getLayer() {
         return PARTICLE_NO_DEPTH_NO_LIGHT;
     }
 
     @Override
-    protected int getLightColor(float p_107249_) {
+    protected int getLightCoords(float p_107249_) {
         return 255;
     }
 
@@ -80,7 +69,7 @@ public class ParticleEnergyCoreFX extends TextureSheetParticle {
         this.zo = this.z;
 
         Vec3D tPos = this.targetPos.copy();
-        setSprite(spriteSet.get(level.random));
+        setSprite(spriteSet.get(level.getRandom()));
 
         if (toCore) {
             double rotation = ClientEventHandler.elapsedTicks;
@@ -120,7 +109,7 @@ public class ParticleEnergyCoreFX extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(IntParticleData data, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(IntParticleData data, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
             ParticleEnergyCoreFX particle = new ParticleEnergyCoreFX(world, x, y, z, new Vec3D(xSpeed, ySpeed, zSpeed), spriteSet);
             List<Integer> list = data.get();
             particle.toCore = list.size() >= 1 && list.get(0) == 1;
