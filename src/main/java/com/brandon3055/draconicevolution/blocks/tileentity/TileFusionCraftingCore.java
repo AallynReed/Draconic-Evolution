@@ -191,7 +191,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
                 return false;
             }
 
-            if (Direction.getNearest((int) dirVec.x, (int) dirVec.y, (int) dirVec.z) == tile.getRotation().getOpposite()) {
+            if (Direction.getApproximateNearest((int) dirVec.x, (int) dirVec.y, (int) dirVec.z) == tile.getRotation().getOpposite()) {
                 BlockPos pos = tile.getBlockPos();
                 Direction facing = tile.getRotation();
                 boolean obstructed = false;

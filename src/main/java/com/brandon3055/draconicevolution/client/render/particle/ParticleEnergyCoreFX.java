@@ -58,7 +58,7 @@ public class ParticleEnergyCoreFX extends TextureSheetParticle {
         setSprite(spriteSet.get(world.getRandom()));
         hasPhysics = false;
         Vec3D dir = Vec3D.getDirectionVec(new Vec3D(xPos, yPos, zPos), targetPos);
-        this.direction = Direction.getNearest((float) dir.x, (float) dir.y, (float) dir.z).getAxis();
+        this.direction = Direction.getApproximateNearest((float) dir.x, (float) dir.y, (float) dir.z).getAxis();
         lifetime = 40;
     }
 

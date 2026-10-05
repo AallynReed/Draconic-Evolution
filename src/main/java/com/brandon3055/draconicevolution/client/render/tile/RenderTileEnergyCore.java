@@ -225,7 +225,7 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
             Matrix4 mat = matrix4.copy();
             mat.translate(-posOffset.get().getX() + 0.5, -posOffset.get().getY() + 0.5, -posOffset.get().getZ() + 0.5);
 
-            Direction facing = Direction.getNearest(posOffset.get().getX(), posOffset.get().getY(), posOffset.get().getZ());//Direction.getFacingFromAxis(Direction.AxisDirection.POSITIVE, te.multiBlockAxis);
+            Direction facing = Direction.getApproximateNearest(posOffset.get().getX(), posOffset.get().getY(), posOffset.get().getZ());//Direction.getFacingFromAxis(Direction.AxisDirection.POSITIVE, te.multiBlockAxis);
             if (facing.getAxis() == Direction.Axis.X || facing.getAxis() == Direction.Axis.Y) {
                 mat.rotate(-90F * MathHelper.torad, new Vector3(-facing.getStepY(), facing.getStepX(), 0).normalize());
             } else if (facing == Direction.SOUTH) {
