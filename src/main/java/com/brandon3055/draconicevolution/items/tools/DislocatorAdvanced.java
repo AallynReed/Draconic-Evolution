@@ -149,7 +149,7 @@ public class DislocatorAdvanced extends Dislocator {
         } else if (useFuel(stack, player)) {
             dislocateEntity(stack, player, player, targetPos);
             if (showFuel) {
-                player.displayClientMessage(Component.translatable("dislocate.draconicevolution.teleport_fuel").append(" " + getFuel(stack)).withStyle(ChatFormatting.WHITE), true);
+                player.sendOverlayMessage(Component.translatable("dislocate.draconicevolution.teleport_fuel").append(" " + getFuel(stack)).withStyle(ChatFormatting.WHITE));
             }
         }
     }
@@ -172,7 +172,7 @@ public class DislocatorAdvanced extends Dislocator {
             blinkFuel--;
             setFuel(stack, blinkFuel);
             if (showFuel) {
-                player.displayClientMessage(Component.translatable("dislocate.draconicevolution.teleport_fuel").append(" " + getFuel(stack)).withStyle(ChatFormatting.WHITE), true);
+                player.sendOverlayMessage(Component.translatable("dislocate.draconicevolution.teleport_fuel").append(" " + getFuel(stack)).withStyle(ChatFormatting.WHITE));
             }
             player.getCooldowns().addCooldown(stack, 5);
         }

@@ -68,7 +68,7 @@ public class Dislocator extends Item implements IHudItem {
     public void messageUser(Entity user, Component message) {
         if (user instanceof Player) {
 //            ChatHelper.sendIndexed((PlayerEntity) user, message, 576);
-            ((Player) user).displayClientMessage(message, true);
+            ((Player) user).sendOverlayMessage(message);
         }
     }
 
