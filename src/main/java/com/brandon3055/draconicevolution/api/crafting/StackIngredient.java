@@ -12,7 +12,9 @@ import net.minecraft.resources.HolderSetCodec;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.crafting.ICustomIngredient;
 import net.neoforged.neoforge.common.crafting.IngredientType;
@@ -29,20 +31,16 @@ public class StackIngredient implements ICustomIngredient {
     public static final MapCodec<StackIngredient> CODEC = RecordCodecBuilder.mapCodec(
             builder -> builder
                     .group(
-                            HolderSetCodec.create(Registries.ITEM, BuiltInRegistries.ITEM.holderByNameCodec(), false).fieldOf("items").forGetter(StackIngredient::items),
+                            HolderSetCodec.create(Registries.ITEM, BuiltInRegistries.ITEM.holderByNameCodec(), false).fieldOf("items").forGetter(StackIngredient::itemSet),
                             Codec.INT.optionalFieldOf("count", 1).forGetter(StackIngredient::getCount))
                     .apply(builder, StackIngredient::new));
 
     private final int count;
     private final HolderSet<Item> items;
-    private final ItemStack[] stacks;
 
     public StackIngredient(HolderSet<Item> items, int count) {
         this.items = items;
         this.count = count;
-        this.stacks = items.stream()
-                .map(i -> new ItemStack(i, count))
-                .toArray(ItemStack[]::new);
     }
 
     public int getCount() {
@@ -60,17 +58,22 @@ public class StackIngredient implements ICustomIngredient {
     }
 
     @Override
-    public Stream<ItemStack> getItems() {
-        return Stream.of(stacks);
+    public Stream<Holder<Item>> items() {
+        return items.stream();
+    }
+
+    @Override
+    public SlotDisplay display() {
+        return new SlotDisplay.Composite(items.stream().map(i -> (SlotDisplay) new SlotDisplay.ItemStackSlotDisplay(new ItemStackTemplate(i, count))).toList());
     }
 
 
     @Override
     public boolean test(ItemStack stack) {
-        return this.items.contains(stack.getItemHolder()) && stack.getCount() >= count;
+        return this.items.contains(stack.typeHolder()) && stack.getCount() >= count;
     }
 
-    public HolderSet<Item> items() {
+    public HolderSet<Item> itemSet() {
         return items;
     }
 
