@@ -15,6 +15,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -119,7 +120,7 @@ public class GroundEffectPhase extends ChargeUpPhase {
     }
 
     private void summonWither(boolean canLoot) {
-        GuardianWither wither = DEContent.ENTITY_GUARDIAN_WITHER.get().create(guardian.level());
+        GuardianWither wither = DEContent.ENTITY_GUARDIAN_WITHER.get().create(guardian.level(), EntitySpawnReason.MOB_SUMMONED);
         Vector3 spawnPos = null;
         for (int i = 0; i < 10; i++) {
             spawnPos = Vector3.fromEntity(guardian).add(random.nextInt(80) - 40, random.nextInt(20) - 10, random.nextInt(80) - 40);

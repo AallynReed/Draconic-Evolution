@@ -26,6 +26,7 @@ import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -191,7 +192,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
         }
 
         GuardianFightManager manager = guardian.getFightManager();
-        ItemEntity item = EntityType.ITEM.create(guardian.level());
+        ItemEntity item = EntityType.ITEM.create(guardian.level(), EntitySpawnReason.EVENT);
         if (manager != null && item != null) {
             item.setItem(new ItemStack(DEContent.DRAGON_HEART.get()));
             BlockPos podiumPos = manager.getArenaOrigin().above(20);
@@ -210,7 +211,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
     private DraconicGuardianEntity createNewGuardian() {
         ServerLevel world = (ServerLevel) this.level;
         world.getChunkAt(guardianSpawnPos());
-        DraconicGuardianEntity guardian = DEContent.ENTITY_DRACONIC_GUARDIAN.get().create(world);
+        DraconicGuardianEntity guardian = DEContent.ENTITY_DRACONIC_GUARDIAN.get().create(world, EntitySpawnReason.EVENT);
         assert guardian != null;
         guardian.getPhaseManager().setPhase(PhaseType.START);
         guardian.snapTo(guardianSpawnPos().getX(), guardianSpawnPos().getY(), guardianSpawnPos().getZ(), this.level.getRandom().nextFloat() * 360.0F, 0.0F);
