@@ -200,7 +200,7 @@ public class ExplosionHelper {
                         state.tick(helper.serverWorld, helper.mPos.set(pos), helper.serverWorld.getRandom());
                     }
 //                    list.add(Vector3.fromBlockPos(mPos.set(pos)));
-                    state.handleNeighborChanged(helper.serverWorld, mPos.set(pos), Blocks.AIR, mPos.set(pos).above(), false);
+                    state.handleNeighborChanged(helper.serverWorld, mPos.set(pos), Blocks.AIR, null, false);
                 }
 //                BCClientEventHandler.debugBlockList = list;
                 LogHelper.dev("Total Falling Blocks " + i);
