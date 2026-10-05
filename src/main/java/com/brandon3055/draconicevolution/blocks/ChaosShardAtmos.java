@@ -16,7 +16,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  */
 public class ChaosShardAtmos extends BlockBCore {
     public ChaosShardAtmos() {
-        super(Properties.of().air().randomTicks().noCollission());
+        super(Properties.of().air().randomTicks().noCollision());
 
     }
 
