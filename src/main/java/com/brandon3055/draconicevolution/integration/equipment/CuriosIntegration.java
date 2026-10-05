@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.integration.equipment;
 
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.lib.WTFException;
-import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.data.tags.TagAppender;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -88,16 +88,16 @@ public class CuriosIntegration extends EquipmentManager {
     /**
      * Data Gen
      */
-    public static void generateTags(Function<TagKey<Item>, TagsProvider.TagAppender> builder) {
+    public static void generateTags(Function<TagKey<Item>, TagAppender<Item, Item>> builder) {
         builder.apply(CURIO_TAG).add(
-                DEContent.DISLOCATOR_ADVANCED.getKey(),
-                DEContent.MAGNET.getKey(),
-                DEContent.MAGNET_ADVANCED.getKey(),
-                DEContent.CAPACITOR_WYVERN.getKey(),
-                DEContent.CAPACITOR_DRACONIC.getKey(),
-                DEContent.CAPACITOR_CHAOTIC.getKey(),
-                DEContent.CAPACITOR_CREATIVE.getKey());
+                DEContent.DISLOCATOR_ADVANCED.get(),
+                DEContent.MAGNET.get(),
+                DEContent.MAGNET_ADVANCED.get(),
+                DEContent.CAPACITOR_WYVERN.get(),
+                DEContent.CAPACITOR_DRACONIC.get(),
+                DEContent.CAPACITOR_CHAOTIC.get(),
+                DEContent.CAPACITOR_CREATIVE.get());
 
-        builder.apply(BODY_TAG).add(DEContent.CHESTPIECE_WYVERN.getKey(), DEContent.CHESTPIECE_DRACONIC.getKey(), DEContent.CHESTPIECE_CHAOTIC.getKey());
+        builder.apply(BODY_TAG).add(DEContent.CHESTPIECE_WYVERN.get(), DEContent.CHESTPIECE_DRACONIC.get(), DEContent.CHESTPIECE_CHAOTIC.get());
     }
 }

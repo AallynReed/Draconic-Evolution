@@ -3,7 +3,6 @@ package com.brandon3055.draconicevolution.datagen;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import top.theillusivec4.curios.api.CuriosDataProvider;
 
 import java.util.concurrent.CompletableFuture;
@@ -13,12 +12,12 @@ import java.util.concurrent.CompletableFuture;
  */
 public class CuriosProvider extends CuriosDataProvider {
 
-    public CuriosProvider(PackOutput output, ExistingFileHelper fileHelper, CompletableFuture<HolderLookup.Provider> registries) {
-        super(DraconicEvolution.MODID, output, fileHelper, registries);
+    public CuriosProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
+        super(DraconicEvolution.MODID, output, registries);
     }
 
     @Override
-    public void generate(HolderLookup.Provider registries, ExistingFileHelper fileHelper) {
+    public void generate(HolderLookup.Provider registries) {
         createSlot("curio").size(2);
         createSlot("belt");
         createSlot("charm");
