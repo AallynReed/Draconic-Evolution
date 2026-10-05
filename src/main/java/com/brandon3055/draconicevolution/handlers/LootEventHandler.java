@@ -29,7 +29,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.dimension.end.EndDragonFight;
+import net.minecraft.world.level.dimension.end.EnderDragonFight;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.EndPodiumFeature;
 import net.neoforged.bus.api.EventPriority;
@@ -92,7 +92,7 @@ public class LootEventHandler {
 
         if (entity instanceof EnderDragon dragon) {
             deadDragons.add(entity.getUUID());
-            EndDragonFight manager = dragon.getDragonFight();
+            EnderDragonFight manager = dragon.getDragonFight();
             if (manager == null) return;
 
             ItemEntity item = EntityType.ITEM.create(entity.level(), EntitySpawnReason.EVENT);
