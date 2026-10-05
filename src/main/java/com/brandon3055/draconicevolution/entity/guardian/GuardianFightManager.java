@@ -22,7 +22,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
-import net.minecraft.util.Unit;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -93,7 +92,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
 
         //This is just using the player list in boss info to check if there are any players in the area.
         if (!this.bossInfo.getPlayers().isEmpty()) {
-            world.getChunkSource().addRegionTicket(TicketType.DRAGON, new ChunkPos(arenaOrigin), 12, Unit.INSTANCE); //Is this chunk loading?
+            world.getChunkSource().addTicketWithRadius(TicketType.DRAGON, ChunkPos.containing(arenaOrigin), 12); //Is this chunk loading?
             boolean areaLoaded = this.isFightAreaLoaded();
 
             if (this.respawnState != null) {
@@ -112,7 +111,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
                 }
             }
         } else {
-            world.getChunkSource().removeRegionTicket(TicketType.DRAGON, new ChunkPos(arenaOrigin), 12, Unit.INSTANCE);
+            world.getChunkSource().removeTicketWithRadius(TicketType.DRAGON, ChunkPos.containing(arenaOrigin), 12);
         }
     }
 
@@ -240,7 +239,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
     }
 
     private void cleanUpAndDispose() {
-        ((ServerLevel) level).getChunkSource().removeRegionTicket(TicketType.DRAGON, new ChunkPos(arenaOrigin), 12, Unit.INSTANCE);
+        ((ServerLevel) level).getChunkSource().removeTicketWithRadius(TicketType.DRAGON, ChunkPos.containing(arenaOrigin), 12);
         bossInfo.removeAllPlayers();
         removeEntity();
     }
