@@ -13,6 +13,7 @@ import com.brandon3055.draconicevolution.api.config.ConfigProperty.Type;
 import com.brandon3055.draconicevolution.inventory.ConfigurableItemMenu;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.google.gson.JsonParseException;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
@@ -22,7 +23,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.util.LenientJsonParser;
 import org.apache.commons.lang3.NotImplementedException;
 
 import javax.annotation.Nullable;
@@ -317,9 +320,9 @@ public class PropertyData {
         }
 
         if (toolTip != null) {
-            nbt.putString("tooltip", Component.Serializer.toJson(toolTip, provider));
+            nbt.putString("tooltip", ComponentSerialization.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), toolTip).getOrThrow().toString());
         }
-        nbt.putString("display_name", Component.Serializer.toJson(displayName, provider));
+        nbt.putString("display_name", ComponentSerialization.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), displayName).getOrThrow().toString());
         nbt.putString("display_value", displayValue);
         nbt.putBoolean("global", isGlobal);
         switch (type) {
@@ -362,7 +365,7 @@ public class PropertyData {
 
         PropertyData data = new PropertyData(
                 nbt.read("prov_id", UUIDUtil.CODEC).orElseThrow(),
-                nbt.getString("prov_name"),
+                nbt.getStringOr("prov_name", ""),
                 Type.getSafe(nbt.getByteOr("type", (byte) 0)));
 
         if (nbt.read("prop_name", UUIDUtil.CODEC).isPresent()) {
@@ -373,13 +376,13 @@ public class PropertyData {
 
         if (nbt.contains("tooltip")) {
             try {
-                data.toolTip = Component.Serializer.fromJsonLenient(nbt.getString("tooltip"), provider);
+                data.toolTip = ComponentSerialization.CODEC.parse(provider.createSerializationContext(JsonOps.INSTANCE), LenientJsonParser.parse(nbt.getStringOr("tooltip", ""))).getOrThrow(JsonParseException::new);
             } catch (JsonParseException ignored) {
                 data.toolTip = Component.literal(nbt.getStringOr("tooltip", ""));
             }
         }
         try {
-            data.displayName = Component.Serializer.fromJsonLenient(nbt.getString("display_name"), provider);
+            data.displayName = ComponentSerialization.CODEC.parse(provider.createSerializationContext(JsonOps.INSTANCE), LenientJsonParser.parse(nbt.getStringOr("display_name", ""))).getOrThrow(JsonParseException::new);
         }catch (JsonParseException ignored) {
             data.displayName = Component.literal(nbt.getStringOr("display_name", ""));
         }

@@ -5,7 +5,6 @@ import codechicken.lib.gui.modular.ModularGuiContainer;
 import codechicken.lib.gui.modular.elements.*;
 import codechicken.lib.gui.modular.lib.BackgroundRender;
 import codechicken.lib.gui.modular.lib.Constraints;
-import codechicken.lib.gui.modular.lib.GuiRender;
 import codechicken.lib.gui.modular.lib.container.ContainerGuiProvider;
 import codechicken.lib.gui.modular.lib.container.ContainerScreenAccess;
 import codechicken.lib.gui.modular.lib.geometry.Direction;
@@ -23,9 +22,12 @@ import com.brandon3055.brandonscore.client.gui.modulargui.templates.ButtonRow;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
 import com.brandon3055.draconicevolution.client.DEGuiTextures;
+import com.brandon3055.draconicevolution.client.render.GuiModelRenderer;
 import com.brandon3055.draconicevolution.inventory.GeneratorMenu;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
@@ -43,7 +45,7 @@ public class GeneratorGui extends ContainerGuiProvider<GeneratorMenu> {
     public static final int GUI_WIDTH = 176;
     public static final int GUI_HEIGHT = 166;
 
-    private static final RenderType modelType = RenderType.entitySolid(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/generator/generator_2.png"));
+    private static final RenderType modelType = RenderTypes.entitySolid(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/generator/generator_2.png"));
     private static final CCModel storageModel;
 
 //    private ModuleGridPanel gridPanel;
@@ -126,23 +128,22 @@ public class GeneratorGui extends ContainerGuiProvider<GeneratorMenu> {
         }
 
         @Override
-        public double getBackgroundDepth() {
-            return 100;
-        }
-
-        @Override
-        public void renderBackground(GuiRender render, double mouseX, double mouseY, float partialTicks) {
-            CCRenderState ccrs = CCRenderState.instance();
-            ccrs.reset();
-            ccrs.bind(modelType, render.buffers());
-
-            Matrix4 mat = new Matrix4(render.pose());
-            mat.translate(xMin() + 90, yMin() + 45, 50);
+        public void renderBehind(GuiGraphicsExtractor render, double mouseX, double mouseY, float partialTicks) {
             double mx = (((mouseX - getModularGui().xMin()) / (float) getModularGui().xSize()) - 0.5F) * .1F;
             double my = (((mouseY - getModularGui().yMin()) / (float) getModularGui().ySize()) - 0.5F) * .1F;
-            mat.apply(new Rotation(150 * MathHelper.torad, 1, 0, 0).with(new Rotation(10 * MathHelper.torad, -my, 1 + mx, 0)));
-            mat.scale(7.5);
-            storageModel.render(ccrs, mat);
+            double x = xMin() + 90;
+            double y = yMin() + 45;
+            GuiModelRenderer.submit(render, (int) xMin(), (int) yMin(), (int) xMax(), (int) yMax(), (poseStack, buffers) -> {
+                CCRenderState ccrs = CCRenderState.instance();
+                ccrs.reset();
+                ccrs.bind(modelType, buffers);
+
+                Matrix4 mat = new Matrix4(poseStack);
+                mat.translate(x, y, 50);
+                mat.apply(new Rotation(150 * MathHelper.torad, 1, 0, 0).with(new Rotation(10 * MathHelper.torad, -my, 1 + mx, 0)));
+                mat.scale(7.5);
+                storageModel.render(ccrs, mat);
+            });
         }
     }
 

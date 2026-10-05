@@ -4,7 +4,6 @@ import codechicken.lib.gui.modular.ModularGui;
 import codechicken.lib.gui.modular.ModularGuiContainer;
 import codechicken.lib.gui.modular.elements.*;
 import codechicken.lib.gui.modular.lib.Constraints;
-import codechicken.lib.gui.modular.lib.GuiRender;
 import codechicken.lib.gui.modular.lib.SliderState;
 import codechicken.lib.gui.modular.lib.container.ContainerGuiProvider;
 import codechicken.lib.gui.modular.lib.container.ContainerScreenAccess;
@@ -25,6 +24,7 @@ import com.brandon3055.draconicevolution.client.DEGuiTextures;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileReactorCore;
 import com.brandon3055.draconicevolution.inventory.ReactorMenu;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -283,17 +283,12 @@ public class ReactorGui extends ContainerGuiProvider<ReactorMenu> {
         //Core Render
         GuiTexture coreBg = new GuiTexture(root, DEGuiTextures.get("reactor/core")) {
             @Override
-            public double getBackgroundDepth() {
-                return 100;
-            }
-
-            @Override
-            public void renderBackground(GuiRender render, double mouseX, double mouseY, float partialTicks) {
-                super.renderBackground(render, mouseX, mouseY, partialTicks);
-                render.pose().pushPose();
-                render.pose().translate(xCenter(), yCenter(), 100);
+            public void renderBehind(GuiGraphicsExtractor render, double mouseX, double mouseY, float partialTicks) {
+                super.renderBehind(render, mouseX, mouseY, partialTicks);
+                render.pose().pushMatrix();
+                render.pose().translate((float) xCenter(), (float) yCenter());
                 RenderTileReactorCore.renderGUI(render, tile);
-                render.pose().popPose();
+                render.pose().popMatrix();
             }
         };
         Constraints.size(coreBg, 128, 128);

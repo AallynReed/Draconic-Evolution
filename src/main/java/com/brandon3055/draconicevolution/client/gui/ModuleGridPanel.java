@@ -3,12 +3,12 @@ package com.brandon3055.draconicevolution.client.gui;
 import codechicken.lib.gui.modular.elements.GuiElement;
 import codechicken.lib.gui.modular.lib.BackgroundRender;
 import codechicken.lib.gui.modular.lib.Constraints;
-import codechicken.lib.gui.modular.lib.GuiRender;
 import codechicken.lib.gui.modular.lib.geometry.GuiParent;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostContainer;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -92,12 +92,12 @@ public class ModuleGridPanel extends GuiElement<ModuleGridPanel> implements Back
     }
 
     @Override
-    public void renderBackground(GuiRender render, double mouseX, double mouseY, float partialTicks) {
+    public void renderBehind(GuiGraphicsExtractor render, double mouseX, double mouseY, float partialTicks) {
         double fadeAlpha = MathHelper.clip((animState - 0.1) * 1.1, 0, 1);
         int backgroundCol = 0x100010 | (int) (0xf0 * fadeAlpha) << 24;
         int borderCol = colour | (int) (0xB0 * fadeAlpha) << 24;
         int borderColorEnd = (borderCol & 0xFEFEFE) >> 1 | borderCol & 0xFF000000;
-        render.toolTipBackground(xMin(), yMin(), xSize(), ySize(), backgroundCol, borderCol, borderColorEnd);
+        render.cc$tooltipBackground(xMin(), yMin(), xSize(), ySize(), backgroundCol, backgroundCol, borderCol, borderColorEnd, false);
     }
 
     public enum GridPos {

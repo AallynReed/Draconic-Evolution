@@ -11,6 +11,7 @@ import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleRegistry;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -163,7 +164,7 @@ public class SupportedModulesIcon extends GuiElement<SupportedModulesIcon> {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event) {
         if (isMouseOver() && !locked) {
             locked = true;
             mc().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
@@ -172,7 +173,7 @@ public class SupportedModulesIcon extends GuiElement<SupportedModulesIcon> {
             page = Integer.MIN_VALUE;
             mc().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event);
     }
 
     @Override

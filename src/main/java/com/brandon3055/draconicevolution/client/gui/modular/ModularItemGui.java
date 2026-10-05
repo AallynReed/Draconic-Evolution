@@ -4,13 +4,11 @@ import codechicken.lib.gui.modular.ModularGui;
 import codechicken.lib.gui.modular.ModularGuiContainer;
 import codechicken.lib.gui.modular.elements.*;
 import codechicken.lib.gui.modular.lib.Constraints;
-import codechicken.lib.gui.modular.lib.GuiRender;
 import codechicken.lib.gui.modular.lib.container.ContainerGuiProvider;
 import codechicken.lib.gui.modular.lib.container.ContainerScreenAccess;
 import codechicken.lib.gui.modular.lib.geometry.Axis;
 import codechicken.lib.gui.modular.lib.geometry.Direction;
 import codechicken.lib.gui.modular.lib.geometry.Position;
-import codechicken.lib.gui.modular.sprite.Material;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.client.BCGuiTextures;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
@@ -25,6 +23,7 @@ import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.inventory.ModularItemMenu;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
@@ -164,17 +163,17 @@ public class ModularItemGui extends ContainerGuiProvider<ModularItemMenu> {
         }
     }
 
-    private void renderSlotOverlay(Slot slot, Position pos, GuiRender render) {
+    private void renderSlotOverlay(Slot slot, Position pos, GuiGraphicsExtractor render) {
         if (slot.hasItem() && slot.getItem().getCapability(DECapabilities.Host.ITEM) != null) {
             int y = slot.y;
             int x = slot.x;
             int light = 0xFFfbe555;
             int dark = 0xFFf45905;
 
-            render.shadedRect(pos.x() - 1, pos.y() - 1, 18, 18, 1, dark, light, 0);
+            render.cc$shadedRect(pos.x() - 1, pos.y() - 1, 18, 18, 1, dark, light, 0);
 
             if (slot.getItem() == menu.hostStack) {
-                render.borderRect(pos.x(), pos.y(), 16, 16, 1, 0x50FF0000, 0xFFFF0000);
+                render.cc$borderRect(pos.x(), pos.y(), 16, 16, 1, 0x50FF0000, 0xFFFF0000);
             }
         }
     }
@@ -186,10 +185,10 @@ public class ModularItemGui extends ContainerGuiProvider<ModularItemMenu> {
         }
 
         @Override
-        public void renderFloatingItem(GuiRender render, ItemStack itemStack, int x, int y, String string) {
+        public void extractFloatingItem(GuiGraphicsExtractor render, ItemStack itemStack, int x, int y, String string) {
             ModularItemGui gui = (ModularItemGui) modularGui.getProvider();
             if (!gui.gridRenderer.renderStackOverride(render, itemStack, x, y, string)) {
-                super.renderFloatingItem(render, itemStack, x, y, string);
+                super.extractFloatingItem(render, itemStack, x, y, string);
             }
         }
     }

@@ -14,6 +14,7 @@ import com.brandon3055.draconicevolution.client.handler.ModularItemRenderOverrid
 import com.brandon3055.draconicevolution.client.handler.OverlayRenderHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
+import com.brandon3055.draconicevolution.client.render.GuiModelRenderer;
 import com.brandon3055.draconicevolution.client.render.entity.DEWingsLayer;
 import com.brandon3055.draconicevolution.client.render.entity.DraconicGuardianRenderer;
 import com.brandon3055.draconicevolution.client.render.entity.GuardianCrystalRenderer;
@@ -62,6 +63,7 @@ public class DEClient {
         modBus.addListener(DEClient::registerMenuScreens);
         modBus.addListener(DEParticles::registerFactories);
         modBus.addListener(DEParticles::registerGroups);
+        modBus.addListener(GuiModelRenderer::register);
 
 //        modBus.addListener((RegisterColorHandlersEvent.Block event) -> moduleSpriteUploader = new ModuleSpriteUploader());
 

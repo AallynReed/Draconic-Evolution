@@ -4,7 +4,6 @@ import codechicken.lib.gui.modular.ModularGui;
 import codechicken.lib.gui.modular.ModularGuiContainer;
 import codechicken.lib.gui.modular.elements.*;
 import codechicken.lib.gui.modular.lib.Constraints;
-import codechicken.lib.gui.modular.lib.GuiRender;
 import codechicken.lib.gui.modular.lib.container.ContainerGuiProvider;
 import codechicken.lib.gui.modular.lib.container.ContainerScreenAccess;
 import codechicken.lib.gui.modular.lib.geometry.Axis;
@@ -26,8 +25,9 @@ import com.brandon3055.draconicevolution.inventory.ConfigurableItemMenu;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -318,7 +318,7 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
 
         if (!bindReleased) {
             InputConstants.Key bind = KeyBindings.toolConfig.getKey();
-            if (!InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), bind.getValue())) {
+            if (!InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), bind.getValue())) {
                 if (closeOnRelease) {
                     gui.getScreen().onClose();
                 } else {
@@ -353,19 +353,19 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
         }
     }
 
-    private void renderSlotOverlay(Slot slot, Position pos, GuiRender render) {
+    private void renderSlotOverlay(Slot slot, Position pos, GuiGraphicsExtractor render) {
         ItemStack stack = slot.getItem();
         PropertyProvider provider = DECapabilities.getHost(stack);
         if (!stack.isEmpty() && provider != null) {
             int light = 0xFFfbe555;
             int dark = 0xFFf45905;
-            render.shadedRect(pos.x() - 1, pos.y() - 1, 18, 18, 1, dark, light, 0);
+            render.cc$shadedRect(pos.x() - 1, pos.y() - 1, 18, 18, 1, dark, light, 0);
             if (!advancedUI && provider.getIdentity().equals(menu.getSelectedIdentity())) {
-                render.rect(pos.x(), pos.y(), 16, 16, 0x80FF0000);
+                render.cc$fill(pos.x(), pos.y(), pos.x() + 16, pos.y() + 16, 0x80FF0000);
             } else if (DEConfig.configUiEnableVisualization && hoveredData != null) {
                 ConfigProperty prop = hoveredData.getPropIfApplicable(provider);
                 if (prop != null) {
-                    render.rect(pos.x(), pos.y(), 16, 16, hoveredData.doesDataMatch(prop) ? 0x8000FF00 : 0x80ff9100);
+                    render.cc$fill(pos.x(), pos.y(), pos.x() + 16, pos.y() + 16, hoveredData.doesDataMatch(prop) ? 0x8000FF00 : 0x80ff9100);
                 }
             }
 
@@ -376,8 +376,8 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
             }
 
         } else {
-//            render.rect(pos.x() - 1, pos.y() - 1, 18, 18, 0xB0000000);
-            render.rect(pos.x() - 1, pos.y() - 1, 18, 18, darkMode ? 0xB0000000 : 0xA0FFFFFF);
+//            render.cc$fill(pos.x() - 1, pos.y() - 1, pos.x() - 1 + 18, pos.y() - 1 + 18, 0xB0000000);
+            render.cc$fill(pos.x() - 1, pos.y() - 1, pos.x() - 1 + 18, pos.y() - 1 + 18, darkMode ? 0xB0000000 : 0xA0FFFFFF);
         }
     }
 
@@ -453,7 +453,7 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
         if (screen instanceof ConfigurableItemGui.Screen || player == null) {
             return;
         }
-        InputConstants.Key input = InputConstants.getKey(keyCode, scanCode);
+        InputConstants.Key input = InputConstants.getKey(new KeyEvent(keyCode, scanCode, 0));
         if (keyBindCache == null) {
             ModularGui dummy = new ModularGui(e -> {});
             keyBindCache = new ArrayList<>();
@@ -504,10 +504,10 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
             return tick >= 10;
         }
 
-        public void render(double x, double y, GuiRender render) {
+        public void render(double x, double y, GuiGraphicsExtractor render) {
             if (!isFinished()) {
                 float offset = (tick / 10F) * 8;
-                render.fill(x + offset, y + offset, x + 16 - offset, y + 16 - offset, 0x5000FFFF);
+                render.cc$fill(x + offset, y + offset, x + 16 - offset, y + 16 - offset, 0x5000FFFF);
             }
         }
     }
@@ -527,8 +527,8 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
         }
 
         @Override
-        public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-            super.render(graphics, mouseX, mouseY, partialTicks);
+        public void extractRenderState(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+            super.extractRenderState(graphics, mouseX, mouseY, partialTicks);
             ((ConfigurableItemGui) modularGui.getProvider()).updateAnimations.removeIf(UpdateAnim::isFinished);
             ((ConfigurableItemGui) modularGui.getProvider()).updateAnimations.forEach(e -> e.tick(partialTicks));
         }
