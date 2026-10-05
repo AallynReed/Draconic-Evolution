@@ -1,16 +1,17 @@
 package com.brandon3055.draconicevolution.client.render.entity.projectile;
 
-import codechicken.lib.render.buffer.TransformingVertexConsumer;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.draconicevolution.entity.projectile.DraconicArrowEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -22,19 +23,35 @@ import org.joml.Matrix4f;
 import java.util.Random;
 
 @OnlyIn(Dist.CLIENT)
-public class DraconicArrowRenderer extends EntityRenderer<DraconicArrowEntity> {
+public class DraconicArrowRenderer extends EntityRenderer<DraconicArrowEntity, DraconicArrowRenderer.RenderState> {
     public static final Identifier RES_ARROW = Identifier.withDefaultNamespace("textures/entity/projectiles/arrow.png");
-    public static final Identifier RES_TIPPED_ARROW = Identifier.withDefaultNamespace("textures/entity/projectiles/tipped_arrow.png");
+    public static final Identifier RES_TIPPED_ARROW = Identifier.withDefaultNamespace("textures/entity/projectiles/arrow_tipped.png");
 
     public DraconicArrowRenderer(EntityRendererProvider.Context context) {
         super(context);
     }
 
-    public void render(DraconicArrowEntity arrowEntity, float entityYaw, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLightIn) {
+    @Override
+    public RenderState createRenderState() {
+        return new RenderState();
+    }
+
+    @Override
+    public void extractRenderState(DraconicArrowEntity arrowEntity, RenderState state, float partialTicks) {
+        super.extractRenderState(arrowEntity, state, partialTicks);
+        state.yRot = Mth.lerp(partialTicks, arrowEntity.yRotO, arrowEntity.getYRot());
+        state.xRot = Mth.lerp(partialTicks, arrowEntity.xRotO, arrowEntity.getXRot());
+        state.shake = (float) arrowEntity.shakeTime - partialTicks;
+        state.texture = this.getTextureLocation(arrowEntity);
+    }
+
+    @Override
+    public void submit(RenderState state, PoseStack mStack, SubmitNodeCollector collector, CameraRenderState camera) {
+        int packedLightIn = state.lightCoords;
         mStack.pushPose();
-        mStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, arrowEntity.yRotO, arrowEntity.getYRot()) - 90.0F));
-        mStack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partialTicks, arrowEntity.xRotO, arrowEntity.getXRot())));
-        float f9 = (float) arrowEntity.shakeTime - partialTicks;
+        mStack.mulPose(Axis.YP.rotationDegrees(state.yRot - 90.0F));
+        mStack.mulPose(Axis.ZP.rotationDegrees(state.xRot));
+        float f9 = state.shake;
         if (f9 > 0.0F) {
             float f10 = -Mth.sin(f9 * 3.0F) * f9;
             mStack.mulPose(Axis.ZP.rotationDegrees(f10));
@@ -43,30 +60,31 @@ public class DraconicArrowRenderer extends EntityRenderer<DraconicArrowEntity> {
         mStack.mulPose(Axis.XP.rotationDegrees(45.0F));
         mStack.scale(0.05625F, 0.05625F, 0.05625F);
         mStack.translate(-4.0D, 0.0D, 0.0D);
-        VertexConsumer ivertexbuilder = getter.getBuffer(RenderType.entityCutout(this.getTextureLocation(arrowEntity)));
-        PoseStack.Pose matrixstack$entry = mStack.last();
-        Matrix4f matrix4f = matrixstack$entry.pose();
-        this.drawVertex(matrix4f, matrixstack$entry, ivertexbuilder, -7, -2, -2, 0.0F, 0.15625F, -1, 0, 0, packedLightIn);
-        this.drawVertex(matrix4f, matrixstack$entry, ivertexbuilder, -7, -2, 2, 0.15625F, 0.15625F, -1, 0, 0, packedLightIn);
-        this.drawVertex(matrix4f, matrixstack$entry, ivertexbuilder, -7, 2, 2, 0.15625F, 0.3125F, -1, 0, 0, packedLightIn);
-        this.drawVertex(matrix4f, matrixstack$entry, ivertexbuilder, -7, 2, -2, 0.0F, 0.3125F, -1, 0, 0, packedLightIn);
-        this.drawVertex(matrix4f, matrixstack$entry, ivertexbuilder, -7, 2, -2, 0.0F, 0.15625F, 1, 0, 0, packedLightIn);
-        this.drawVertex(matrix4f, matrixstack$entry, ivertexbuilder, -7, 2, 2, 0.15625F, 0.15625F, 1, 0, 0, packedLightIn);
-        this.drawVertex(matrix4f, matrixstack$entry, ivertexbuilder, -7, -2, 2, 0.15625F, 0.3125F, 1, 0, 0, packedLightIn);
-        this.drawVertex(matrix4f, matrixstack$entry, ivertexbuilder, -7, -2, -2, 0.0F, 0.3125F, 1, 0, 0, packedLightIn);
+        collector.submitCustomGeometry(mStack, RenderTypes.entityCutoutCull(state.texture), (pose, ivertexbuilder) -> {
+            PoseStack.Pose matrixstack$entry = pose.copy();
+            Matrix4f matrix4f = matrixstack$entry.pose();
+            this.drawVertex(matrix4f, matrixstack$entry, ivertexbuilder, -7, -2, -2, 0.0F, 0.15625F, -1, 0, 0, packedLightIn);
+            this.drawVertex(matrix4f, matrixstack$entry, ivertexbuilder, -7, -2, 2, 0.15625F, 0.15625F, -1, 0, 0, packedLightIn);
+            this.drawVertex(matrix4f, matrixstack$entry, ivertexbuilder, -7, 2, 2, 0.15625F, 0.3125F, -1, 0, 0, packedLightIn);
+            this.drawVertex(matrix4f, matrixstack$entry, ivertexbuilder, -7, 2, -2, 0.0F, 0.3125F, -1, 0, 0, packedLightIn);
+            this.drawVertex(matrix4f, matrixstack$entry, ivertexbuilder, -7, 2, -2, 0.0F, 0.15625F, 1, 0, 0, packedLightIn);
+            this.drawVertex(matrix4f, matrixstack$entry, ivertexbuilder, -7, 2, 2, 0.15625F, 0.15625F, 1, 0, 0, packedLightIn);
+            this.drawVertex(matrix4f, matrixstack$entry, ivertexbuilder, -7, -2, 2, 0.15625F, 0.3125F, 1, 0, 0, packedLightIn);
+            this.drawVertex(matrix4f, matrixstack$entry, ivertexbuilder, -7, -2, -2, 0.0F, 0.3125F, 1, 0, 0, packedLightIn);
 
-        for (int j = 0; j < 4; ++j) {
-            mStack.mulPose(Axis.XP.rotationDegrees(90.0F));
-            this.drawVertex(matrix4f, matrixstack$entry, ivertexbuilder, -8, -2, 0, 0.0F, 0.0F, 0, 1, 0, packedLightIn);
-            this.drawVertex(matrix4f, matrixstack$entry, ivertexbuilder, 8, -2, 0, 0.5F, 0.0F, 0, 1, 0, packedLightIn);
-            this.drawVertex(matrix4f, matrixstack$entry, ivertexbuilder, 8, 2, 0, 0.5F, 0.15625F, 0, 1, 0, packedLightIn);
-            this.drawVertex(matrix4f, matrixstack$entry, ivertexbuilder, -8, 2, 0, 0.0F, 0.15625F, 0, 1, 0, packedLightIn);
-        }
+            for (int j = 0; j < 4; ++j) {
+                matrixstack$entry.rotate(Axis.XP.rotationDegrees(90.0F));
+                this.drawVertex(matrix4f, matrixstack$entry, ivertexbuilder, -8, -2, 0, 0.0F, 0.0F, 0, 1, 0, packedLightIn);
+                this.drawVertex(matrix4f, matrixstack$entry, ivertexbuilder, 8, -2, 0, 0.5F, 0.0F, 0, 1, 0, packedLightIn);
+                this.drawVertex(matrix4f, matrixstack$entry, ivertexbuilder, 8, 2, 0, 0.5F, 0.15625F, 0, 1, 0, packedLightIn);
+                this.drawVertex(matrix4f, matrixstack$entry, ivertexbuilder, -8, 2, 0, 0.0F, 0.15625F, 0, 1, 0, packedLightIn);
+            }
+        });
 
         mStack.popPose();
 
 //        mStack.rotate(new Quaternion(new Vector3f(0, 0, 1), (TimeKeeper.getClientTick() + partialTicks) * 100F, true));
-        super.render(arrowEntity, entityYaw, partialTicks, mStack, getter, packedLightIn);
+        super.submit(state, mStack, collector, camera);
 //
 //        Vector3 startPos = new Vector3(0, 0, 0); //Bottom
 //        Vector3 endPos = new Vector3(0, 1, 0); //Top
@@ -89,8 +107,7 @@ public class DraconicArrowRenderer extends EntityRenderer<DraconicArrowEntity> {
         return entity.getColor() > 0 ? RES_TIPPED_ARROW : RES_ARROW;
     }
 
-    public static void renderEnergyBolt(Vector3 startPos, Vector3 endPos, Matrix4 mat, MultiBufferSource getter, float partialTicks) {
-        VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(RenderType.lightning()), mat);
+    public static void renderEnergyBolt(Vector3 startPos, Vector3 endPos, Matrix4 mat, SubmitNodeCollector collector, float partialTicks) {
     }
 
 
@@ -113,7 +130,7 @@ public class DraconicArrowRenderer extends EntityRenderer<DraconicArrowEntity> {
      * @param segTaper   Allows you to apply a positive or negative taper to each arc segment. (Default 0)
      * @param colour     The colour of the arc.
      */
-    public static void rendeArcP2P(PoseStack mStack, MultiBufferSource getter, Vector3 startPos, Vector3 endPos, int segCount, long randSeed, float scaleMod, float deflectMod, boolean autoScale, float segTaper, int colour) {
+    public static void rendeArcP2P(PoseStack mStack, SubmitNodeCollector collector, Vector3 startPos, Vector3 endPos, int segCount, long randSeed, float scaleMod, float deflectMod, boolean autoScale, float segTaper, int colour) {
 //        Vector3 startPos = new Vector3(0, 0, 0); //Bottom
 //        Vector3 endPos = new Vector3(0, 4, 0); //Top
 //        int segCount = 8;
@@ -145,38 +162,48 @@ public class DraconicArrowRenderer extends EntityRenderer<DraconicArrowEntity> {
 
         xOffSum -= (float) (endPos.x - startPos.x);
         zOffSum -= (float) (endPos.z - startPos.z);
+        float xOffTotal = xOffSum;
+        float zOffTotal = zOffSum;
 
-        VertexConsumer builder = getter.getBuffer(RenderType.lightning());
-        Matrix4f matrix4f = mStack.last().pose();
+        collector.submitCustomGeometry(mStack, RenderTypes.lightning(), (pose, builder) -> {
+            Matrix4f matrix4f = pose.pose();
 
-        for (int layer = 0; layer < 4; ++layer) {
-            float red = ((colour >> 16) & 0xFF) / 255F;
-            float green = ((colour >> 8) & 0xFF) / 255F;
-            float blue = (colour & 0xFF) / 255F;
-            float alpha = 0.3F;
-            if (layer == 0) {
-                red = green = blue = alpha = 1;
+            for (int layer = 0; layer < 4; ++layer) {
+                float red = ((colour >> 16) & 0xFF) / 255F;
+                float green = ((colour >> 8) & 0xFF) / 255F;
+                float blue = (colour & 0xFF) / 255F;
+                float alpha = 0.3F;
+                if (layer == 0) {
+                    red = green = blue = alpha = 1;
+                }
+
+                for (int seg = 0; seg < segCount; seg++) {
+                    float pos = seg / (float) (segCount);
+                    float x = segXOffset[seg] - (xOffTotal * pos);
+                    float z = segZOffset[seg] - (zOffTotal * pos);
+
+                    float nextPos = (seg + 1) / (float) (segCount);
+                    float nextX = segXOffset[seg + 1] - (xOffTotal * nextPos);
+                    float nextZ = segZOffset[seg + 1] - (zOffTotal * nextPos);
+
+                    //The size of each shell
+                    float layerOffsetA = (0.1F + (layer * 0.2F * (1F + segTaper))) * relScale * scaleMod;
+                    float layerOffsetB = (0.1F + (layer * 0.2F * (1F - segTaper))) * relScale * scaleMod;
+
+                    addSegmentQuad(matrix4f, builder, x, (float) startPos.y, z, seg, nextX, nextZ, red, green, blue, alpha, layerOffsetA, layerOffsetB, false, false, true, false, segHeight);    //North Side
+                    addSegmentQuad(matrix4f, builder, x, (float) startPos.y, z, seg, nextX, nextZ, red, green, blue, alpha, layerOffsetA, layerOffsetB, true, false, true, true, segHeight);      //East Side
+                    addSegmentQuad(matrix4f, builder, x, (float) startPos.y, z, seg, nextX, nextZ, red, green, blue, alpha, layerOffsetA, layerOffsetB, true, true, false, true, segHeight);      //South Side
+                    addSegmentQuad(matrix4f, builder, x, (float) startPos.y, z, seg, nextX, nextZ, red, green, blue, alpha, layerOffsetA, layerOffsetB, false, true, false, false, segHeight);    //West Side
+                }
             }
+        });
+    }
 
-            for (int seg = 0; seg < segCount; seg++) {
-                float pos = seg / (float) (segCount);
-                float x = segXOffset[seg] - (xOffSum * pos);
-                float z = segZOffset[seg] - (zOffSum * pos);
-
-                float nextPos = (seg + 1) / (float) (segCount);
-                float nextX = segXOffset[seg + 1] - (xOffSum * nextPos);
-                float nextZ = segZOffset[seg + 1] - (zOffSum * nextPos);
-
-                //The size of each shell
-                float layerOffsetA = (0.1F + (layer * 0.2F * (1F + segTaper))) * relScale * scaleMod;
-                float layerOffsetB = (0.1F + (layer * 0.2F * (1F - segTaper))) * relScale * scaleMod;
-
-                addSegmentQuad(matrix4f, builder, x, (float) startPos.y, z, seg, nextX, nextZ, red, green, blue, alpha, layerOffsetA, layerOffsetB, false, false, true, false, segHeight);    //North Side
-                addSegmentQuad(matrix4f, builder, x, (float) startPos.y, z, seg, nextX, nextZ, red, green, blue, alpha, layerOffsetA, layerOffsetB, true, false, true, true, segHeight);      //East Side
-                addSegmentQuad(matrix4f, builder, x, (float) startPos.y, z, seg, nextX, nextZ, red, green, blue, alpha, layerOffsetA, layerOffsetB, true, true, false, true, segHeight);      //South Side
-                addSegmentQuad(matrix4f, builder, x, (float) startPos.y, z, seg, nextX, nextZ, red, green, blue, alpha, layerOffsetA, layerOffsetB, false, true, false, false, segHeight);    //West Side
-            }
-        }
+    public static class RenderState extends EntityRenderState {
+        public float xRot;
+        public float yRot;
+        public float shake;
+        public Identifier texture = RES_ARROW;
     }
 
     private static void addSegmentQuad(Matrix4f matrix4f, VertexConsumer builder, float x1, float yOffset, float z1, int segIndex, float x2, float z2, float red, float green, float blue, float alpha, float offsetA, float offsetB, boolean invA, boolean invB, boolean invC, boolean invD, float segHeight) {
