@@ -53,17 +53,17 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
 
     public TileEnergyTransfuser(BlockPos pos, BlockState state) {
         super(DEContent.TILE_ENERGY_TRANSFUSER.get(), pos, state);
-        capManager.setInternalManaged("item_north", Capabilities.ItemHandler.BLOCK, itemNorth).syncTile().saveBoth();
-        capManager.setInternalManaged("item_east", Capabilities.ItemHandler.BLOCK, itemEast).syncTile().saveBoth();
-        capManager.setInternalManaged("item_south", Capabilities.ItemHandler.BLOCK, itemSouth).syncTile().saveBoth();
-        capManager.setInternalManaged("item_west", Capabilities.ItemHandler.BLOCK, itemWest).syncTile().saveBoth();
+        capManager.setInternalManaged("item_north", Capabilities.Item.BLOCK, itemNorth).syncTile().saveBoth();
+        capManager.setInternalManaged("item_east", Capabilities.Item.BLOCK, itemEast).syncTile().saveBoth();
+        capManager.setInternalManaged("item_south", Capabilities.Item.BLOCK, itemSouth).syncTile().saveBoth();
+        capManager.setInternalManaged("item_west", Capabilities.Item.BLOCK, itemWest).syncTile().saveBoth();
         capManager.set(CapabilityOP.BLOCK, opStorage, Direction.UP, Direction.DOWN, null);
 
-        capManager.set(Capabilities.ItemHandler.BLOCK, new ItemIOAdapter(0, itemNorth), Direction.NORTH);
-        capManager.set(Capabilities.ItemHandler.BLOCK, new ItemIOAdapter(1, itemEast), Direction.EAST);
-        capManager.set(Capabilities.ItemHandler.BLOCK, new ItemIOAdapter(2, itemSouth), Direction.SOUTH);
-        capManager.set(Capabilities.ItemHandler.BLOCK, new ItemIOAdapter(3, itemWest), Direction.WEST);
-        capManager.set(Capabilities.ItemHandler.BLOCK, new ItemIOAdapter(-1, itemsCombined), Direction.UP, Direction.DOWN, null);
+        capManager.set(Capabilities.Item.BLOCK, new ItemIOAdapter(0, itemNorth), Direction.NORTH);
+        capManager.set(Capabilities.Item.BLOCK, new ItemIOAdapter(1, itemEast), Direction.EAST);
+        capManager.set(Capabilities.Item.BLOCK, new ItemIOAdapter(2, itemSouth), Direction.SOUTH);
+        capManager.set(Capabilities.Item.BLOCK, new ItemIOAdapter(3, itemWest), Direction.WEST);
+        capManager.set(Capabilities.Item.BLOCK, new ItemIOAdapter(-1, itemsCombined), Direction.UP, Direction.DOWN, null);
 
         for (int i = 0; i < 4; i++) {
             ioModes[i] = register(new ManagedEnum<>("item_mode_" + i, ItemIOMode.CHARGE, DataFlags.SAVE_BOTH_SYNC_TILE, DataFlags.CLIENT_CONTROL));
@@ -72,7 +72,7 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
 
     public static void register(RegisterCapabilitiesEvent event) {
         energyCapability(event, DEContent.TILE_ENERGY_TRANSFUSER);
-        capability(event, DEContent.TILE_ENERGY_TRANSFUSER, Capabilities.ItemHandler.BLOCK);
+        capability(event, DEContent.TILE_ENERGY_TRANSFUSER, Capabilities.Item.BLOCK);
     }
 
     @Override

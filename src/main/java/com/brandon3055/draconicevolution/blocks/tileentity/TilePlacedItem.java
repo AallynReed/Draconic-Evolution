@@ -61,12 +61,12 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
             isBlock[i] = register(new ManagedBool("is_block_" + i, DataFlags.SAVE_NBT_SYNC_TILE));
         }
 
-        capManager.setInternalManaged("inventory", Capabilities.ItemHandler.BLOCK, itemHandler).saveBoth().syncTile();
+        capManager.setInternalManaged("inventory", Capabilities.Item.BLOCK, itemHandler).saveBoth().syncTile();
         itemHandler.setContentsChangeListener(e -> updatePlacedItem());
     }
 
     public static void register(RegisterCapabilitiesEvent event) {
-        capability(event, DEContent.TILE_PLACED_ITEM, Capabilities.ItemHandler.BLOCK);
+        capability(event, DEContent.TILE_PLACED_ITEM, Capabilities.Item.BLOCK);
     }
 
     private void updatePlacedItem() {

@@ -83,7 +83,7 @@ public class TileDislocatorReceptacle extends TileBCore implements IInteractTile
 
     public TileDislocatorReceptacle(BlockPos pos, BlockState state) {
         super(DEContent.TILE_DISLOCATOR_RECEPTACLE.get(), pos, state);
-        capManager.setManaged("inventory", Capabilities.ItemHandler.BLOCK, itemHandler).saveBoth().syncTile();
+        capManager.setManaged("inventory", Capabilities.Item.BLOCK, itemHandler).saveBoth().syncTile();
         itemHandler.setContentsChangeListener(e -> onInventoryChange());
         itemHandler.setSlotValidator(0, (stack) -> stack.getItem() instanceof Dislocator);
         fxHandler = DraconicEvolution.proxy.createENetFXHandler(this);
@@ -91,7 +91,7 @@ public class TileDislocatorReceptacle extends TileBCore implements IInteractTile
 
     public static void register(RegisterCapabilitiesEvent event) {
         energyCapability(event, DEContent.TILE_DISLOCATOR_RECEPTACLE);
-        capability(event, DEContent.TILE_DISLOCATOR_RECEPTACLE, Capabilities.ItemHandler.BLOCK);
+        capability(event, DEContent.TILE_DISLOCATOR_RECEPTACLE, Capabilities.Item.BLOCK);
     }
 
     @Override

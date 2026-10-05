@@ -181,7 +181,7 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Fusion
 
     public static void doServerSideTransfer(ServerPlayer player, FusionCraftingCoreMenu container, IFusionRecipe recipe, boolean maxTransfer) {
         TileFusionCraftingCore tile = container.tile;
-        IItemHandler playerItemHandler = player.getCapability(Capabilities.ItemHandler.ENTITY);
+        IItemHandler playerItemHandler = IItemHandler.of(player.getCapability(Capabilities.Item.ENTITY));
         if (playerItemHandler == null) {
             DraconicEvolution.LOGGER.error("FusionRecipeTransferHelper: Player has no inventory capability");
             return;

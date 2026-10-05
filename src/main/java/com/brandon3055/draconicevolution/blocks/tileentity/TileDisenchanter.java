@@ -53,11 +53,11 @@ public class TileDisenchanter extends TileBCore implements MenuProvider, IIntera
 
     public TileDisenchanter(BlockPos pos, BlockState state) {
         super(DEContent.TILE_DISENCHANTER.get(), pos, state);
-        capManager.setManaged("inventory", Capabilities.ItemHandler.BLOCK, itemHandler).saveBoth();
+        capManager.setManaged("inventory", Capabilities.Item.BLOCK, itemHandler).saveBoth();
     }
 
     public static void register(RegisterCapabilitiesEvent event) {
-        capability(event, DEContent.TILE_DISENCHANTER, Capabilities.ItemHandler.BLOCK);
+        capability(event, DEContent.TILE_DISENCHANTER, Capabilities.Item.BLOCK);
     }
 
     @Override

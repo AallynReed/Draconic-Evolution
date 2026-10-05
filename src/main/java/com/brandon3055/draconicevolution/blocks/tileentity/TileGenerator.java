@@ -40,7 +40,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import javax.annotation.Nullable;
@@ -82,16 +82,16 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
         capManager.setManaged("energy", CapabilityOP.BLOCK, opStorage).saveBoth().syncContainer();
 
         //Inventory Cap
-        capManager.setInternalManaged("inventory", ItemHandler.BLOCK, itemHandler).saveBoth();
+        capManager.setInternalManaged("inventory", Capabilities.Item.BLOCK, itemHandler).saveBoth();
         itemHandler.setStackValidator((slot, stack) -> slot > 2 || stack.getBurnTime(null) > 0);
         setupPowerSlot(itemHandler, 3, opStorage, true);
-        capManager.set(ItemHandler.BLOCK, new ItemHandlerIOControl(itemHandler).setExtractCheck(this::canExtractItem));
+        capManager.set(Capabilities.Item.BLOCK, new ItemHandlerIOControl(itemHandler).setExtractCheck(this::canExtractItem));
         installIOTracker(opStorage);
     }
 
     public static void register(RegisterCapabilitiesEvent event) {
         energyCapability(event, DEContent.TILE_GENERATOR);
-        capability(event, DEContent.TILE_GENERATOR, ItemHandler.BLOCK);
+        capability(event, DEContent.TILE_GENERATOR, Capabilities.Item.BLOCK);
         capability(event, DEContent.TILE_GENERATOR, DECapabilities.Host.BLOCK);
     }
 

@@ -39,7 +39,7 @@ public class TileFusionCraftingInjector extends TileBCore implements IFusionInje
 
     public TileFusionCraftingInjector(BlockPos pos, BlockState state) {
         super(DEContent.TILE_CRAFTING_INJECTOR.get(), pos, state);
-        capManager.setManaged("inventory", Capabilities.ItemHandler.BLOCK, itemHandler).saveBoth().syncTile();
+        capManager.setManaged("inventory", Capabilities.Item.BLOCK, itemHandler).saveBoth().syncTile();
         itemHandler.setPerSlotLimit(() -> singleItem.get() ? 1 : 64);
         itemHandler.setContentsChangeListener(i -> inventoryChange());
         capManager.set(CapabilityOP.BLOCK, new OPStorage(this, 0) {
@@ -72,7 +72,7 @@ public class TileFusionCraftingInjector extends TileBCore implements IFusionInje
 
     public static void register(RegisterCapabilitiesEvent event) {
         energyCapability(event, DEContent.TILE_CRAFTING_INJECTOR);
-        capability(event, DEContent.TILE_CRAFTING_INJECTOR, Capabilities.ItemHandler.BLOCK);
+        capability(event, DEContent.TILE_CRAFTING_INJECTOR, Capabilities.Item.BLOCK);
     }
 
     public boolean setCore(@Nullable TileFusionCraftingCore core) {

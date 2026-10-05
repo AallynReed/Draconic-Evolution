@@ -80,8 +80,8 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
 
     public TileFusionCraftingCore(BlockPos pos, BlockState state) {
         super(DEContent.TILE_CRAFTING_CORE.get(), pos, state);
-        capManager.setInternalManaged("inventory", Capabilities.ItemHandler.BLOCK, itemHandler).saveBoth();
-        capManager.set(Capabilities.ItemHandler.BLOCK, new ItemHandlerIOControl(itemHandler).setInsertCheck((slot, stack) -> slot == 0).setExtractCheck((slot, stack) -> slot == 1));
+        capManager.setInternalManaged("inventory", Capabilities.Item.BLOCK, itemHandler).saveBoth();
+        capManager.set(Capabilities.Item.BLOCK, new ItemHandlerIOControl(itemHandler).setInsertCheck((slot, stack) -> slot == 0).setExtractCheck((slot, stack) -> slot == 1));
         itemHandler.setContentsChangeListener(i -> localInventoryChange());
         itemHandler.setStackValidator((slot, stack) -> slot == 0);
         fxHandler = DraconicEvolution.proxy.createFusionFXHandler(this);
@@ -89,7 +89,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
     }
 
     public static void register(RegisterCapabilitiesEvent event) {
-        capability(event, DEContent.TILE_CRAFTING_CORE, Capabilities.ItemHandler.BLOCK);
+        capability(event, DEContent.TILE_CRAFTING_CORE, Capabilities.Item.BLOCK);
     }
 
     public void startCraft() {

@@ -51,6 +51,8 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 import javax.annotation.Nullable;
 import java.util.Iterator;
@@ -94,7 +96,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
         capManager.setManaged("energy", CapabilityOP.BLOCK, opStorage).saveBoth().syncContainer();
         installIOTracker(opStorage);
 
-        capManager.setInternalManaged("inventory", Capabilities.ItemHandler.BLOCK, itemHandler).saveBoth();
+        capManager.setInternalManaged("inventory", Capabilities.Item.BLOCK, itemHandler).saveBoth();
         setupPowerSlot(itemHandler, 0, opStorage, false);
 
         entityFilter = new EntityFilter(true, FilterType.HOSTILE, FilterType.TAMED, FilterType.ADULTS, FilterType.ENTITY_TYPE, FilterType.FILTER_GROUP, FilterType.PLAYER);
@@ -115,7 +117,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
 
     public static void register(RegisterCapabilitiesEvent event) {
         energyCapability(event, DEContent.TILE_GRINDER);
-        capability(event, DEContent.TILE_GRINDER, Capabilities.ItemHandler.BLOCK);
+        capability(event, DEContent.TILE_GRINDER, Capabilities.Item.BLOCK);
     }
 
     private boolean canExtractItem(int slot, ItemStack stack) {
@@ -316,7 +318,8 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
             for (Direction dir : Direction.values()) {
                 BlockEntity target = level.getBlockEntity(worldPosition.relative(dir));
                 if (target != null) {
-                    IItemHandler handler = Capabilities.ItemHandler.BLOCK.getCapability(level, target.getBlockPos(), null, target, dir.getOpposite());
+                    ResourceHandler<ItemResource> resourceHandler = Capabilities.Item.BLOCK.getCapability(level, target.getBlockPos(), null, target, dir.getOpposite());
+                    IItemHandler handler = resourceHandler == null ? null : IItemHandler.of(resourceHandler);
                     if (handler != null) {
                         Iterator<ItemEntity> i = items.iterator();
                         while (i.hasNext()) {

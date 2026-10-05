@@ -103,7 +103,7 @@ public class MultiBlockBuilder implements IProcess {
             return part.getFirstValidBlock();
         }
 
-        IItemHandler handler = player.getCapability(Capabilities.ItemHandler.ENTITY);
+        IItemHandler handler = IItemHandler.of(player.getCapability(Capabilities.Item.ENTITY));
         if (handler != null) {
             for (int i = 0; i < handler.getSlots(); i++) {
                 ItemStack inSlot = handler.getStackInSlot(i);

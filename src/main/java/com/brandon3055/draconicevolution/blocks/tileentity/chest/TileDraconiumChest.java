@@ -54,10 +54,10 @@ public class TileDraconiumChest extends TileBCore implements IRSSwitchable, Menu
     public TileDraconiumChest(BlockPos pos, BlockState state) {
         super(DEContent.TILE_DRACONIUM_CHEST.get(), pos, state);
         capManager.setManaged("energy", CapabilityOP.BLOCK, opStorage).saveBoth().syncContainer();
-        capManager.setManaged("main_inv", Capabilities.ItemHandler.BLOCK, mainInventory).saveBoth();
-        capManager.setInternalManaged("crafting_inv", Capabilities.ItemHandler.BLOCK, craftingItems).saveBoth();
-        capManager.setInternalManaged("furnace_inv", Capabilities.ItemHandler.BLOCK, furnaceItems).saveBoth();
-        capManager.setInternalManaged("energy_inv", Capabilities.ItemHandler.BLOCK, capacitorInv).saveBoth();
+        capManager.setManaged("main_inv", Capabilities.Item.BLOCK, mainInventory).saveBoth();
+        capManager.setInternalManaged("crafting_inv", Capabilities.Item.BLOCK, craftingItems).saveBoth();
+        capManager.setInternalManaged("furnace_inv", Capabilities.Item.BLOCK, furnaceItems).saveBoth();
+        capManager.setInternalManaged("energy_inv", Capabilities.Item.BLOCK, capacitorInv).saveBoth();
 
         furnaceItems.setStackValidator(stack -> smeltingLogic.isSmeltable(stack));
         furnaceItems.setContentsChangeListener(e -> smeltingLogic.inputInventoryChanged());
@@ -71,7 +71,7 @@ public class TileDraconiumChest extends TileBCore implements IRSSwitchable, Menu
 
     public static void register(RegisterCapabilitiesEvent event) {
         energyCapability(event, DEContent.TILE_DRACONIUM_CHEST);
-        capability(event, DEContent.TILE_DRACONIUM_CHEST, Capabilities.ItemHandler.BLOCK);
+        capability(event, DEContent.TILE_DRACONIUM_CHEST, Capabilities.Item.BLOCK);
     }
 
     @Override
