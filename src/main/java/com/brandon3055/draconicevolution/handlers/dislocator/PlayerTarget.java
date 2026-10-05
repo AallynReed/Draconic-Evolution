@@ -34,7 +34,7 @@ public class PlayerTarget extends DislocatorTarget {
     public TargetPos getTargetPos(MinecraftServer server, UUID linkID, UUID sourceDislocatorID) {
         ServerPlayer player = server.getPlayerList().getPlayer(playerID);
         if (player != null) {
-            for (ItemStack stack : player.getInventory().items) {
+            for (ItemStack stack : player.getInventory().getNonEquipmentItems()) {
                 if (BoundDislocator.isValid(stack) && !sourceDislocatorID.equals(BoundDislocator.getDislocatorId(stack))) {
                     return TargetPos.of(player);
                 }

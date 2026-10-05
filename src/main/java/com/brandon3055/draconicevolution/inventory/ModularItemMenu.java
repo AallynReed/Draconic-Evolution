@@ -21,6 +21,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -108,7 +109,7 @@ public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHo
     }
 
     private static Stream<ItemStack> getPlayerInventory(Inventory player) {
-        return Streams.concat(player.items.stream(), player.armor.stream(), player.offhand.stream()).filter(e -> !e.isEmpty());
+        return Streams.concat(player.getNonEquipmentItems().stream(), Stream.of(EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD).map(player.player::getItemBySlot), Stream.of(player.player.getOffhandItem())).filter(e -> !e.isEmpty());
     }
 
     public static void tryOpenGui(ServerPlayer sender) {
