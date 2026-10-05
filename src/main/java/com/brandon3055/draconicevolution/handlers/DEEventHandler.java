@@ -151,7 +151,7 @@ public class DEEventHandler {
         if (event.getLeft().getItem() == DEContent.DISLOCATOR.get() && event.getRight().getItem() == DEContent.INGOT_DRACONIUM.get() && event.getLeft().getDamageValue() > 0) {
             event.setOutput(event.getLeft().copy());
             event.getOutput().setDamageValue(0);
-            event.setCost(1);
+            event.setXpCost(1);
             event.setMaterialCost(1);
         }
     }
