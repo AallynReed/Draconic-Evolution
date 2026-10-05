@@ -29,7 +29,7 @@ public class GeneratorMenu extends DETileMenu<TileGenerator> {
         main.addPlayerMain(inventory);
         hotBar.addPlayerBar(inventory);
         fuel.addSlots(3, 0, index -> new ModularSlot(tile.itemHandler, index)
-                .setValidator(stack -> stack.getBurnTime(RecipeType.SMELTING) > 0)
+                .setValidator(stack -> stack.getBurnTime(RecipeType.SMELTING, playerInv.player.level().fuelValues()) > 0)
         );
         capacitor.addSlot(new ModularSlot(tile.itemHandler, 3)
                 .setValidator(EnergyUtils::canReceiveEnergy)

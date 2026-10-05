@@ -98,7 +98,7 @@ public class ContainerRecipeBuilder extends AbstractContainerMenu {
                     return ItemStack.EMPTY;
                 }
             }
-            else if (stack.getBurnTime(null) == 0 || !moveItemStackTo(stack, 36, 36 + inventoryCache.getContainerSize(), false)) {
+            else if (stack.getBurnTime(null, playerIn.level().fuelValues()) == 0 || !moveItemStackTo(stack, 36, 36 + inventoryCache.getContainerSize(), false)) {
                 return ItemStack.EMPTY;
             }
 
