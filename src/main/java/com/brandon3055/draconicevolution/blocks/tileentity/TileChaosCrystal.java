@@ -71,14 +71,14 @@ public class TileChaosCrystal extends TileBCore {
         }
 
         if (!level.isClientSide && soundTimer-- <= 0) {
-            soundTimer = 3600 + level.random.nextInt(1200);
+            soundTimer = 3600 + level.getRandom().nextInt(1200);
 //            world.playSound(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, DESounds.chaosChamberAmbient, SoundCategory.AMBIENT, 1F, world.rand.nextFloat() * 0.4F + 0.8F, false);
-            BCoreNetwork.sendSound(level, worldPosition, DESounds.CHAOS_CHAMBER_AMBIENT.get(), SoundSource.AMBIENT, 1.5F, level.random.nextFloat() * 0.4F + 0.8F, false);
+            BCoreNetwork.sendSound(level, worldPosition, DESounds.CHAOS_CHAMBER_AMBIENT.get(), SoundSource.AMBIENT, 1.5F, level.getRandom().nextFloat() * 0.4F + 0.8F, false);
         }
 
-        if (!level.isClientSide && level instanceof ServerLevel && guardianDefeated.get() && level.random.nextInt(50) == 0) {
-            int x = 5 - level.random.nextInt(11);
-            int z = 5 - level.random.nextInt(11);
+        if (!level.isClientSide && level instanceof ServerLevel && guardianDefeated.get() && level.getRandom().nextInt(50) == 0) {
+            int x = 5 - level.getRandom().nextInt(11);
+            int z = 5 - level.getRandom().nextInt(11);
             LightningBolt bolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
             bolt.setPos(worldPosition.getX() + x, level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE, worldPosition).getY(), worldPosition.getZ() + z);
             bolt.noCulling = true;

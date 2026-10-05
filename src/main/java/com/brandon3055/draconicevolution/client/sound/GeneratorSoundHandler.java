@@ -77,7 +77,7 @@ public class GeneratorSoundHandler implements ISidedTileHandler {
         boolean fadeDown = false;
 
         public GeneratorSound(TileGenerator tile, SoundEvent sound, float startPitch) {
-            super(sound, SoundSource.BLOCKS, 0.3F, 1F, tile.getLevel().random, tile.getBlockPos());
+            super(sound, SoundSource.BLOCKS, 0.3F, 1F, tile.getLevel().getRandom(), tile.getBlockPos());
             this.tile = tile;
             this.looping = true;
             this.pitch = startPitch;

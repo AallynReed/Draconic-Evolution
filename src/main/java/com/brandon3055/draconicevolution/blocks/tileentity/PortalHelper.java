@@ -96,7 +96,7 @@ public class PortalHelper {
             endScan(true, scanResult, axis);
             return;
         }
-        BlockPos pos = scanQue.remove(tile.getLevel().random.nextInt(scanQue.size()));
+        BlockPos pos = scanQue.remove(tile.getLevel().getRandom().nextInt(scanQue.size()));
 
         tile.onScanBlock(pos);
 

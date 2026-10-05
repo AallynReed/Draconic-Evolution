@@ -73,7 +73,7 @@ public class DefaultStaffDmgMod implements IDamageModifier {
         Vector3 pos = data.readVector();
         ClientLevel world = (ClientLevel) source.level();
         Minecraft mc = Minecraft.getInstance();
-        mc.getSoundManager().play(new SimpleSoundInstance(DESounds.STAFF_HIT_DEFAULT.get(), SoundSource.PLAYERS, 10, 1, world.random, pos.pos()));
+        mc.getSoundManager().play(new SimpleSoundInstance(DESounds.STAFF_HIT_DEFAULT.get(), SoundSource.PLAYERS, 10, 1, world.getRandom(), pos.pos()));
         mc.particleEngine.add(new StaffBeamEffect(world, source, pos));
     }
 }

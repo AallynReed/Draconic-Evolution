@@ -209,7 +209,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
             }
         }
 
-        level.playSound((Player) null, player.getX(), player.getY(), player.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F, 1.0F / (level.random.nextFloat() * 0.4F + 1.2F) + powerForTime * 0.5F);
+        level.playSound((Player) null, player.getX(), player.getY(), player.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F, 1.0F / (level.getRandom().nextFloat() * 0.4F + 1.2F) + powerForTime * 0.5F);
         if (!infiniteAmmo && !player.getAbilities().instabuild) {
             ammoStack.shrink(1);
             if (ammoStack.isEmpty()) {

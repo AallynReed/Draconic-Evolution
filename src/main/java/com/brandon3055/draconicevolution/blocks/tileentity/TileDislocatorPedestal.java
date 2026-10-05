@@ -80,14 +80,14 @@ public class TileDislocatorPedestal extends TileBCore implements DislocatorEndPo
                 boolean silenced = level.getBlockState(worldPosition.below()).is(BlockTags.WOOL);
 
                 if (!silenced) {
-                    BCoreNetwork.sendSound(player.level(), player.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, player.level().random.nextFloat() * 0.1F + 0.9F, false);
+                    BCoreNetwork.sendSound(player.level(), player.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, player.level().getRandom().nextFloat() * 0.1F + 0.9F, false);
                 }
 
                 BoundDislocator.notifyArriving(stack, player.level(), player);
                 location.teleport(player);
 
                 if (!silenced) {
-                    DelayedTask.run(1, () -> BCoreNetwork.sendSound(player.level(), player.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, player.level().random.nextFloat() * 0.1F + 0.9F, false));
+                    DelayedTask.run(1, () -> BCoreNetwork.sendSound(player.level(), player.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, player.level().getRandom().nextFloat() * 0.1F + 0.9F, false));
                 }
             }
 

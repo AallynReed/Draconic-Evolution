@@ -13,7 +13,7 @@ public class ParticleEnergyBasic extends TextureSheetParticle {
     public ParticleEnergyBasic(ClientLevel world, double xPos, double yPos, double zPos, SpriteSet spriteSet) {
         super(world, xPos, yPos, zPos);
         this.spriteSet = spriteSet;
-        setSprite(spriteSet.get(world.random));
+        setSprite(spriteSet.get(world.getRandom()));
         hasPhysics = false;
     }
 

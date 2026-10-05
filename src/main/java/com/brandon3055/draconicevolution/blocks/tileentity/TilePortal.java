@@ -76,17 +76,17 @@ public class TilePortal extends TileBCore {
         Player player = mc.player;
 
         double distanceMod = Utils.getDistance(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5, player.getX(), player.getY(), player.getZ());
-        if (level.random.nextInt(Math.max((int) (distanceMod * (distanceMod / 5D)), 1)) == 0) {
+        if (level.getRandom().nextInt(Math.max((int) (distanceMod * (distanceMod / 5D)), 1)) == 0) {
             BlockState state = level.getBlockState(worldPosition);
             if (!state.is(DEContent.PORTAL.get())) {
                 return;
             }
             Direction.Axis axis = state.getValue(Portal.AXIS);
 
-            double rD1 = level.random.nextDouble();
-            double rD2 = level.random.nextDouble();
-            double rO1 = -0.1 + level.random.nextDouble() * 0.2;
-            double rO2 = -0.1 + level.random.nextDouble() * 0.2;
+            double rD1 = level.getRandom().nextDouble();
+            double rD2 = level.getRandom().nextDouble();
+            double rO1 = -0.1 + level.getRandom().nextDouble() * 0.2;
+            double rO2 = -0.1 + level.getRandom().nextDouble() * 0.2;
 
             if (axis == Direction.Axis.Z && player.getZ() < worldPosition.getZ() + 0.5) {
                 mc.particleEngine.add(new ParticlePortal((ClientLevel) level, Vector3.fromTile(this).add(rD1, rD2, 0), Vector3.fromTile(this).add(rD1 + rO1, rD2 + rO2, 0.75)));

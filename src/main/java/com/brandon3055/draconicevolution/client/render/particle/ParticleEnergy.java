@@ -17,7 +17,7 @@ public class ParticleEnergy extends TextureSheetParticle {
         super(world, xPos, yPos, zPos);
         this.targetPos = targetPos;
         this.spriteSet = spriteSet;
-        setSprite(spriteSet.get(world.random));
+        setSprite(spriteSet.get(world.getRandom()));
         hasPhysics = false;
     }
 

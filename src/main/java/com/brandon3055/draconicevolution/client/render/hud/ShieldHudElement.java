@@ -81,7 +81,7 @@ public class ShieldHudElement extends AbstractHudElement {
     public void popTotem() {
         totemEffect = TOTEM_EFFECT_TIME;
         if (mc.level != null) {
-            totemEffectSeed = mc.level.random.nextLong();
+            totemEffectSeed = mc.level.getRandom().nextLong();
         }
         totemEffectIndex = 0;
         for (double totem : totemStatus) {

@@ -87,10 +87,10 @@ public class BoundDislocator extends Dislocator {
             return true;
         }
 
-        BCoreNetwork.sendSound(player.level(), player.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, player.level().random.nextFloat() * 0.1F + 0.9F, false);
+        BCoreNetwork.sendSound(player.level(), player.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, player.level().getRandom().nextFloat() * 0.1F + 0.9F, false);
         notifyArriving(stack, player.level(), entity);
         location.teleport(entity);
-        BCoreNetwork.sendSound(player.level(), player.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, player.level().random.nextFloat() * 0.1F + 0.9F, false);
+        BCoreNetwork.sendSound(player.level(), player.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, player.level().getRandom().nextFloat() * 0.1F + 0.9F, false);
         return true;
     }
 
@@ -128,10 +128,10 @@ public class BoundDislocator extends Dislocator {
                 return new InteractionResultHolder<>(InteractionResult.PASS, stack);
             }
 
-            BCoreNetwork.sendSound(player.level(), player.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, player.level().random.nextFloat() * 0.1F + 0.9F, false);
+            BCoreNetwork.sendSound(player.level(), player.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, player.level().getRandom().nextFloat() * 0.1F + 0.9F, false);
             notifyArriving(stack, player.level(), player);
             location.teleport(player);
-            BCoreNetwork.sendSound(player.level(), player.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, player.level().random.nextFloat() * 0.1F + 0.9F, false);
+            BCoreNetwork.sendSound(player.level(), player.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, player.level().getRandom().nextFloat() * 0.1F + 0.9F, false);
 
             return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
         }

@@ -214,7 +214,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
         DraconicGuardianEntity guardian = DEContent.ENTITY_DRACONIC_GUARDIAN.get().create(world);
         assert guardian != null;
         guardian.getPhaseManager().setPhase(PhaseType.START);
-        guardian.moveTo(guardianSpawnPos().getX(), guardianSpawnPos().getY(), guardianSpawnPos().getZ(), this.level.random.nextFloat() * 360.0F, 0.0F);
+        guardian.moveTo(guardianSpawnPos().getX(), guardianSpawnPos().getY(), guardianSpawnPos().getZ(), this.level.getRandom().nextFloat() * 360.0F, 0.0F);
         guardian.setFightManager(this);
         guardian.setArenaOrigin(arenaOrigin);
         world.addFreshEntity(guardian);

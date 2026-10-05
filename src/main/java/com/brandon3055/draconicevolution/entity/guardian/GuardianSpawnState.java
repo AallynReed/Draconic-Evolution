@@ -49,7 +49,7 @@ public enum GuardianSpawnState {
                         level.removeBlock(blockpos, false);
                     }
 
-                    ChaosIslandFeature.generateObelisk(level, nextSpawn, level.random);
+                    ChaosIslandFeature.generateObelisk(level, nextSpawn, level.getRandom());
                     level.setBlock(nextSpawn, DEContent.INFUSED_OBSIDIAN.get().defaultBlockState(), 3);
                     GuardianCrystalEntity crystal = new GuardianCrystalEntity(level.getLevel(), nextSpawn.getX() + 0.5, nextSpawn.getY() + 1, nextSpawn.getZ() + 0.5, manager.getUniqueID());
                     crystal.setInvulnerable(true);

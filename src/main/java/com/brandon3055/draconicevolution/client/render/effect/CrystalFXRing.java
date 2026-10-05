@@ -26,7 +26,7 @@ public class CrystalFXRing extends CrystalFXBase<TileCrystalBase> {
 
     public CrystalFXRing(ClientLevel worldIn, TileCrystalBase tile) {
         super(worldIn, tile);
-        this.age = worldIn.random.nextInt(1024);
+        this.age = worldIn.getRandom().nextInt(1024);
         this.rSeed = tile.getBlockPos().asLong();
     }
 

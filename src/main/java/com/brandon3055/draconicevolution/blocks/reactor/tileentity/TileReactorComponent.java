@@ -62,13 +62,13 @@ public abstract class TileReactorComponent extends TileBCore {
             }
 
             animRotation += animRotationSpeed;
-            if (coreFalureIminent && level.random.nextInt(10) == 0) {
-                animRotation += (level.random.nextDouble() - 0.5) * 360;
-                if (level.random.nextBoolean()) {
-                    level.addParticle(ParticleTypes.LARGE_SMOKE, worldPosition.getX() + level.random.nextDouble(), worldPosition.getY() + level.random.nextDouble(), worldPosition.getZ() + level.random.nextDouble(), 0, 0, 0);
+            if (coreFalureIminent && level.getRandom().nextInt(10) == 0) {
+                animRotation += (level.getRandom().nextDouble() - 0.5) * 360;
+                if (level.getRandom().nextBoolean()) {
+                    level.addParticle(ParticleTypes.LARGE_SMOKE, worldPosition.getX() + level.getRandom().nextDouble(), worldPosition.getY() + level.getRandom().nextDouble(), worldPosition.getZ() + level.getRandom().nextDouble(), 0, 0, 0);
                 }
                 else {
-                    level.addParticle(ParticleTypes.CLOUD, worldPosition.getX() + level.random.nextDouble(), worldPosition.getY() + level.random.nextDouble(), worldPosition.getZ() + level.random.nextDouble(), 0, 0, 0);
+                    level.addParticle(ParticleTypes.CLOUD, worldPosition.getX() + level.getRandom().nextDouble(), worldPosition.getY() + level.getRandom().nextDouble(), worldPosition.getZ() + level.getRandom().nextDouble(), 0, 0, 0);
                 }
             }
         }

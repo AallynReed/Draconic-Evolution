@@ -93,7 +93,7 @@ public class TreeHarvestHandler implements IHarvestHandler {
         }
 
         harvestComplete();
-        player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * ((player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.7F + 1.8F));
+        player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * ((player.level().getRandom().nextFloat() - player.level().getRandom().nextFloat()) * 0.7F + 1.8F));
     }
 
     private void updateTreeHarvest(Level level, Player player, ItemStack stack, IOPStorage storage, InventoryDynamic stackCollector) {

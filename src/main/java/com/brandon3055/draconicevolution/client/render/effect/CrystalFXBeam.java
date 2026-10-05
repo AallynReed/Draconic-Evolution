@@ -38,7 +38,7 @@ public class CrystalFXBeam<T extends BlockEntity & IENetEffectTile> extends Crys
 
     public CrystalFXBeam(Level worldIn, T tile, ICrystalLink linkTarget) {
         super((ClientLevel)worldIn, tile);
-        this.age = worldIn.random.nextInt(1024);
+        this.age = worldIn.getRandom().nextInt(1024);
         this.setPosition(tile.getBeamLinkPos(((BlockEntity) linkTarget).getBlockPos()));
         this.terminateSource = tile.renderBeamTermination();
         this.linkTarget = linkTarget.getBeamLinkPos(tile.getBlockPos());

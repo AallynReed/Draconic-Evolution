@@ -106,7 +106,7 @@ public class Magnet extends Item /*implements IBauble*/ {
                     }
                     itemEntity.setDeltaMovement(0, 0, 0);
                     itemEntity.fallDistance = 0;
-                    itemEntity.setPos(entity.getX() - 0.2 + (world.random.nextDouble() * 0.4), entity.getY() - 0.6, entity.getZ() - 0.2 + (world.random.nextDouble() * 0.4));
+                    itemEntity.setPos(entity.getX() - 0.2 + (world.getRandom().nextDouble() * 0.4), entity.getY() - 0.6, entity.getZ() - 0.2 + (world.getRandom().nextDouble() * 0.4));
                 }
             }
 
@@ -126,7 +126,7 @@ public class Magnet extends Item /*implements IBauble*/ {
 //            }
 
             if (flag && DEConfig.itemDislocatorSound) {
-                world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 1F + (world.random.nextFloat() * 0.1F));
+                world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 1F + (world.getRandom().nextFloat() * 0.1F));
             }
 
             List<ExperienceOrb> xp = world.getEntitiesOfClass(ExperienceOrb.class, new AABB(entity.getX(), entity.getY(), entity.getZ(), entity.getX(), entity.getY(), entity.getZ()).inflate(4, 4, 4));
@@ -138,7 +138,7 @@ public class Magnet extends Item /*implements IBauble*/ {
                         continue;
                     }
                     if (DEConfig.itemDislocatorSound) {
-                        world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * ((world.random.nextFloat() - world.random.nextFloat()) * 0.7F + 1.8F));
+                        world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * ((world.getRandom().nextFloat() - world.getRandom().nextFloat()) * 0.7F + 1.8F));
                     }
                     player.take(orb, 1);
                     player.giveExperiencePoints(orb.value);

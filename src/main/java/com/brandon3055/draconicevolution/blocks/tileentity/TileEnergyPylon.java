@@ -160,7 +160,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
             spawnParticles();
         }
 
-        if (!level.isClientSide && (particleRate.get() > 1 || (particleRate.get() > 0 && level.random.nextInt(2) == 0))) {
+        if (!level.isClientSide && (particleRate.get() > 1 || (particleRate.get() > 0 && level.getRandom().nextInt(2) == 0))) {
             particleRate.subtract((byte) 2);
         }
     }
@@ -336,18 +336,18 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
 
             double speed = 0.02F;
             double offset = 0.2F;
-            double randX = level.random.nextDouble() - 0.5D;
-            double randY = level.random.nextDouble() - 0.5D;
-            double randZ = level.random.nextDouble() - 0.5D;
+            double randX = level.getRandom().nextDouble() - 0.5D;
+            double randY = level.getRandom().nextDouble() - 0.5D;
+            double randZ = level.getRandom().nextDouble() - 0.5D;
             particlePos.add(randX * offset, randY * offset, randZ * offset);
 
-            level.addParticle(new IntParticleData(DEParticles.LINE_INDICATOR.get(), 150, 0, 255, 40 + level.random.nextInt(20)), particlePos.x, particlePos.y, particlePos.z, randX * speed, randY * speed, randZ * speed);
+            level.addParticle(new IntParticleData(DEParticles.LINE_INDICATOR.get(), 150, 0, 255, 40 + level.getRandom().nextInt(20)), particlePos.x, particlePos.y, particlePos.z, randX * speed, randY * speed, randZ * speed);
         }
     }
 
     @OnlyIn (Dist.CLIENT)
     private void spawnParticles() {
-        RandomSource rand = level.random;
+        RandomSource rand = level.getRandom();
         if (getCore() == null || particleRate.get() <= 0) return;
         if (particleRate.get() > 20) particleRate.set((byte) 20);
 

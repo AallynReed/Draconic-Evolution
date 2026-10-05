@@ -112,14 +112,14 @@ public class LootEventHandler {
 
         if (entity instanceof EnderDragon || entity instanceof DraconicGuardianEntity) {
             if (DEConfig.dragonDustLootModifier > 0) {
-                double count = (DEConfig.dragonDustLootModifier * 0.9D) + (entity.level().random.nextDouble() * (DEConfig.dragonDustLootModifier * 0.2));
+                double count = (DEConfig.dragonDustLootModifier * 0.9D) + (entity.level().getRandom().nextDouble() * (DEConfig.dragonDustLootModifier * 0.2));
                 for (int i = 0; i < (int) count; i++) {
                     float mm = 0.3F;
-                    ItemEntity dust = new ItemEntity(entity.level(), entity.getX() - 2 + entity.level().random.nextInt(4), entity.getY() - 2 + entity.level().random.nextInt(4), entity.getZ() - 2 + entity.level().random.nextInt(4), new ItemStack(DEContent.DUST_DRACONIUM.get()));
+                    ItemEntity dust = new ItemEntity(entity.level(), entity.getX() - 2 + entity.level().getRandom().nextInt(4), entity.getY() - 2 + entity.level().getRandom().nextInt(4), entity.getZ() - 2 + entity.level().getRandom().nextInt(4), new ItemStack(DEContent.DUST_DRACONIUM.get()));
                     dust.setDeltaMovement(
-                            mm * ((((float) entity.level().random.nextInt(100)) / 100F) - 0.5F),
-                            mm * ((((float) entity.level().random.nextInt(100)) / 100F) - 0.5F),
-                            mm * ((((float) entity.level().random.nextInt(100)) / 100F) - 0.5F)
+                            mm * ((((float) entity.level().getRandom().nextInt(100)) / 100F) - 0.5F),
+                            mm * ((((float) entity.level().getRandom().nextInt(100)) / 100F) - 0.5F),
+                            mm * ((((float) entity.level().getRandom().nextInt(100)) / 100F) - 0.5F)
                     );
                     entity.level().addFreshEntity(dust);
                 }

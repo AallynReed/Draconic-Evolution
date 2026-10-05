@@ -89,7 +89,7 @@ public class ForestHarvestHandler implements IHarvestHandler {
 
         complete = true;//temp
 //        harvestComplete();
-        player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * ((player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.7F + 1.8F));
+        player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * ((player.level().getRandom().nextFloat() - player.level().getRandom().nextFloat()) * 0.7F + 1.8F));
     }
 
     private void updateSearch(Level level, Player player) {
@@ -97,7 +97,7 @@ public class ForestHarvestHandler implements IHarvestHandler {
 
 
 
-        if (level instanceof ServerLevel serverLevel && level.random.nextFloat() < 0.1) {
+        if (level instanceof ServerLevel serverLevel && level.getRandom().nextFloat() < 0.1) {
             serverLevel.sendParticles((ServerPlayer) player, ParticleTypes.CLOUD, true, mPos.getX() + 0.5, mPos.getY() + 1.5, mPos.getZ() + 0.5, 1, 0, 0, 0, 0.1);
         }
 
@@ -142,7 +142,7 @@ public class ForestHarvestHandler implements IHarvestHandler {
         //Harvest
         doHarvest(stack, player, level, mPos.immutable(), storage, stackCollector);
 
-        if (level instanceof ServerLevel serverLevel && level.random.nextFloat() < 0.10) {
+        if (level instanceof ServerLevel serverLevel && level.getRandom().nextFloat() < 0.10) {
             serverLevel.sendParticles((ServerPlayer) player, ParticleTypes.FLAME, true, mPos.getX() + 0.5, mPos.getY() + 0.5, mPos.getZ() + 0.5, 1, 0, 0, 0, 0.1);
         }
 
@@ -165,7 +165,7 @@ public class ForestHarvestHandler implements IHarvestHandler {
     }
 
     private void queHarvest(Level level, BlockPos pos) {
-        sortedHarvestQue.add(new Pos(pos.asLong(), (int) Utils.getDistanceSq(pos.getX(), pos.getZ(), origin.getX(), origin.getZ()) + level.random.nextInt(16)));
+        sortedHarvestQue.add(new Pos(pos.asLong(), (int) Utils.getDistanceSq(pos.getX(), pos.getZ(), origin.getX(), origin.getZ()) + level.getRandom().nextInt(16)));
     }
 
 

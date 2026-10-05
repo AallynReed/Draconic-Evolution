@@ -34,7 +34,7 @@ public class CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
 
     public CrystalFXLink(ClientLevel worldIn, TileCrystalBase tile, Vec3D linkTarget) {
         super(worldIn, tile);
-        this.age = worldIn.random.nextInt(1024);
+        this.age = worldIn.getRandom().nextInt(1024);
         this.setPosition(tile.getBeamLinkPos(linkTarget.getPos()));
         this.terminateSource = true;
         this.linkTarget = linkTarget;

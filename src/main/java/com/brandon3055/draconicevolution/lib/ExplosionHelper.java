@@ -197,7 +197,7 @@ public class ExplosionHelper {
                     BlockState state = helper.serverWorld.getBlockState(mPos.set(pos));
                     if (state.getBlock() instanceof FallingBlock) {
 //                        i++;
-                        state.tick(helper.serverWorld, helper.mPos.set(pos), helper.serverWorld.random);
+                        state.tick(helper.serverWorld, helper.mPos.set(pos), helper.serverWorld.getRandom());
                     }
 //                    list.add(Vector3.fromBlockPos(mPos.set(pos)));
                     state.handleNeighborChanged(helper.serverWorld, mPos.set(pos), Blocks.AIR, mPos.set(pos).above(), false);

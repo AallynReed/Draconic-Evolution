@@ -94,10 +94,10 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
             for (int i = -size; i <= size; ++i) {
                 for (int j = -size; j <= size; ++j) {
                     for (int k = -size; k <= size; ++k) {
-                        double d3 = (double) j + (mc.level.random.nextDouble() - mc.level.random.nextDouble()) * 0.5D;
-                        double d4 = (double) i + (mc.level.random.nextDouble() - mc.level.random.nextDouble()) * 0.5D;
-                        double d5 = (double) k + (mc.level.random.nextDouble() - mc.level.random.nextDouble()) * 0.5D;
-                        double d6 = (double) Math.sqrt(d3 * d3 + d4 * d4 + d5 * d5) / speed + mc.level.random.nextGaussian() * 6D;
+                        double d3 = (double) j + (mc.level.getRandom().nextDouble() - mc.level.getRandom().nextDouble()) * 0.5D;
+                        double d4 = (double) i + (mc.level.getRandom().nextDouble() - mc.level.getRandom().nextDouble()) * 0.5D;
+                        double d5 = (double) k + (mc.level.getRandom().nextDouble() - mc.level.getRandom().nextDouble()) * 0.5D;
+                        double d6 = (double) Math.sqrt(d3 * d3 + d4 * d4 + d5 * d5) / speed + mc.level.getRandom().nextGaussian() * 6D;
                         createParticle(mc, x, y, z, d3 / d6, d4 / d6, d5 / d6);
                         if (i != -size && i != size && j != -size && j != size) {
                             k += size * 2 - 1;
@@ -139,14 +139,14 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
         Vec3 pos = entity.getEyePosition(1);
 
         for (int i = 0; i < 100; i++) {
-            float offset = mc.level.random.nextFloat();
+            float offset = mc.level.getRandom().nextFloat();
             float speed = (1F - offset) * distance;
             speed *= speed;
             Vec3 spawnPos = pos.add(vec.multiply(speed * 10, speed * 10, speed * 10));
 
-            double x = spawnPos.x + (mc.level.random.nextGaussian() - 0.5) * offset;
-            double y = spawnPos.y + (mc.level.random.nextGaussian() - 0.5) * offset;
-            double z = spawnPos.z + (mc.level.random.nextGaussian() - 0.5) * offset;
+            double x = spawnPos.x + (mc.level.getRandom().nextGaussian() - 0.5) * offset;
+            double y = spawnPos.y + (mc.level.getRandom().nextGaussian() - 0.5) * offset;
+            double z = spawnPos.z + (mc.level.getRandom().nextGaussian() - 0.5) * offset;
 
             mc.level.addParticle(DEParticles.BLINK.get(), x, y, z, vec.x * speed, vec.y * speed, vec.z * speed);
         }
@@ -182,7 +182,7 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
         double dist = MathUtils.distance(source, target);
         if (mc.level == null) return;
         for (double d = 0; d < dist; d += 2) {
-            Vector3 pos = MathUtils.interpolateVec3(source, target, ((d - 1) + mc.level.random.nextDouble() * 2) / dist);
+            Vector3 pos = MathUtils.interpolateVec3(source, target, ((d - 1) + mc.level.getRandom().nextDouble() * 2) / dist);
             mc.level.addParticle(DEParticles.GUARDIAN_BEAM.get(), true, pos.x, pos.y, pos.z, power, 0, 0);
         }
     }

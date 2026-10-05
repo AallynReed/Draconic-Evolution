@@ -93,7 +93,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
                     weatherToggleRunning.set(false);
                     level.getLevelData().setRaining(rain);
                     ((ServerLevelData) level.getLevelData()).setThundering(storm);
-                    int time = (10 * 60 * 20) + level.random.nextInt(20 * 60 * 20);
+                    int time = (10 * 60 * 20) + level.getRandom().nextInt(20 * 60 * 20);
                     ((ServerLevelData) level.getLevelData()).setRainTime(rain ? time : 0);
                     ((ServerLevelData) level.getLevelData()).setClearWeatherTime(rain ? 0 : time);
                 }
@@ -305,7 +305,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         }
 
         Vec3D vec = Vec3D.getCenter(worldPosition.offset(0, 1, 0));
-        sound = new CelestialModifierSound(DESounds.ELECTRIC_BUZZ.get(), worldPosition, level.random);
+        sound = new CelestialModifierSound(DESounds.ELECTRIC_BUZZ.get(), worldPosition, level.getRandom());
         sound.updateSound(vec, 0.01F, 0.5F);
         Minecraft.getInstance().getSoundManager().play(sound);
         level.playLocalSound(vec.x, vec.y, vec.z, DESounds.FUSION_COMPLETE.get(), SoundSource.BLOCKS, getSoundVolume(), 0.5F, false);
@@ -346,12 +346,12 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         double scaleTime = (timer - expandStart) / (ascendStart - expandStart);
         if (timer > expandStart && timer < ascendStart) {
             for (int i = 0; i < 10; i++) {
-                Direction dir = Direction.values()[2 + level.random.nextInt(4)];
+                Direction dir = Direction.values()[2 + level.getRandom().nextInt(4)];
                 IntParticleData data = new IntParticleData(DEParticles.SPARK.get(),
                         0, //R
                         127,  //G
                         255,  //B
-                        (int) (1F * (level.random.nextFloat() + 0.1) * 100), //Scale
+                        (int) (1F * (level.getRandom().nextFloat() + 0.1) * 100), //Scale
                         (int) (5D * scaleTime * 100), //Spark scale
                         10, 0, //Max Age, Additional random age
                         (int) (0), //Gravity
@@ -370,7 +370,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
                         0, //R
                         127,  //G
                         255,  //B
-                        (int) (5F * (level.random.nextFloat() + 0.1) * 100), //Scale
+                        (int) (5F * (level.getRandom().nextFloat() + 0.1) * 100), //Scale
                         (int) (100 * 100), //Spark scale
                         80, 0, //Max Age, Additional random age
                         (int) (-0.5 * 1000), //Gravity
@@ -378,7 +378,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
                         //Set velocity direct
                 );
                 Vector3 pos = Vector3.fromTileCenter(this);
-                level.addParticle(data, pos.x, pos.y, pos.z, 0.5 * level.random.nextGaussian(), 0, 0.5 * level.random.nextGaussian());
+                level.addParticle(data, pos.x, pos.y, pos.z, 0.5 * level.getRandom().nextGaussian(), 0, 0.5 * level.getRandom().nextGaussian());
             }
         }
 
@@ -459,7 +459,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         effects.get(1).blue = 1F;
         effects.get(1).renderBolts = false;
 
-        sound = new CelestialModifierSound(DESounds.SUN_DIAL_EFFECT.get(), worldPosition, level.random);
+        sound = new CelestialModifierSound(DESounds.SUN_DIAL_EFFECT.get(), worldPosition, level.getRandom());
         sound.updateSound(Vec3D.getCenter(worldPosition), getSoundVolume(), 0.5F);
         Minecraft.getInstance().getSoundManager().play(sound);
     }
@@ -496,7 +496,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
                 255, //R
                 127,  //G
                 0,  //B
-                (int) (1.2F * (level.random.nextFloat() + 0.1) * 100), //Scale
+                (int) (1.2F * (level.getRandom().nextFloat() + 0.1) * 100), //Scale
                 (int) (0.5F * 100), //Spark scale
                 30, 10, //Max Age, Additional random age
                 (int) (0) //Gravity
@@ -504,12 +504,12 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         Vector3 pos = Vector3.fromTileCenter(this);
         level.addParticle(data, pos.x, pos.y, pos.z, 0.002D, 0.04, 0.002D);
 
-        Direction dir = Direction.values()[2 + level.random.nextInt(4)];
+        Direction dir = Direction.values()[2 + level.getRandom().nextInt(4)];
         data = new IntParticleData(DEParticles.SPARK.get(),
                 255, //R
                 127,  //G
                 255,  //B
-                (int) (1F * (level.random.nextFloat() + 0.1) * 100), //Scale
+                (int) (1F * (level.getRandom().nextFloat() + 0.1) * 100), //Scale
                 (int) (0.5F * 100), //Spark scale
                 10, 0, //Max Age, Additional random age
                 (int) (0), //Gravity
@@ -576,7 +576,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
                 76, //R
                 0,  //G
                 255,  //B
-                (int) (0.4F * (level.random.nextFloat() + 0.1) * 100), //Scale
+                (int) (0.4F * (level.getRandom().nextFloat() + 0.1) * 100), //Scale
                 (int) (0.15F * 100), //Spark scale
                 30, 10, //Max Age, Additional random age
                 (int) (0) //Gravity

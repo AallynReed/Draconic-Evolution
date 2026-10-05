@@ -183,7 +183,7 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
         if (!active.get() || worldPosition.distSqr(Minecraft.getInstance().player.blockPosition()) > 16 * 16) {
             return;
         }
-        RandomSource rand = level.random;
+        RandomSource rand = level.getRandom();
 
         double p = 0.0625;
         if (rand.nextInt(17 - (mode.get().index * 4)) == 0) {

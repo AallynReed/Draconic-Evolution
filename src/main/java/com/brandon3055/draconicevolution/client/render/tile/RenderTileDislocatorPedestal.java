@@ -41,7 +41,7 @@ public class RenderTileDislocatorPedestal implements BlockEntityRenderer<TileDis
     @Override
     public void render(TileDislocatorPedestal tile, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedoverlay) {
         if (modelQuads == null) {
-            modelQuads = Minecraft.getInstance().getBlockRenderer().getBlockModel(DEContent.DISLOCATOR_PEDESTAL.get().defaultBlockState()).getQuads(DEContent.DISLOCATOR_PEDESTAL.get().defaultBlockState(), null, tile.getLevel().random);
+            modelQuads = Minecraft.getInstance().getBlockRenderer().getBlockModel(DEContent.DISLOCATOR_PEDESTAL.get().defaultBlockState()).getQuads(DEContent.DISLOCATOR_PEDESTAL.get().defaultBlockState(), null, tile.getLevel().getRandom());
         }
 
         mStack.pushPose();

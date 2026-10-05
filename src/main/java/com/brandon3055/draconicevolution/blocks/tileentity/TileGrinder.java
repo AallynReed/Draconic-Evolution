@@ -260,7 +260,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
         boolean foundInvulnerable = false;
 
         while (!entitiesInRange.isEmpty()) {
-            LivingEntity randEntity = entitiesInRange.remove(level.random.nextInt(entitiesInRange.size()));
+            LivingEntity randEntity = entitiesInRange.remove(level.getRandom().nextInt(entitiesInRange.size()));
             debug("Checking Target: " + randEntity);
             if (isValidEntity(randEntity)) {
                 debug("Found valid target: " + randEntity);
@@ -271,7 +271,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
                     nextTarget = randEntity;
                     //Throw the sword!
                     sendPacketToChunk(output -> output.writeInt(nextTarget.getId()), 1);
-                    level.playSound(null, worldPosition, SoundEvents.TRIDENT_THROW.value(), SoundSource.BLOCKS, 1, 0.55F + (level.random.nextFloat() * 0.1F));
+                    level.playSound(null, worldPosition, SoundEvents.TRIDENT_THROW.value(), SoundSource.BLOCKS, 1, 0.55F + (level.getRandom().nextFloat() * 0.1F));
                     coolDown = killRate;
                     return;
                 }

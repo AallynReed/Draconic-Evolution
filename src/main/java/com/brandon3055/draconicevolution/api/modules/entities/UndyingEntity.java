@@ -183,7 +183,7 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
             }
             charge = 0;
             DraconicNetwork.sendUndyingActivation(entity, module.getItem());
-            entity.level().playSound(null, entity.blockPosition(), SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 5F, (0.95F + (entity.level().random.nextFloat() * 0.1F)));
+            entity.level().playSound(null, entity.blockPosition(), SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 5F, (0.95F + (entity.level().getRandom().nextFloat() * 0.1F)));
             invulnerableTime = data.invulnerableTime();
             markDirty();
             return true;

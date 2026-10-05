@@ -118,7 +118,7 @@ public class GuardianCrystalEntity extends Entity {
                             BCoreNetwork.sendSound(level(), this, DESounds.CRYSTAL_UNSTABLE.get(), SoundSource.HOSTILE, 6F, 0.9F + (random.nextFloat() * 0.2F), false);
                         }
                     } else {
-                        BCoreNetwork.sendSound(level(), this, DESounds.CRYSTAL_RESTORE.get(), SoundSource.HOSTILE, 8, 0.5F + level().random.nextFloat() * 0.2F, false);
+                        BCoreNetwork.sendSound(level(), this, DESounds.CRYSTAL_RESTORE.get(), SoundSource.HOSTILE, 8, 0.5F + level().getRandom().nextFloat() * 0.2F, false);
                     }
                 } else if (getShieldPower() < DEConfig.guardianCrystalShield) {
                     setShieldPower(Math.min(DEConfig.guardianCrystalShield, getShieldPower() + (DEConfig.guardianCrystalShield / 1200.0f)));
@@ -264,7 +264,7 @@ public class GuardianCrystalEntity extends Entity {
 
     public void destabilize() {
         if (getUnstableTime() == 0) {
-            BCoreNetwork.sendSound(level(), this, DESounds.CRYSTAL_DESTABILIZE.get(), SoundSource.HOSTILE, 8, 0.5F + level().random.nextFloat() * 0.2F, false);
+            BCoreNetwork.sendSound(level(), this, DESounds.CRYSTAL_DESTABILIZE.get(), SoundSource.HOSTILE, 8, 0.5F + level().getRandom().nextFloat() * 0.2F, false);
         }
         setUnstableTime(DEConfig.guardianCrystalUnstableWindow);
     }

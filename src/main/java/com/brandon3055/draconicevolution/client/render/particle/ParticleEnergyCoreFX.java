@@ -55,7 +55,7 @@ public class ParticleEnergyCoreFX extends TextureSheetParticle {
         super(world, xPos, yPos, zPos);
         this.targetPos = targetPos;
         this.spriteSet = spriteSet;
-        setSprite(spriteSet.get(world.random));
+        setSprite(spriteSet.get(world.getRandom()));
         hasPhysics = false;
         Vec3D dir = Vec3D.getDirectionVec(new Vec3D(xPos, yPos, zPos), targetPos);
         this.direction = Direction.getNearest((float) dir.x, (float) dir.y, (float) dir.z).getAxis();

@@ -40,7 +40,7 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
 
     public CrystalFXWireless(ClientLevel worldIn, TileCrystalWirelessIO tile, BlockPos linkTarget) {
         super(worldIn, tile);
-        this.age = worldIn.random.nextInt(1024);
+        this.age = worldIn.getRandom().nextInt(1024);
         this.setPosition(tile.getBeamLinkPos(linkTarget));
         this.linkTarget = linkTarget;
         BlockState state = worldIn.getBlockState(linkTarget);

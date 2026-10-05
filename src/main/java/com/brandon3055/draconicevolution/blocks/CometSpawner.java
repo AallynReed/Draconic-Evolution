@@ -27,7 +27,7 @@ public class CometSpawner extends EntityBlockBCore implements CustomTabHandling 
             if (level.isClientSide) return;
             level.removeBlock(getBlockPos(), false);
             //TODO This is absolutely not the correct way to do this! I just couldn't get the structure system to cooperate..
-            EnderCometFeature.buildComet(level, getBlockPos(), level.random);
+            EnderCometFeature.buildComet(level, getBlockPos(), level.getRandom());
         }
     }
 }

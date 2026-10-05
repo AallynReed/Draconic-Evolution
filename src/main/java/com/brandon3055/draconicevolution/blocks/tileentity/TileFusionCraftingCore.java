@@ -128,12 +128,12 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
         } else if (id == 1) {// Craft Complete
             level.addParticle(ParticleTypes.EXPLOSION, getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5, 1.0D, 0.0D, 0.0D);
 //            level.playLocalSound(getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5, SoundEvents.GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F, false);
-            level.playLocalSound(getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5, DESounds.FUSION_COMPLETE.get(), SoundSource.BLOCKS, 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F, false);
+            level.playLocalSound(getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5, DESounds.FUSION_COMPLETE.get(), SoundSource.BLOCKS, 4.0F, (1.0F + (this.level.getRandom().nextFloat() - this.level.getRandom().nextFloat()) * 0.2F) * 0.7F, false);
 
             for (int i = 0; i < 100; i++) {
-                double velX = (level.random.nextDouble() - 0.5) * 0.1;
-                double velY = (level.random.nextDouble() - 0.5) * 0.1;
-                double velZ = (level.random.nextDouble() - 0.5) * 0.1;
+                double velX = (level.getRandom().nextDouble() - 0.5) * 0.1;
+                double velY = (level.getRandom().nextDouble() - 0.5) * 0.1;
+                double velZ = (level.getRandom().nextDouble() - 0.5) * 0.1;
                 level.addParticle(new IntParticleData(DEParticles.ENERGY_BASIC.get(), 0, 255, 255, 64), getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5, velX, velY, velZ);
             }
         }
@@ -350,7 +350,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
         crafting.set(false);
         getInjectors().forEach(e -> e.setEnergyRequirement(0, 0));
         setFusionStatus(-1, Component.translatable("fusion_status.draconicevolution.canceled"));
-        level.playSound(null, getBlockPos(), DESounds.FUSION_COMPLETE.get(), SoundSource.BLOCKS, 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F);
+        level.playSound(null, getBlockPos(), DESounds.FUSION_COMPLETE.get(), SoundSource.BLOCKS, 4.0F, (1.0F + (this.level.getRandom().nextFloat() - this.level.getRandom().nextFloat()) * 0.2F) * 0.7F);
         inventoryChanged();
     }
 

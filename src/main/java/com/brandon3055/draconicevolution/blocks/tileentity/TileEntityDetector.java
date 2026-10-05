@@ -191,15 +191,15 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
 
         IntParticleData data = new IntParticleData(DEParticles.SPARK.get(),
                 0, 255, 255, //Colour
-                (int) (0.4F * (level.random.nextFloat() + 0.1) * 100), //Scale
+                (int) (0.4F * (level.getRandom().nextFloat() + 0.1) * 100), //Scale
                 (int) (0.15F*100), //Spark scale
                 30, 10, //Max Age, Additional random age
                 (int) (-0.005*1000) //Gravity
         );
-        Vector3 pos = Vector3.fromTileCenter(this).add((-0.5 + level.random.nextDouble()) * 0.1, 0.005, (-0.5 + level.random.nextDouble()) * 0.1);
+        Vector3 pos = Vector3.fromTileCenter(this).add((-0.5 + level.getRandom().nextDouble()) * 0.1, 0.005, (-0.5 + level.getRandom().nextDouble()) * 0.1);
         level.addParticle(data, pos.x, pos.y, pos.z, 0.02D, 0, 0.02D);
 
-        int i = level.random.nextInt(4);
+        int i = level.getRandom().nextInt(4);
         double x = i / 2;
         double z = i % 2;
 
@@ -208,7 +208,7 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
                 advanced ? 255 : 76, //R
                 advanced ? 178 : 0,  //G
                 advanced ? 0 : 255,  //B
-                (int) (0.4F * (level.random.nextFloat() + 0.1) * 100), //Scale
+                (int) (0.4F * (level.getRandom().nextFloat() + 0.1) * 100), //Scale
                 (int) (0.15F*100), //Spark scale
                 30, 10, //Max Age, Additional random age
                 (int) (-0.005*1000) //Gravity

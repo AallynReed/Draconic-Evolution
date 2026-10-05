@@ -20,7 +20,7 @@ public class SparkParticle extends TextureSheetParticle {
         this.xd = (-0.5 + random.nextDouble()) * xVel;
         this.yd = (-0.5 + random.nextDouble()) * yVel;
         this.zd = (-0.5 + random.nextDouble()) * zVel;
-        this.lifetime = 10 + level.random.nextInt(10);
+        this.lifetime = 10 + level.getRandom().nextInt(10);
         hasPhysics = false;
     }
 
@@ -86,7 +86,7 @@ public class SparkParticle extends TextureSheetParticle {
             //Random age augment
             if (params >= 1) {
                 int max = list.get(6);
-                particle.lifetime += max > 0 ? level.random.nextInt(max) : 0;
+                particle.lifetime += max > 0 ? level.getRandom().nextInt(max) : 0;
                 params--;
             }
 

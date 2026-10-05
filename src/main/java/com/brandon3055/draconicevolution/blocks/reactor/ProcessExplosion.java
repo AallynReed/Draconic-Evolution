@@ -154,15 +154,15 @@ public class ProcessExplosion implements IProcess {
                     coreFalloff = 1 - ((1 - coreFalloff) * (1 - coreFalloff) * (1 - coreFalloff));
                     double coreHeight = coreFalloff * maxCoreHeight;
                     double edgeNoise = Math.max(0, (-radialPos + 0.2) * 5);
-                    double edgeScatter = edgeNoise * level.random.nextInt(10);
+                    double edgeScatter = edgeNoise * level.getRandom().nextInt(10);
                     double sim = SimplexNoise.noise(x / 50D, z / 50D);
                     edgeNoise = 1 + (Math.abs(sim) * edgeNoise * 8);
 
                     double power = (10000 * radialPos * radialPos * radialPos * angularLoad * edgeNoise) + edgeScatter;
                     double heightUp = 20 + ((5D + (radius / 10D)) * angularLoad);
                     double heightDown = coreHeight + ((5D + (radius / 10D)) * angularLoad * (1 - coreFalloff));
-                    heightDown += (Math.abs(sim) * 4) + level.random.nextDouble();
-                    heightUp += (Math.abs(sim) * 4) + level.random.nextDouble();
+                    heightDown += (Math.abs(sim) * 4) + level.getRandom().nextDouble();
+                    heightUp += (Math.abs(sim) * 4) + level.getRandom().nextDouble();
 
                     posVecDown.set(posVecUp);
                     double resist = trace(posVecUp, power/* * (1 + 8 * radialPos)*/, (int) heightUp * 3, 1, 0, 0);
@@ -310,7 +310,7 @@ public class ProcessExplosion implements IProcess {
         totalResist += r;
         power -= r;
 
-        if (dist == 1 && traceDir == -1 && lava && level.random.nextInt(250) == 0 && !level.isEmptyBlock(mPos.below())) {
+        if (dist == 1 && traceDir == -1 && lava && level.getRandom().nextInt(250) == 0 && !level.isEmptyBlock(mPos.below())) {
             dist = 0;
             destroyedCache.remove(lPos);
             lavaPositions.add(lPos);

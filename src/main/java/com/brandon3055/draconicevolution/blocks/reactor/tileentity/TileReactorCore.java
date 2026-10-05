@@ -194,7 +194,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
                 if (inView) {
                     viewTicks++;
                     if (viewTicks > 100 && roller == null) {
-                        if (level.random.nextInt(25) == 0) {
+                        if (level.getRandom().nextInt(25) == 0) {
                             roller = new Roller(Vec3D.getCenter(this), level, getCoreDiameter());
                         } else {
                             viewTicks = 0;
@@ -234,7 +234,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
             }
 
             if (reactorState.get() == ReactorState.BEYOND_HOPE) {
-                shieldAnimationState = level.random.nextInt(10) == 0 ? 0 : 1;
+                shieldAnimationState = level.getRandom().nextInt(10) == 0 ? 0 : 1;
                 shieldAnimation += shieldAnimationState;
             }
             return;
@@ -295,12 +295,12 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
             temperature.subtract(0.5);
         }
         if (shieldCharge.get() > 0) {
-            shieldCharge.subtract(maxShieldCharge.get() * 0.0005 * level.random.nextDouble());
+            shieldCharge.subtract(maxShieldCharge.get() * 0.0005 * level.getRandom().nextDouble());
         } else if (shieldCharge.get() < 0) {
             shieldCharge.zero();
         }
         if (saturation.get() > 0) {
-            saturation.subtract((int) (maxSaturation.get() * 0.000002D * level.random.nextDouble()));
+            saturation.subtract((int) (maxSaturation.get() * 0.000002D * level.getRandom().nextDouble()));
         } else if (saturation.get() < 0) {
             saturation.zero();
         }
@@ -418,13 +418,13 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
             return;
         }
 
-        shieldCharge.set((double) level.random.nextInt(Math.max(1, (int) (maxShieldCharge.get() * 0.01))));
+        shieldCharge.set((double) level.getRandom().nextInt(Math.max(1, (int) (maxShieldCharge.get() * 0.01))));
         animExtractState.set(1D);
         temperature.set(MathHelper.approachExp(temperature.get(), MAX_TEMPERATURE * 1.2, 0.0005));
 
         if (DEConfig.disableLargeReactorBoom) {
             if (explosionCountdown.get() == -1) {
-                explosionCountdown.set(1200 + level.random.nextInt(2400));
+                explosionCountdown.set(1200 + level.getRandom().nextInt(2400));
             }
 
             if (explosionCountdown.dec() <= 0) {
@@ -439,7 +439,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
             explosionProcess = new ProcessExplosion(worldPosition, (int) radius, (ServerLevel) level, -1);
             ProcessHandler.addProcess(explosionProcess);
             explosionCountdown.set(-1);
-            minExplosionDelay = 1200 + level.random.nextInt(2400);
+            minExplosionDelay = 1200 + level.getRandom().nextInt(2400);
             return;
         }
 
@@ -716,7 +716,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
                 Map.Entry<BlockPos, Integer> entry = i.next();
                 final Vec3D iPos = new Vec3D(entry.getKey());
 
-                if (level.random.nextInt(10) == 0) {
+                if (level.getRandom().nextInt(10) == 0) {
                     ((ServerLevel) level).sendParticles(ParticleTypes.FLAME, iPos.x + 0.5, iPos.y + 0.5, iPos.z + 0.5, 5, 0.5, 0.5, 0.5, 0.01D);
                 }
 
@@ -728,8 +728,8 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
                 }
             }
 
-            if (tick % 20 == 0 || level.random.nextInt(40) == 0) {
-                level.playSound(null, worldPosition, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1, 0.9F + level.random.nextFloat() * 0.2F);
+            if (tick % 20 == 0 || level.getRandom().nextInt(40) == 0) {
+                level.playSound(null, worldPosition, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1, 0.9F + level.getRandom().nextFloat() * 0.2F);
             }
         }
     }
@@ -910,13 +910,13 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
         Vec3D vec = Vec3D.getCenter(worldPosition);
         level.removeBlock(worldPosition, false);
         level.explode(null, vec.x, vec.y, vec.z, 8, Level.ExplosionInteraction.BLOCK);
-        int c = 25 + level.random.nextInt(25);
+        int c = 25 + level.getRandom().nextInt(25);
         for (int i = 0; i < c; i++) {
             FallingBlockEntity entity = FallingBlockEntity.fall(level, vec.getPos(), lava);
             entity.time = 1;
             entity.dropItem = false;
-            double vMod = 0.5 + (2 * level.random.nextDouble());
-            entity.push((level.random.nextDouble() - 0.5) * vMod, (level.random.nextDouble() / 1.5) * vMod, (level.random.nextDouble() - 0.5) * vMod);
+            double vMod = 0.5 + (2 * level.getRandom().nextDouble());
+            entity.push((level.getRandom().nextDouble() - 0.5) * vMod, (level.getRandom().nextDouble() / 1.5) * vMod, (level.getRandom().nextDouble() - 0.5) * vMod);
             level.addFreshEntity(entity);
         }
     }
@@ -1017,7 +1017,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
         public Roller(Vec3D pos, Level world, double diameter) {
             this.pos = pos;
             this.lastPos = pos.copy();
-            this.direction = world.random.nextDouble() * Math.PI * 2;
+            this.direction = world.getRandom().nextDouble() * Math.PI * 2;
             this.world = world;
             this.diameter = (diameter / 2) + 1;
             this.speed = -0.3;

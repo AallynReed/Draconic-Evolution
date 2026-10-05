@@ -147,7 +147,7 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
         if (player.isShiftKeyDown()) {
             if (index >= 0 && index < rotation.length) {
                 rotation[index].inc();
-                BCoreNetwork.sendSound(level, worldPosition, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundSource.PLAYERS, 1.0F, 0.9F + level.random.nextFloat() * 0.2F, false);
+                BCoreNetwork.sendSound(level, worldPosition, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundSource.PLAYERS, 1.0F, 0.9F + level.getRandom().nextFloat() * 0.2F, false);
                 tick();
             }
             return ItemInteractionResult.SUCCESS;
@@ -176,13 +176,13 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
         List<ItemStack> stacks = getStacksInOrder();
         if (stacks.size() == 1 && !(stacks.get(0).getItem() instanceof BlockItem)) {
             toolMode.invert();
-            BCoreNetwork.sendSound(level, worldPosition, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundSource.PLAYERS, 1.0F, 0.9F + level.random.nextFloat() * 0.2F, false);
+            BCoreNetwork.sendSound(level, worldPosition, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundSource.PLAYERS, 1.0F, 0.9F + level.getRandom().nextFloat() * 0.2F, false);
             tick();
         } else {
             HitResult hit = player.pick(4, 0, false);
             if (hit instanceof SubHitBlockHitResult && hit.getType() == HitResult.Type.BLOCK && ((SubHitBlockHitResult) hit).subHit > 0 && ((SubHitBlockHitResult) hit).subHit - 1 < rotation.length) {
                 rotation[((SubHitBlockHitResult) hit).subHit - 1].dec();
-                BCoreNetwork.sendSound(level, worldPosition, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundSource.PLAYERS, 1.0F, 0.9F + level.random.nextFloat() * 0.2F, false);
+                BCoreNetwork.sendSound(level, worldPosition, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundSource.PLAYERS, 1.0F, 0.9F + level.getRandom().nextFloat() * 0.2F, false);
                 tick();
             }
         }
@@ -199,9 +199,9 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
 
     public static void popResource(Level world, BlockPos pos, ItemStack stack, boolean noPickupDelay) {
         if (!world.isClientSide && !stack.isEmpty() && world.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS) && !world.restoringBlockSnapshots) {
-            double d0 = (double) (world.random.nextFloat() * 0.5F) + 0.25D;
-            double d1 = (double) (world.random.nextFloat() * 0.5F) + 0.25D;
-            double d2 = (double) (world.random.nextFloat() * 0.5F) + 0.25D;
+            double d0 = (double) (world.getRandom().nextFloat() * 0.5F) + 0.25D;
+            double d1 = (double) (world.getRandom().nextFloat() * 0.5F) + 0.25D;
+            double d2 = (double) (world.getRandom().nextFloat() * 0.5F) + 0.25D;
             ItemEntity itementity = new ItemEntity(world, pos.getX() + d0, pos.getY() + d1, pos.getZ() + d2, stack);
             if (noPickupDelay) {
                 itementity.setNoPickUpDelay();

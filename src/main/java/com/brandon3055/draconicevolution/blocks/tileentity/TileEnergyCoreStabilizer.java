@@ -296,30 +296,30 @@ public class TileEnergyCoreStabilizer extends TileBCore implements IInteractTile
     private void updateVisual() {
         Vec3D spawn = new Vec3D(worldPosition);
         spawn.add(0.5, 0.5, 0.5);
-        double rand = level.random.nextInt(100) / 12D;
+        double rand = level.getRandom().nextInt(100) / 12D;
         double randOffset = rand * (Math.PI * 2D);
         double offsetX = Math.sin((ClientEventHandler.elapsedTicks / 180D * Math.PI) + randOffset);
         double offsetY = Math.cos((ClientEventHandler.elapsedTicks / 180D * Math.PI) + randOffset);
 
-        if (!isValidMultiBlock.get() || level.random.nextBoolean()) {
+        if (!isValidMultiBlock.get() || level.getRandom().nextBoolean()) {
             double d = isValidMultiBlock.get() ? 1.1 : 0.25;
             double inset = isValidMultiBlock.get() ? 1 : 0;
             if (coreDirection.get().getAxis() == Direction.Axis.Z) {
-                spawn.add(offsetX * d, offsetY * d, (level.random.nextBoolean() ? -0.38 : 0.38) * inset);
+                spawn.add(offsetX * d, offsetY * d, (level.getRandom().nextBoolean() ? -0.38 : 0.38) * inset);
             } else if (coreDirection.get().getAxis() == Direction.Axis.Y) {
-                spawn.add(offsetX * d, (level.random.nextBoolean() ? -0.38 : 0.38) * inset, offsetY * d);
+                spawn.add(offsetX * d, (level.getRandom().nextBoolean() ? -0.38 : 0.38) * inset, offsetY * d);
             } else if (coreDirection.get().getAxis() == Direction.Axis.X) {
-                spawn.add((level.random.nextBoolean() ? -0.38 : 0.38) * inset, offsetY * d, offsetX * d);
+                spawn.add((level.getRandom().nextBoolean() ? -0.38 : 0.38) * inset, offsetY * d, offsetX * d);
             }
             Vector3 target = Vector3.fromBlockPosCenter(worldPosition).subtract(coreOffset.get());
             level.addParticle(new IntParticleData(DEParticles.ENERGY_CORE.get(), 1, (int) (randOffset * 100D), isValidMultiBlock.get() ? 1 : 0), spawn.x, spawn.y, spawn.z, target.x, target.y, target.z);
         } else {
             if (coreDirection.get().getAxis() == Direction.Axis.Z) {
-                spawn.add(offsetX * 1.2, offsetY * 1.2, level.random.nextBoolean() ? -0.38 : 0.38);
+                spawn.add(offsetX * 1.2, offsetY * 1.2, level.getRandom().nextBoolean() ? -0.38 : 0.38);
             } else if (coreDirection.get().getAxis() == Direction.Axis.Y) {
-                spawn.add(offsetX * 1.2, level.random.nextBoolean() ? -0.38 : 0.38, offsetY * 1.2);
+                spawn.add(offsetX * 1.2, level.getRandom().nextBoolean() ? -0.38 : 0.38, offsetY * 1.2);
             } else if (coreDirection.get().getAxis() == Direction.Axis.X) {
-                spawn.add(level.random.nextBoolean() ? -0.38 : 0.38, offsetY * 1.2, offsetX * 1.2);
+                spawn.add(level.getRandom().nextBoolean() ? -0.38 : 0.38, offsetY * 1.2, offsetX * 1.2);
             }
             Vector3 target = Vector3.fromBlockPosCenter(worldPosition);
             level.addParticle(new IntParticleData(DEParticles.ENERGY_CORE.get(), 0), spawn.x, spawn.y, spawn.z, target.x, target.y, target.z);

@@ -278,7 +278,7 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
                 data.shieldCoolDown = getMaxShieldCoolDown();
                 if (data.envDmgCoolDown == 0) {
                     float hitPitch = 0.7F + (float) (Math.min(1, getShieldPoints() / ((data.shieldCapacity + getMaxShieldBoost()) * 0.1)) * 0.3);
-                    entity.level().playSound(null, entity.blockPosition(), DESounds.SHIELD_STRIKE.get(), SoundSource.PLAYERS, 0.25F, (0.95F + (entity.level().random.nextFloat() * 0.1F)) * hitPitch);
+                    entity.level().playSound(null, entity.blockPosition(), DESounds.SHIELD_STRIKE.get(), SoundSource.PLAYERS, 0.25F, (0.95F + (entity.level().getRandom().nextFloat() * 0.1F)) * hitPitch);
                     data.envDmgCoolDown = 40;
                 }
                 markDirty();
@@ -323,7 +323,7 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
         if (damageBlocked && (data.shieldCapacity + getMaxShieldBoost()) > 0) {
             data.shieldCoolDown = getMaxShieldCoolDown();
             float hitPitch = 0.7F + (float) (Math.min(1, getShieldPoints() / ((data.shieldCapacity + getMaxShieldBoost()) * 0.1)) * 0.3);
-            entity.level().playSound(null, entity.blockPosition(), DESounds.SHIELD_STRIKE.get(), SoundSource.PLAYERS, 1F, (0.95F + (entity.level().random.nextFloat() * 0.1F)) * hitPitch);
+            entity.level().playSound(null, entity.blockPosition(), DESounds.SHIELD_STRIKE.get(), SoundSource.PLAYERS, 1F, (0.95F + (entity.level().getRandom().nextFloat() * 0.1F)) * hitPitch);
         }
         markDirty();
     }
