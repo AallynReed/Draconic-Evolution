@@ -109,7 +109,7 @@ public class ReactorComponent extends EntityBlockBCore {
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState blockState, Level worldIn, BlockPos pos) {
+    public int getAnalogOutputSignal(BlockState blockState, Level worldIn, BlockPos pos, Direction direction) {
         BlockEntity tileEntity = worldIn.getBlockEntity(pos);
 
         if (tileEntity instanceof TileReactorComponent) {

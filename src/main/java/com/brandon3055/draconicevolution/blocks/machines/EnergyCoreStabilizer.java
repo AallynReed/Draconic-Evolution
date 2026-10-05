@@ -63,7 +63,7 @@ public class EnergyCoreStabilizer extends EntityBlockBCore {
     }
 
     @Override
-    public VoxelShape getOcclusionShape(BlockState state, BlockGetter worldIn, BlockPos pos) {
+    public VoxelShape getOcclusionShape(BlockState state) {
         return SHAPE;//super.getRenderShape(state, worldIn, pos);
     }
 

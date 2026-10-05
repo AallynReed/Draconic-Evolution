@@ -161,7 +161,7 @@ public class PlacedItem extends EntityBlockBCore implements CustomTabHandling {
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
+    public boolean propagatesSkylightDown(BlockState state) {
         return state.getFluidState().isEmpty();
     }
 
@@ -186,8 +186,9 @@ public class PlacedItem extends EntityBlockBCore implements CustomTabHandling {
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData, Player player) {
         BlockEntity tile = level.getBlockEntity(pos);
+        HitResult target = player.pick(player.blockInteractionRange(), 1.0F, false);
         if (tile instanceof TilePlacedItem && target instanceof SubHitBlockHitResult) {
             List<ItemStack> stacks = ((TilePlacedItem) tile).getStacksInOrder();
             int index = ((SubHitBlockHitResult) target).subHit - 1;
@@ -203,12 +204,12 @@ public class PlacedItem extends EntityBlockBCore implements CustomTabHandling {
     }
 
     @Override
-    public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
+    public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, ItemStack toolStack, boolean willHarvest, FluidState fluid) {
         BlockEntity tile = level.getBlockEntity(pos);
         if (tile instanceof TilePlacedItem) {
             ((TilePlacedItem) tile).onBroken(player, pos, false);
         }
-        return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
+        return super.onDestroyedByPlayer(state, level, pos, player, toolStack, willHarvest, fluid);
     }
 
     @Override

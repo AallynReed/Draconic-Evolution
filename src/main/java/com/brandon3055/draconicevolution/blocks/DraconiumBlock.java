@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -16,7 +16,7 @@ public class DraconiumBlock extends BlockBCore {
     }
 
     @Override
-    public float getEnchantPowerBonus(BlockState state, LevelReader world, BlockPos pos) {
+    public float getEnchantPowerBonus(BlockState state, BlockGetter world, BlockPos pos) {
         return 4f;
     }
 }

@@ -27,7 +27,7 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -36,6 +36,8 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.RenderHighlightEvent;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.event.EventHooks;
+
+import javax.annotation.Nullable;
 
 /**
  * An invisible placeholder block used by multi-block structures.
@@ -63,7 +65,7 @@ public class StructureBlock extends EntityBlockBCore implements StructurePart, C
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, @Nullable Orientation orientation, boolean isMoving) {
         neighborChanged(world, pos);
     }
 
@@ -81,7 +83,7 @@ public class StructureBlock extends EntityBlockBCore implements StructurePart, C
     }
 
     @Override
-    public boolean onDestroyedByPlayer(BlockState state, Level world, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
+    public boolean onDestroyedByPlayer(BlockState state, Level world, BlockPos pos, Player player, ItemStack toolStack, boolean willHarvest, FluidState fluid) {
         BlockEntity tile = world.getBlockEntity(pos);
 
         if (tile instanceof TileStructureBlock structureTile) {
@@ -103,7 +105,7 @@ public class StructureBlock extends EntityBlockBCore implements StructurePart, C
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader world, BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(LevelReader world, BlockPos pos, BlockState state, boolean includeData, Player player) {
         BlockEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TileStructureBlock structureTile) {
             Identifier blockName = structureTile.blockName.get();
@@ -121,7 +123,7 @@ public class StructureBlock extends EntityBlockBCore implements StructurePart, C
     }
 
     @Override
-    public VoxelShape getOcclusionShape(BlockState p_60578_, BlockGetter p_60579_, BlockPos p_60580_) {
+    public VoxelShape getOcclusionShape(BlockState p_60578_) {
         return Shapes.block();
     }
 

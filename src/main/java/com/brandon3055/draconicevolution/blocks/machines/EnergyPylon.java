@@ -20,9 +20,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 
 import java.util.Locale;
+import javax.annotation.Nullable;
 
 /**
  * Created by brandon3055 on 30/3/2016.
@@ -63,7 +65,7 @@ public class EnergyPylon extends EntityBlockBCore {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {;
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, @Nullable Orientation orientation, boolean isMoving) {;
         if (level.getBlockEntity(pos) instanceof TileEnergyPylon tile && !StructureBlock.buildingLock) {
             tile.validateStructure();
         }
@@ -75,7 +77,7 @@ public class EnergyPylon extends EntityBlockBCore {
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState blockState, Level world, BlockPos pos) {
+    public int getAnalogOutputSignal(BlockState blockState, Level world, BlockPos pos, Direction direction) {
         if (world.getBlockEntity(pos) instanceof TileEnergyPylon tile && tile.opAdapter.getMaxOPStored() > 0) {
             return (int) MathHelper.clip(((double) tile.opAdapter.getOPStored() / tile.opAdapter.getMaxOPStored() * 15D), 0, 15);
         }
