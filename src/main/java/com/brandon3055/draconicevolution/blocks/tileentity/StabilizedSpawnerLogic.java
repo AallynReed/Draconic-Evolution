@@ -79,7 +79,7 @@ public class StabilizedSpawnerLogic extends BaseSpawner {
                     double spawnX = (double) pos.getX() + (level.getRandom().nextDouble() - level.getRandom().nextDouble()) * (double) this.spawnRange + 0.5D;
                     double spawnY = pos.getY() + level.getRandom().nextInt(3) - 1;
                     double spawnZ = (double) pos.getZ() + (level.getRandom().nextDouble() - level.getRandom().nextDouble()) * (double) this.spawnRange + 0.5D;
-                    entity.absMoveTo(spawnX, spawnY, spawnZ, 0, 0);
+                    entity.absSnapTo(spawnX, spawnY, spawnZ, 0, 0);
                 } while (entity.blockPosition().getX() == tile.getBlockPos().getX() && entity.blockPosition().getZ() == tile.getBlockPos().getZ());
 
                 int nearbyCount = level.getEntitiesOfClass(entity.getClass(), (new AABB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1)).inflate(this.spawnRange)).size();
@@ -89,7 +89,7 @@ public class StabilizedSpawnerLogic extends BaseSpawner {
                 }
 
                 LivingEntity entityliving = entity instanceof LivingEntity ? (LivingEntity) entity : null;
-                entity.moveTo(entity.getX(), entity.getY(), entity.getZ(), level.getRandom().nextFloat() * 360.0F, 0.0F);
+                entity.snapTo(entity.getX(), entity.getY(), entity.getZ(), level.getRandom().nextFloat() * 360.0F, 0.0F);
 
                 if (entityliving == null || !(entityliving instanceof Mob) || canEntitySpawnSpawner((Mob) entityliving, (ServerLevel) tile.getLevel(), (float) entity.getX(), (float) entity.getY(), (float) entity.getZ(), this)) {
                     if (!tier.requiresPlayer() && entity instanceof Mob) {

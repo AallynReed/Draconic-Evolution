@@ -153,7 +153,7 @@ public class GroundEffectPhase extends ChargeUpPhase {
 
 
         GuardianProjectileEntity projectile = new GuardianProjectileEntity(guardian.level(), guardian, aim.x, aim.y, aim.z, null, 25, GuardianFightManager.PROJECTILE_POWER);
-        projectile.moveTo(headPos.x, headPos.y, headPos.z, 0.0F, 0.0F);
+        projectile.snapTo(headPos.x, headPos.y, headPos.z, 0.0F, 0.0F);
         guardian.level().addFreshEntity(projectile);
         BCoreNetwork.sendSound(guardian.level(), guardian, SoundEvents.ENDER_DRAGON_SHOOT, SoundSource.HOSTILE, 32.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F, false);
         BCoreNetwork.sendParticle(guardian.level(), ParticleTypes.EXPLOSION, headPos, Vector3.ZERO, true);
@@ -189,7 +189,7 @@ public class GroundEffectPhase extends ChargeUpPhase {
             }
             Vector3 aim = target.subtract(headPos).normalize().multiply(3);
             GuardianProjectileEntity projectile = new GuardianProjectileEntity(guardian.level(), guardian, aim.x, aim.y, aim.z, null, 25, GuardianFightManager.PROJECTILE_POWER);
-            projectile.moveTo(headPos.x, headPos.y, headPos.z, 0.0F, 0.0F);
+            projectile.snapTo(headPos.x, headPos.y, headPos.z, 0.0F, 0.0F);
             guardian.level().addFreshEntity(projectile);
         }
 

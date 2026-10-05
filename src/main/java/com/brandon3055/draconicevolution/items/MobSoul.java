@@ -63,7 +63,7 @@ public class MobSoul extends Item {
                 LogHelper.error("Mob Soul bound entity = null");
                 return super.useOn(context);
             }
-            entity.moveTo(sX, sY, sZ, player.getYRot(), 0F);
+            entity.snapTo(sX, sY, sZ, player.getYRot(), 0F);
 
             if (!level.isClientSide()) {
                 if (!stack.has(ItemData.SOUL_DATA) && entity instanceof Mob mob && level instanceof ServerLevel serverLevel) {

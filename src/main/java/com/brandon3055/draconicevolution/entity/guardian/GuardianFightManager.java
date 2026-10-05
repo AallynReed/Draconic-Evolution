@@ -196,7 +196,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
         if (manager != null && item != null) {
             item.setItem(new ItemStack(DEContent.DRAGON_HEART.get()));
             BlockPos podiumPos = manager.getArenaOrigin().above(20);
-            item.moveTo(podiumPos.getX() + 0.5, podiumPos.getY(), podiumPos.getZ() + 0.5, 0, 0);
+            item.snapTo(podiumPos.getX() + 0.5, podiumPos.getY(), podiumPos.getZ() + 0.5, 0, 0);
             item.setDeltaMovement(0, 0, 0);
             item.age = -32767;
             item.setInvulnerable(true);
@@ -214,7 +214,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
         DraconicGuardianEntity guardian = DEContent.ENTITY_DRACONIC_GUARDIAN.get().create(world);
         assert guardian != null;
         guardian.getPhaseManager().setPhase(PhaseType.START);
-        guardian.moveTo(guardianSpawnPos().getX(), guardianSpawnPos().getY(), guardianSpawnPos().getZ(), this.level.getRandom().nextFloat() * 360.0F, 0.0F);
+        guardian.snapTo(guardianSpawnPos().getX(), guardianSpawnPos().getY(), guardianSpawnPos().getZ(), this.level.getRandom().nextFloat() * 360.0F, 0.0F);
         guardian.setFightManager(this);
         guardian.setArenaOrigin(arenaOrigin);
         world.addFreshEntity(guardian);

@@ -86,7 +86,7 @@ public class ArialBombardPhase extends ChargeUpPhase {
         double randMult = 0.1;
         Vector3 randVec = targetVec.copy().add((random.nextDouble() - 0.5) * randMult, (random.nextDouble() - 0.5) * randMult, (random.nextDouble() - 0.5) * randMult);
         GuardianProjectileEntity projectile = new GuardianProjectileEntity(this.guardian.level(), this.guardian, randVec.x, randVec.y, randVec.z, null, 25, GuardianFightManager.PROJECTILE_POWER);
-        projectile.moveTo(headPos.x, headPos.y, headPos.z, 0.0F, 0.0F);
+        projectile.snapTo(headPos.x, headPos.y, headPos.z, 0.0F, 0.0F);
         guardian.level().addFreshEntity(projectile);
         BCoreNetwork.sendSound(guardian.level(), guardian, SoundEvents.ENDER_DRAGON_SHOOT, SoundSource.HOSTILE, 32.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F, false);
 
