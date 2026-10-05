@@ -111,9 +111,9 @@ public interface IModularMiningTool extends IModularTieredItem {
         }
 
         if (!IModularItem.isCorrectToolForDrops(stack, state)) {
-            return player.getDigSpeed(state, pos) / hardness / 100F;
+            return player.getDestroySpeed(state, pos) / hardness / 100F;
         } else {
-            return player.getDigSpeed(state, pos) / hardness / 30F;
+            return player.getDestroySpeed(state, pos) / hardness / 30F;
         }
     }
 
