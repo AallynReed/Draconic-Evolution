@@ -53,7 +53,7 @@ public class ForestHarvestHandler implements IHarvestHandler {
         do {
             if (i++ > 80) return false;
             origin = origin.below();
-            if (origin.getY() < level.getMinBuildHeight()) return false;
+            if (origin.getY() < level.getMinY()) return false;
             state = level.getBlockState(origin);
             if (!canSearchThrough(state) || isHarvestable(state)) continue;
             if (!canSearchUnder(level.getBlockState(origin.above()))) {

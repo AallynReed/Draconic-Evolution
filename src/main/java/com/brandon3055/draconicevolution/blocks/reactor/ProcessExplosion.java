@@ -249,7 +249,7 @@ public class ProcessExplosion implements IProcess {
         if (dist > 100) {
             dist = 100;
         }
-        if (dist <= 0 || power <= 0 || posVec.y < level.getMinBuildHeight() || posVec.y > level.getMaxBuildHeight()) {
+        if (dist <= 0 || power <= 0 || posVec.y < level.getMinY() || posVec.y > level.getMaxY() + 1) {
             return totalResist;
         }
 
