@@ -34,7 +34,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -52,7 +52,7 @@ import java.util.List;
 public class PlacedItem extends EntityBlockBCore implements CustomTabHandling {
     private static final VoxelShape FALLBACK_SHAPE = Shapes.box(0.1, 0.1, 0.1, 0.9, 0.9, 0.9);
     private static Int2ObjectMap<VoxelShape> SHAPE_CACHE = new Int2ObjectOpenHashMap<>();
-    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
 
     public PlacedItem(Properties properties) {
         super(properties);

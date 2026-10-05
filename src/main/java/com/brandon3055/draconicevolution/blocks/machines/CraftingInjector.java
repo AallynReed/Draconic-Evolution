@@ -25,7 +25,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -41,7 +41,7 @@ public class CraftingInjector extends EntityBlockBCore implements IHudBlock {
 
     public static final UUID MSG_ID = UUID.fromString("3b0a968f-b0f6-4969-b00f-a49a2a36d40b");
 
-    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
     private static VoxelShape SHAPE_DOWN = Shapes.box(0.0625, 0.375, 0.0625, 0.9375, 1, 0.9375);
     private static VoxelShape SHAPE_UP = Shapes.box(0.0625, 0, 0.0625, 0.9375, 0.625, 0.9375);
     private static VoxelShape SHAPE_NORTH = Shapes.box(0.0625, 0.0625, 0.375, 0.9375, 0.9375, 1);
