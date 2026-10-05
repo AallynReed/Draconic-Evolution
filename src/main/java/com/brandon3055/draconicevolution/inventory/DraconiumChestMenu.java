@@ -75,8 +75,8 @@ public class DraconiumChestMenu extends DETileMenu<TileDraconiumChest> {
             Optional<RecipeHolder<CraftingRecipe>> optional = level.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingInventory.asCraftInput(), level);
             if (optional.isPresent()) {
                 RecipeHolder<CraftingRecipe> icraftingrecipe = optional.get();
-                if (resultInventory.setRecipeUsed(level, serverplayerentity, icraftingrecipe)) {
-                    itemstack = icraftingrecipe.value().assemble(craftingInventory.asCraftInput(), level.registryAccess());
+                if (resultInventory.setRecipeUsed(serverplayerentity, icraftingrecipe)) {
+                    itemstack = icraftingrecipe.value().assemble(craftingInventory.asCraftInput());
                 }
             }
 

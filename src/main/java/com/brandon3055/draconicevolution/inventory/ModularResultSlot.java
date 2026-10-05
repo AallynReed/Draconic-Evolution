@@ -2,13 +2,16 @@ package com.brandon3055.draconicevolution.inventory;
 
 import codechicken.lib.inventory.container.modular.ModularSlot;
 import net.minecraft.core.NonNullList;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.RecipeCraftingHolder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.event.EventHooks;
 
@@ -51,7 +54,7 @@ public class ModularResultSlot extends ModularSlot {
    @Override
    protected void checkTakeAchievements(ItemStack pStack) {
       if (this.removeCount > 0) {
-         pStack.onCraftedBy(this.player.level(), this.player, this.removeCount);
+         pStack.onCraftedBy(this.player, this.removeCount);
          EventHooks.firePlayerCraftingEvent(this.player, pStack, this.craftSlots);
       }
 
@@ -63,6 +66,25 @@ public class ModularResultSlot extends ModularSlot {
       this.removeCount = 0;
    }
 
+   private static NonNullList<ItemStack> copyAllInputItems(CraftingInput input) {
+      NonNullList<ItemStack> result = NonNullList.withSize(input.size(), ItemStack.EMPTY);
+
+      for (int slot = 0; slot < result.size(); slot++) {
+         result.set(slot, input.getItem(slot));
+      }
+
+      return result;
+   }
+
+   private NonNullList<ItemStack> getRemainingItems(CraftingInput input, Level level) {
+      return level instanceof ServerLevel serverLevel
+         ? serverLevel.recipeAccess()
+            .getRecipeFor(RecipeType.CRAFTING, input, serverLevel)
+            .map(recipe -> recipe.value().getRemainingItems(input))
+            .orElseGet(() -> copyAllInputItems(input))
+         : CraftingRecipe.defaultCraftingReminder(input);
+   }
+
    @Override
    public void onTake(Player pPlayer, ItemStack pStack) {
       this.checkTakeAchievements(pStack);
@@ -71,7 +93,7 @@ public class ModularResultSlot extends ModularSlot {
       int i = positionedCraftInput.left();
       int j = positionedCraftInput.top();
       CommonHooks.setCraftingPlayer(player);
-      NonNullList<ItemStack> nonnulllist = player.level().getRecipeManager().getRemainingItemsFor(RecipeType.CRAFTING, craftinginput, player.level());
+      NonNullList<ItemStack> nonnulllist = this.getRemainingItems(craftinginput, player.level());
       CommonHooks.setCraftingPlayer(null);
 
       for (int k = 0; k < craftinginput.height(); k++) {
