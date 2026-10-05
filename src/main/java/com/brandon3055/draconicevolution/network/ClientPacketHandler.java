@@ -183,7 +183,7 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
         if (mc.level == null) return;
         for (double d = 0; d < dist; d += 2) {
             Vector3 pos = MathUtils.interpolateVec3(source, target, ((d - 1) + mc.level.getRandom().nextDouble() * 2) / dist);
-            mc.level.addParticle(DEParticles.GUARDIAN_BEAM.get(), true, pos.x, pos.y, pos.z, power, 0, 0);
+            mc.level.addParticle(DEParticles.GUARDIAN_BEAM.get(), true, false, pos.x, pos.y, pos.z, power, 0, 0);
         }
     }
 

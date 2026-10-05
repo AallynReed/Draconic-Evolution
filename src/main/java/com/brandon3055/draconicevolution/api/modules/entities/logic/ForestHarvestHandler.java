@@ -98,7 +98,7 @@ public class ForestHarvestHandler implements IHarvestHandler {
 
 
         if (level instanceof ServerLevel serverLevel && level.getRandom().nextFloat() < 0.1) {
-            serverLevel.sendParticles((ServerPlayer) player, ParticleTypes.CLOUD, true, mPos.getX() + 0.5, mPos.getY() + 1.5, mPos.getZ() + 0.5, 1, 0, 0, 0, 0.1);
+            serverLevel.sendParticles((ServerPlayer) player, ParticleTypes.CLOUD, true, false, mPos.getX() + 0.5, mPos.getY() + 1.5, mPos.getZ() + 0.5, 1, 0, 0, 0, 0.1);
         }
 
         Utils.hollowCube(mPos.offset(-1, -1, -1), mPos.offset(1, 1, 1), pos -> {
@@ -143,7 +143,7 @@ public class ForestHarvestHandler implements IHarvestHandler {
         doHarvest(stack, player, level, mPos.immutable(), storage, stackCollector);
 
         if (level instanceof ServerLevel serverLevel && level.getRandom().nextFloat() < 0.10) {
-            serverLevel.sendParticles((ServerPlayer) player, ParticleTypes.FLAME, true, mPos.getX() + 0.5, mPos.getY() + 0.5, mPos.getZ() + 0.5, 1, 0, 0, 0, 0.1);
+            serverLevel.sendParticles((ServerPlayer) player, ParticleTypes.FLAME, true, false, mPos.getX() + 0.5, mPos.getY() + 0.5, mPos.getZ() + 0.5, 1, 0, 0, 0, 0.1);
         }
 
         //Search surrounding
