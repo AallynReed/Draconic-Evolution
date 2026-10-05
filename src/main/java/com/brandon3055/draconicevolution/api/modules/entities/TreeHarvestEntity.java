@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.BCStreamCodec;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
@@ -199,7 +200,7 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
     @OnlyIn (Dist.CLIENT)
     public void modifyFirstPersonUsingPose(RenderHandEvent event, boolean leftHand) {
         PoseStack poseStack = event.getPoseStack();
-        Player player = Minecraft.getInstance().player;
+        Player player = BrandonsCore.proxy.getClientPlayer();
         int handOffset = !leftHand ? 1 : -1;
 
         poseStack.translate((float) handOffset * -0.2785682F, 0.18344387F, 0.15731531F);

@@ -43,7 +43,7 @@ public class TileCrystalRelay extends TileCrystalBase {
     @OnlyIn(Dist.CLIENT)
     @Override
     public CrystalFXBase createStaticFX() {
-        return new CrystalFXRing((ClientLevel)level, this);
+        return Client.createStaticFX(this);
     }
 
     @Override
@@ -81,4 +81,9 @@ public class TileCrystalRelay extends TileCrystalBase {
 
     //endregion
 
+    private static class Client {
+        private static CrystalFXBase createStaticFX(TileCrystalRelay tile) {
+            return new CrystalFXRing((ClientLevel) tile.getLevel(), tile);
+        }
+    }
 }

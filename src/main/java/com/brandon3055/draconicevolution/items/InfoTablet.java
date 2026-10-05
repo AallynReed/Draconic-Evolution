@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.items;
 
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.integration.PIHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import net.minecraft.ChatFormatting;
@@ -42,7 +43,7 @@ public class InfoTablet extends Item {
         if (PIHelper.isInstalled()) {
             PIHelper.openMod(null, DraconicEvolution.MODID);
         } else {
-            Player player = Minecraft.getInstance().player;
+            Player player = BrandonsCore.proxy.getClientPlayer();
             MutableComponent message = Component.literal("Project Intelligence is required to view DE documentation. ").withStyle(ChatFormatting.RED);
             MutableComponent link = Component.literal("[Click here to view curse page]").withStyle(ChatFormatting.BLUE);
             link.setStyle(link.getStyle().withClickEvent(new ClickEvent.OpenUrl(URI.create("https://www.curseforge.com/minecraft/mc-mods/project-intelligence"))));

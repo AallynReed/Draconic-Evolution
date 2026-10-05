@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.items;
 
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -166,7 +167,7 @@ public class MobSoul extends Item {
         }
 
         if (!renderEntityMap.containsKey(name)) {
-            Level level = Minecraft.getInstance().level;
+            Level level = BrandonsCore.proxy.getClientWorld();
             Entity entity;
             try {
                 EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.getValue(name);

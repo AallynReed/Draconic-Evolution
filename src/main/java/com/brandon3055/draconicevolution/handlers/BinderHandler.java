@@ -125,55 +125,7 @@ public class BinderHandler {
 
     @OnlyIn(Dist.CLIENT)
     public static void renderWorldOverlay(LocalPlayer player, PoseStack pStack, Level level, ItemStack stack, Minecraft mc, float partialTicks) {
-        if (!isBound(stack)) {
-            return;
-        }
-
-        GlobalPos gPos = getBound(stack);
-        if (gPos.dimension() != level.dimension()) {
-            return;
-        }
-        BlockPos pos = gPos.pos();
-
-        boolean valid = level.getBlockEntity(pos) instanceof ICrystalLink;
-
-        BlockState state = level.getBlockState(pos);
-        VoxelShape shape = state.getShape(level, pos);
-        if (shape.isEmpty()) {
-            shape = Shapes.block();
-        }
-        Cuboid6 cuboid6 = new Cuboid6(shape.bounds());
-
-
-        MultiBufferSource.BufferSource source = Minecraft.getInstance().renderBuffers().bufferSource();
-        Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
-        Vec3 cameraPos = camera.position();
-
-        pStack.pushPose();
-        pStack.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
-        pStack.translate(pos.getX(), pos.getY(), pos.getZ());
-
-        RenderUtils.bufferCuboidSolid(
-                new TransformingVertexConsumer(source.getBuffer(DERenderTypes.BOX_NO_DEPTH), pStack),
-                cuboid6,
-                valid ? 0 : 1, valid ? 1 : 0, 0, 0.5F
-        );
-
-        source.endBatch();
-
-        RenderUtils.bufferCuboidOutline(
-                new TransformingVertexConsumer(new DelegatingVertexConsumer(source.getBuffer(DERenderTypes.OUTLINE_TYPE)) {
-                    @Override
-                    public VertexConsumer addVertex(float x, float y, float z) {
-                        return super.addVertex(x, y, z).setLineWidth(4.0F);
-                    }
-                }, pStack),
-                cuboid6,
-                0, 0, 0, 1
-        );
-
-        source.endBatch();
-        pStack.popPose();
+        Client.renderWorldOverlay(player, pStack, level, stack, mc, partialTicks);
     }
 
     private static CCModel modelForAABB(AABB aabb) {
@@ -182,5 +134,59 @@ public class BinderHandler {
         }
 
         return modelCache.get(aabb);
+    }
+
+    private static class Client {
+        private static void renderWorldOverlay(LocalPlayer player, PoseStack pStack, Level level, ItemStack stack, Minecraft mc, float partialTicks) {
+            if (!isBound(stack)) {
+                return;
+            }
+
+            GlobalPos gPos = getBound(stack);
+            if (gPos.dimension() != level.dimension()) {
+                return;
+            }
+            BlockPos pos = gPos.pos();
+
+            boolean valid = level.getBlockEntity(pos) instanceof ICrystalLink;
+
+            BlockState state = level.getBlockState(pos);
+            VoxelShape shape = state.getShape(level, pos);
+            if (shape.isEmpty()) {
+                shape = Shapes.block();
+            }
+            Cuboid6 cuboid6 = new Cuboid6(shape.bounds());
+
+
+            MultiBufferSource.BufferSource source = Minecraft.getInstance().renderBuffers().bufferSource();
+            Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
+            Vec3 cameraPos = camera.position();
+
+            pStack.pushPose();
+            pStack.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
+            pStack.translate(pos.getX(), pos.getY(), pos.getZ());
+
+            RenderUtils.bufferCuboidSolid(
+                    new TransformingVertexConsumer(source.getBuffer(DERenderTypes.BOX_NO_DEPTH), pStack),
+                    cuboid6,
+                    valid ? 0 : 1, valid ? 1 : 0, 0, 0.5F
+            );
+
+            source.endBatch();
+
+            RenderUtils.bufferCuboidOutline(
+                    new TransformingVertexConsumer(new DelegatingVertexConsumer(source.getBuffer(DERenderTypes.OUTLINE_TYPE)) {
+                        @Override
+                        public VertexConsumer addVertex(float x, float y, float z) {
+                            return super.addVertex(x, y, z).setLineWidth(4.0F);
+                        }
+                    }, pStack),
+                    cuboid6,
+                    0, 0, 0, 1
+            );
+
+            source.endBatch();
+            pStack.popPose();
+        }
     }
 }

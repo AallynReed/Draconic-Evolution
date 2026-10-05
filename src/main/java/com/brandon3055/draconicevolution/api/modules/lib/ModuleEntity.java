@@ -4,6 +4,7 @@ import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.gui.modular.elements.GuiElement;
 import codechicken.lib.math.MathHelper;
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -403,7 +404,7 @@ public abstract class ModuleEntity<T extends ModuleData<T>> {
             Item item = getModule().getItem();
             ItemStack stack = new ItemStack(item);
             saveEntityToStack(stack, context);
-            List<Component> list = stack.getTooltipLines(Item.TooltipContext.of(mc.level), mc.player, mc.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
+            List<Component> list = stack.getTooltipLines(Item.TooltipContext.of(BrandonsCore.proxy.getClientWorld()), BrandonsCore.proxy.getClientPlayer(), mc.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
             render.setComponentTooltipForNextFrame(mc.font, list, (int) mouseX, (int) mouseY);
             //TODO, need a new get stack that encodes the required data. Probably going to need tata components for module data.... but maybe I can atleast use the builtin data component tooltip stuff?
             return true;

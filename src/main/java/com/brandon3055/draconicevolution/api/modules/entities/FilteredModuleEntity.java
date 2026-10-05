@@ -10,6 +10,7 @@ import codechicken.lib.gui.modular.lib.geometry.Align;
 import codechicken.lib.gui.modular.lib.geometry.Axis;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.BCConfig;
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.BCStreamCodec;
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.client.BCGuiTextures;
@@ -233,7 +234,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
             Item item = getModule().getItem();
             ItemStack stack = new ItemStack(item);
             saveEntityToStack(stack, context);
-            List<Component> list = stack.getTooltipLines(Item.TooltipContext.of(mc.level), mc.player, mc.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
+            List<Component> list = stack.getTooltipLines(Item.TooltipContext.of(BrandonsCore.proxy.getClientWorld()), BrandonsCore.proxy.getClientPlayer(), mc.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
             render.setComponentTooltipForNextFrame(mc.font, list, (int) mouseX, (int) mouseY);
             return true;
         }

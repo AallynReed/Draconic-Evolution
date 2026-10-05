@@ -140,7 +140,7 @@ public class DislocatorAdvanced extends Dislocator {
 
     @OnlyIn (Dist.CLIENT)
     private void openGui(ItemStack stack, Player player) {
-        Minecraft.getInstance().setScreen(new DislocatorGui.Screen(stack.getHoverName(), player));
+        Client.openGui(stack, player);
     }
 
     private void handleTeleport(Player player, ItemStack stack, TargetPos targetPos, boolean showFuel) {
@@ -542,6 +542,12 @@ public class DislocatorAdvanced extends Dislocator {
 
         public DislocatorTarget copy() {
             return new DislocatorTarget(pos, name, locked);
+        }
+    }
+
+    private static class Client {
+        private static void openGui(ItemStack stack, Player player) {
+            Minecraft.getInstance().setScreen(new DislocatorGui.Screen(stack.getHoverName(), player));
         }
     }
 }

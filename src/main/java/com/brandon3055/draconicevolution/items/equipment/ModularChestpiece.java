@@ -137,15 +137,7 @@ public class ModularChestpiece extends Item implements IModularArmor, IDEEquipme
     @Override
     @OnlyIn(Dist.CLIENT)
     public EquippedItemModel getExtendedModel(LivingEntity entity, ItemStack stack, @Nullable EquipmentSlot slot, HumanoidModel<?> parentModel, boolean slim) {
-        ItemStack chest = entity.getItemBySlot(EquipmentSlot.CHEST);
-        boolean onArmor = slot == null && !chest.isEmpty() && HumanoidArmorLayer.shouldRender(chest, EquipmentSlot.CHEST) && !chest.has(DataComponents.GLIDER);
-        if (model == null || model_on_armor == null) {
-            model = new ModularChestpieceModel<>(techLevel, false);
-            model_on_armor = new ModularChestpieceModel<>(techLevel, true);
-        }
-        ModularChestpieceModel<?> activeModel = onArmor ? model_on_armor : model;
-        ClientHooks.copyModelProperties(parentModel, activeModel);
-        return activeModel;
+        return Client.getExtendedModel(this, entity, slot, parentModel);
     }
 
     @Override
@@ -179,5 +171,19 @@ public class ModularChestpiece extends Item implements IModularArmor, IDEEquipme
     @Override
     public int getBarColor(ItemStack stack) {
         return damageBarColour(stack);
+    }
+
+    private static class Client {
+        private static EquippedItemModel getExtendedModel(ModularChestpiece item, LivingEntity entity, @Nullable EquipmentSlot slot, HumanoidModel<?> parentModel) {
+            ItemStack chest = entity.getItemBySlot(EquipmentSlot.CHEST);
+            boolean onArmor = slot == null && !chest.isEmpty() && HumanoidArmorLayer.shouldRender(chest, EquipmentSlot.CHEST) && !chest.has(DataComponents.GLIDER);
+            if (item.model == null || item.model_on_armor == null) {
+                item.model = new ModularChestpieceModel<>(item.techLevel, false);
+                item.model_on_armor = new ModularChestpieceModel<>(item.techLevel, true);
+            }
+            ModularChestpieceModel<?> activeModel = onArmor ? item.model_on_armor : item.model;
+            ClientHooks.copyModelProperties(parentModel, activeModel);
+            return activeModel;
+        }
     }
 }

@@ -305,7 +305,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     @OnlyIn (Dist.CLIENT)
     @Override
     public CrystalFXBase createStaticFX() {
-        return new CrystalFXRing((ClientLevel)level, this);
+        return Client.createStaticFX(this);
     }
 
     @Override
@@ -517,4 +517,10 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     }
 
     //endregion
+
+    private static class Client {
+        private static CrystalFXBase createStaticFX(TileCrystalWirelessIO tile) {
+            return new CrystalFXRing((ClientLevel) tile.getLevel(), tile);
+        }
+    }
 }

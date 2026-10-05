@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.entity.guardian.control;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.vec.Vector3;
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.lib.TeleportUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.DEParticles;
@@ -123,7 +124,7 @@ public abstract class ChargeUpPhase extends Phase {
         }
         BlockPos origin = guardian.getArenaOrigin();
         if (origin == null) return;
-        Player player = Minecraft.getInstance().player;
+        Player player = BrandonsCore.proxy.getClientPlayer();
         if (player == null || !isValidTarget(player)) return;
 
         if (effectTimer == 0) {
@@ -132,7 +133,7 @@ public abstract class ChargeUpPhase extends Phase {
             guardian.level().playLocalSound(guardian.getX(), guardian.getY(), guardian.getZ(), DESounds.CRYSTAL_BEAM.get(), SoundSource.HOSTILE, 64, 1F + speedMod, false);
             if (origin != null) {
                 for (int i = 0; i < 32; i++) {
-                    Minecraft.getInstance().particleEngine.add(new GuardianChargeParticle((ClientLevel) guardian.level(), Vector3.fromBlockPosCenter(origin), Vector3.fromEntity(guardian), i / 32D, effectTime, guardian.getPhaseManager()));
+                    Client.addChargeParticle(guardian, origin, i / 32D, effectTime);
                 }
             }
         } else {
@@ -230,5 +231,11 @@ public abstract class ChargeUpPhase extends Phase {
     @Override
     public boolean isInvulnerable() {
         return true;
+    }
+
+    private static class Client {
+        private static void addChargeParticle(DraconicGuardianEntity guardian, BlockPos origin, double offset, int effectTime) {
+            Minecraft.getInstance().particleEngine.add(new GuardianChargeParticle((ClientLevel) guardian.level(), Vector3.fromBlockPosCenter(origin), Vector3.fromEntity(guardian), offset, effectTime, guardian.getPhaseManager()));
+        }
     }
 }

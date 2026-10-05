@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import codechicken.lib.vec.Vector3;
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedPos;
@@ -13,6 +14,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
@@ -72,8 +74,7 @@ public class TilePortal extends TileBCore {
             }
             return;
         }
-        Minecraft mc = Minecraft.getInstance();
-        Player player = mc.player;
+        Player player = BrandonsCore.proxy.getClientPlayer();
 
         double distanceMod = Utils.getDistance(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5, player.getX(), player.getY(), player.getZ());
         if (level.getRandom().nextInt(Math.max((int) (distanceMod * (distanceMod / 5D)), 1)) == 0) {
@@ -89,17 +90,17 @@ public class TilePortal extends TileBCore {
             double rO2 = -0.1 + level.getRandom().nextDouble() * 0.2;
 
             if (axis == Direction.Axis.Z && player.getZ() < worldPosition.getZ() + 0.5) {
-                mc.particleEngine.add(new ParticlePortal((ClientLevel) level, Vector3.fromTile(this).add(rD1, rD2, 0), Vector3.fromTile(this).add(rD1 + rO1, rD2 + rO2, 0.75)));
+                Client.addParticle(level, Vector3.fromTile(this).add(rD1, rD2, 0), Vector3.fromTile(this).add(rD1 + rO1, rD2 + rO2, 0.75));
             } else if (axis == Direction.Axis.Z && player.getZ() > worldPosition.getZ() + 0.5) {
-                mc.particleEngine.add(new ParticlePortal((ClientLevel) level, Vector3.fromTile(this).add(rD1, rD2, 1), Vector3.fromTile(this).add(rD1 + rO1, rD2 + rO2, 0.25)));
+                Client.addParticle(level, Vector3.fromTile(this).add(rD1, rD2, 1), Vector3.fromTile(this).add(rD1 + rO1, rD2 + rO2, 0.25));
             } else if (axis == Direction.Axis.X && player.getX() < worldPosition.getX() + 0.5) {
-                mc.particleEngine.add(new ParticlePortal((ClientLevel) level, Vector3.fromTile(this).add(0, rD1, rD2), Vector3.fromTile(this).add(0.75, rD1 + rO1, rD2 + rO2)));
+                Client.addParticle(level, Vector3.fromTile(this).add(0, rD1, rD2), Vector3.fromTile(this).add(0.75, rD1 + rO1, rD2 + rO2));
             } else if (axis == Direction.Axis.X && player.getX() > worldPosition.getX() + 0.5) {
-                mc.particleEngine.add(new ParticlePortal((ClientLevel) level, Vector3.fromTile(this).add(1, rD1, rD2), Vector3.fromTile(this).add(0.25, rD1 + rO1, rD2 + rO2)));
+                Client.addParticle(level, Vector3.fromTile(this).add(1, rD1, rD2), Vector3.fromTile(this).add(0.25, rD1 + rO1, rD2 + rO2));
             } else if (axis == Direction.Axis.Y && player.getY() + player.getEyeHeight() > worldPosition.getY() + 0.5) {
-                mc.particleEngine.add(new ParticlePortal((ClientLevel) level, Vector3.fromTile(this).add(rD1, 1, rD2), Vector3.fromTile(this).add(rD1 + rO1, 0.25, rD2 + rO2)));
+                Client.addParticle(level, Vector3.fromTile(this).add(rD1, 1, rD2), Vector3.fromTile(this).add(rD1 + rO1, 0.25, rD2 + rO2));
             } else if (axis == Direction.Axis.Y && player.getY() + player.getEyeHeight() < worldPosition.getY() + 0.5) {
-                mc.particleEngine.add(new ParticlePortal((ClientLevel) level, Vector3.fromTile(this).add(rD1, 0, rD2), Vector3.fromTile(this).add(rD1 + rO1, 0.75, rD2 + rO2)));
+                Client.addParticle(level, Vector3.fromTile(this).add(rD1, 0, rD2), Vector3.fromTile(this).add(rD1 + rO1, 0.75, rD2 + rO2));
             }
         }
     }
@@ -110,6 +111,12 @@ public class TilePortal extends TileBCore {
             level.setBlock(getBlockPos(), state.setValue(Portal.VISIBLE, false), 0, 0);
             hidden = true;
             this.player = player;
+        }
+    }
+
+    private static class Client {
+        private static void addParticle(Level level, Vector3 pos, Vector3 target) {
+            Minecraft.getInstance().particleEngine.add(new ParticlePortal((ClientLevel) level, pos, target));
         }
     }
 }

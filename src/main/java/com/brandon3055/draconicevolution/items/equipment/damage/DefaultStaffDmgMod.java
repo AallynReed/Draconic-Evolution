@@ -70,10 +70,16 @@ public class DefaultStaffDmgMod implements IDamageModifier {
 
     @OnlyIn(Dist.CLIENT)
     public static void handleEffect(LivingEntity source, MCDataInput data) {
-        Vector3 pos = data.readVector();
-        ClientLevel world = (ClientLevel) source.level();
-        Minecraft mc = Minecraft.getInstance();
-        mc.getSoundManager().play(new SimpleSoundInstance(DESounds.STAFF_HIT_DEFAULT.get(), SoundSource.PLAYERS, 10, 1, world.getRandom(), pos.pos()));
-        mc.particleEngine.add(new StaffBeamEffect(world, source, pos));
+        Client.handleEffect(source, data);
+    }
+
+    private static class Client {
+        private static void handleEffect(LivingEntity source, MCDataInput data) {
+            Vector3 pos = data.readVector();
+            ClientLevel world = (ClientLevel) source.level();
+            Minecraft mc = Minecraft.getInstance();
+            mc.getSoundManager().play(new SimpleSoundInstance(DESounds.STAFF_HIT_DEFAULT.get(), SoundSource.PLAYERS, 10, 1, world.getRandom(), pos.pos()));
+            mc.particleEngine.add(new StaffBeamEffect(world, source, pos));
+        }
     }
 }

@@ -92,7 +92,7 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
     @OnlyIn(Dist.CLIENT)
     @Override
     public CrystalFXBase createStaticFX() {
-        return new CrystalFXIO((ClientLevel)level, this);
+        return Client.createStaticFX(this);
     }
 
     @Override
@@ -137,5 +137,11 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
     public void readFromItemStack(HolderLookup.Provider provider, CompoundTag compound) {
         super.readFromItemStack(provider, compound);
         updateRotation(facing.get());
+    }
+
+    private static class Client {
+        private static CrystalFXBase createStaticFX(TileCrystalDirectIO tile) {
+            return new CrystalFXIO((ClientLevel) tile.getLevel(), tile);
+        }
     }
 }
