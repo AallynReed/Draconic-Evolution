@@ -145,6 +145,11 @@ public abstract class TileReactorComponent extends TileBCore {
         pokeCore();
     }
 
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        onBroken();
+    }
+
     public void onBroken() {
         if (level.isClientSide()) {
             return;

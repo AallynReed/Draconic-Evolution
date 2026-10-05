@@ -14,7 +14,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
@@ -30,11 +29,6 @@ public class StabilizedSpawner extends EntityBlockBCore {
         setMobResistant();
         setExplosionResistant();
         setBlockEntity(DEContent.TILE_STABILIZED_SPAWNER::get, true);
-    }
-
-    @Override
-    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        super.onRemove(state, worldIn, pos, newState, isMoving);
     }
 
     @Override

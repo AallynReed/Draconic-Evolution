@@ -272,6 +272,11 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
         }
     }
 
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        onRemoved();
+    }
+
     public void onRemoved() {
         releaseStabilizers();
     }

@@ -1,16 +1,15 @@
 package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
-import com.brandon3055.draconicevolution.blocks.tileentity.TilePotentiometer;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -63,14 +62,9 @@ public class Potentiometer extends EntityBlockBCore {
     }
 
     @Override
-    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!isMoving && !state.is(newState.getBlock())) {
-            BlockEntity tile = worldIn.getBlockEntity(pos);
-            if (tile instanceof TilePotentiometer && ((TilePotentiometer) tile).power.get() > 0) {
-                this.updateNeighbors(state, worldIn, pos);
-            }
-
-            super.onRemove(state, worldIn, pos, newState, isMoving);
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        if (!movedByPiston) {
+            this.updateNeighbors(state, level, pos);
         }
     }
 

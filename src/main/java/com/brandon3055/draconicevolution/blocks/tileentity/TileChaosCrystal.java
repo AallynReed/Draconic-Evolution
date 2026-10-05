@@ -88,6 +88,11 @@ public class TileChaosCrystal extends TileBCore {
 
     private boolean removing = false;
 
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        detonate(null);
+    }
+
     public void detonate(Entity entity) {
         if (level.isClientSide()) {
             return;

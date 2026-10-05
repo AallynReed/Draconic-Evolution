@@ -158,6 +158,11 @@ public class TileFusionCraftingInjector extends TileBCore implements IFusionInje
         updateBlock();
     }
 
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        onDestroyed();
+    }
+
     public void onDestroyed() {
         TileFusionCraftingCore core = getCore();
         if (!getInjectorStack().isEmpty() && core != null) {

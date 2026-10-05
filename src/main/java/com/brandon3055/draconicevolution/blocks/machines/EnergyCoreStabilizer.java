@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
 import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCoreStabilizer;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
@@ -101,23 +100,6 @@ public class EnergyCoreStabilizer extends EntityBlockBCore {
         } else {
             super.setPlacedBy(world, pos, state, placer, stack);
         }
-    }
-
-    @Override
-    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-        BlockEntity tile = world.getBlockEntity(pos);
-
-        if (tile instanceof TileEnergyCoreStabilizer) {
-            if (((TileEnergyCoreStabilizer) tile).isValidMultiBlock.get()) {
-                ((TileEnergyCoreStabilizer) tile).revertStructure();
-            }
-            TileEnergyCore core = ((TileEnergyCoreStabilizer) tile).getCore();
-            if (core != null) {
-                world.removeBlockEntity(pos);
-                ((TileEnergyCoreStabilizer) tile).validateStructure();
-            }
-        }
-        super.onRemove(state, world, pos, newState, isMoving);
     }
 
 

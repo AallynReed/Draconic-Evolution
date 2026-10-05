@@ -194,6 +194,18 @@ public class TileEnergyCoreStabilizer extends TileBCore implements IInteractTile
 
     // ### Revert Multi-block
 
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        if (isValidMultiBlock.get()) {
+            revertStructure();
+        }
+        TileEnergyCore core = getCore();
+        if (core != null) {
+            level.removeBlockEntity(pos);
+            validateStructure();
+        }
+    }
+
     public void revertStructure() {
         if (level.getBlockState(worldPosition).is(DEContent.ENERGY_CORE_STABILIZER.get())) {
             level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyCoreStabilizer.LARGE, false));

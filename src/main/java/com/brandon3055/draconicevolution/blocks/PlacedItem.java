@@ -203,11 +203,6 @@ public class PlacedItem extends EntityBlockBCore implements CustomTabHandling {
     }
 
     @Override
-    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-        super.onRemove(state, world, pos, newState, isMoving);
-    }
-
-    @Override
     public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
         BlockEntity tile = level.getBlockEntity(pos);
         if (tile instanceof TilePlacedItem) {

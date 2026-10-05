@@ -5,6 +5,7 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -62,12 +63,9 @@ public class RainSensor extends EntityBlockBCore {
     }
 
     @Override
-    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!isMoving && !state.is(newState.getBlock())) {
-            if (state.getValue(ACTIVE)) {
-                this.updateNeighbors(state, worldIn, pos);
-            }
-            super.onRemove(state, worldIn, pos, newState, isMoving);
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        if (!movedByPiston && state.getValue(ACTIVE)) {
+            this.updateNeighbors(state, level, pos);
         }
     }
 

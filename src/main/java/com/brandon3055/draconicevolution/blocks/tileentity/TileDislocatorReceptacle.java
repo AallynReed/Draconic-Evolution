@@ -152,6 +152,11 @@ public class TileDislocatorReceptacle extends TileBCore implements IInteractTile
         }
     }
 
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        deactivate();
+    }
+
     public void deactivate() {
         setActive(false);
         for (BlockPos pos : BlockPos.betweenClosed(getBlockPos().offset(-1, -1, -1), getBlockPos().offset(1, 1, 1))) {

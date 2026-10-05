@@ -59,15 +59,6 @@ public class ChaosCrystal extends EntityBlockBCore implements CustomTabHandling 
     }
 
     @Override
-    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-        BlockEntity tile = world.getBlockEntity(pos);
-        if (!world.isClientSide() && tile instanceof TileChaosCrystal) {
-            ((TileChaosCrystal) tile).detonate(null);
-        }
-        super.onRemove(state, world, pos, newState, isMoving);
-    }
-
-    @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         if (placer instanceof Player && ((Player) placer).getAbilities().instabuild) {
             BlockEntity tile = level.getBlockEntity(pos);
