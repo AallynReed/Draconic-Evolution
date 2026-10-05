@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.init;
 
+import com.brandon3055.draconicevolution.handlers.RecipeSyncHandler;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -96,8 +97,8 @@ public class OreDoublingRegistry {
     }
 
     public static ItemStack getSmeltingResult(ItemStack stack, Level world) {
-        RecipeHolder<SmeltingRecipe> recipe = world.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), world).orElse(null);
-        return recipe == null ? ItemStack.EMPTY : recipe.value().assemble(new SingleRecipeInput(stack), world.registryAccess());
+        RecipeHolder<SmeltingRecipe> recipe = RecipeSyncHandler.recipes(world).getRecipesFor(RecipeType.SMELTING, new SingleRecipeInput(stack), world).findFirst().orElse(null);
+        return recipe == null ? ItemStack.EMPTY : recipe.value().assemble(new SingleRecipeInput(stack));
     }
 
     private static void registerDEOverrides() {

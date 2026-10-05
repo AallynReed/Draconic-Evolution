@@ -11,10 +11,12 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedFloat;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.RecipePropertySet;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -116,19 +118,19 @@ public class SmeltingLogic {
             }
             SingleRecipeInput input = new SingleRecipeInput(stack);
 
-            RecipeHolder<SmeltingRecipe> holder = world.getRecipeManager().getRecipeFor(RecipeType.SMELTING, input, world).orElse(null);
+            RecipeHolder<SmeltingRecipe> holder = ((ServerLevel) world).recipeAccess().getRecipeFor(RecipeType.SMELTING, input, world).orElse(null);
             if (holder == null) {
                 continue;
             }
             SmeltingRecipe recipe = holder.value();
             validRecipes++;
-            slowestRecipe = Math.max(slowestRecipe, recipe.getCookingTime());
+            slowestRecipe = Math.max(slowestRecipe, recipe.cookingTime());
 
             if (attemptSmelt) {
-                ItemStack result = recipe.assemble(input, tile.getLevel().registryAccess());
+                ItemStack result = recipe.assemble(input);
                 if (InventoryUtils.insertItem(outputInv, result, true).isEmpty() && !inputInv.extractItem(i, 1, false).isEmpty()) {
                     InventoryUtils.insertItem(outputInv, result, false);
-                    recipesUsed.addTo(holder.id(), 1);
+                    recipesUsed.addTo(holder.id().identifier(), 1);
                     completedSmelts++;
                 }
             }
@@ -253,7 +255,7 @@ public class SmeltingLogic {
     }
 
     public boolean isSmeltable(ItemStack stack) {
-        return tile.getLevel().getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), tile.getLevel()).isPresent();
+        return tile.getLevel().recipeAccess().propertySet(RecipePropertySet.FURNACE_INPUT).test(stack);
     }
 
     public enum FeedMode {
