@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.handlers;
 
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.RenderUtils;
+import codechicken.lib.render.buffer.DelegatingVertexConsumer;
 import codechicken.lib.render.buffer.TransformingVertexConsumer;
 import codechicken.lib.vec.Cuboid6;
 import com.brandon3055.brandonscore.lib.ChatHelper;
@@ -11,6 +12,7 @@ import com.brandon3055.draconicevolution.api.render.DERenderTypes;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.init.ItemData;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Camera;
@@ -145,7 +147,7 @@ public class BinderHandler {
 
         MultiBufferSource.BufferSource source = Minecraft.getInstance().renderBuffers().bufferSource();
         Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
-        Vec3 cameraPos = camera.getPosition();
+        Vec3 cameraPos = camera.position();
 
         pStack.pushPose();
         pStack.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
@@ -160,7 +162,12 @@ public class BinderHandler {
         source.endBatch();
 
         RenderUtils.bufferCuboidOutline(
-                new TransformingVertexConsumer(source.getBuffer(DERenderTypes.OUTLINE_TYPE), pStack),
+                new TransformingVertexConsumer(new DelegatingVertexConsumer(source.getBuffer(DERenderTypes.OUTLINE_TYPE)) {
+                    @Override
+                    public VertexConsumer addVertex(float x, float y, float z) {
+                        return super.addVertex(x, y, z).setLineWidth(4.0F);
+                    }
+                }, pStack),
                 cuboid6,
                 0, 0, 0, 1
         );
