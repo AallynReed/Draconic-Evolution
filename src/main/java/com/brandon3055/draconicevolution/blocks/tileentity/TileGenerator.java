@@ -35,6 +35,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.api.distmarker.Dist;
@@ -157,7 +158,8 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
 
                 if (itemBurnTime > 0) {
                     if (stack.getCount() == 1) {
-                        stack = stack.getItem().getCraftingRemainingItem(stack);
+                        ItemStackTemplate remainder = stack.getCraftingRemainder();
+                        stack = remainder != null ? remainder.create() : ItemStack.EMPTY;
                     } else {
                         stack.shrink(1);
                     }
