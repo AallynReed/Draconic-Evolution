@@ -236,7 +236,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
         DamageSource source = level.damageSources().playerAttack(getFakePlayer());
 
         //Attack the mob and enter cooldown mode for 5 ticks if successful. Else cooldown for 3 ticks.
-        if (nextTarget.hurt(source, damage)) {
+        if (nextTarget.hurtServer((ServerLevel) level, source, damage)) {
             if (!weapon.isEmpty()) {
                 ItemStack justInCase = weapon.copy();
                 justInCase.setDamageValue(justInCase.getMaxDamage() - 1);
