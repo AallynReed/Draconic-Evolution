@@ -16,6 +16,7 @@ import net.covers1624.quack.util.CrashLock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Animal;
@@ -94,7 +95,7 @@ public class LootEventHandler {
             EndDragonFight manager = dragon.getDragonFight();
             if (manager == null) return;
 
-            ItemEntity item = EntityType.ITEM.create(entity.level());
+            ItemEntity item = EntityType.ITEM.create(entity.level(), EntitySpawnReason.EVENT);
             if (item != null) {
                 item.setItem(new ItemStack(DEContent.DRAGON_HEART.get()));
                 BlockPos podiumPos = entity.level().getHeightmapPos(Heightmap.Types.WORLD_SURFACE, EndPodiumFeature.getLocation(manager.origin)).offset(0, 3, 0);
