@@ -4,7 +4,6 @@ import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -15,6 +14,8 @@ import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -161,17 +162,16 @@ public class StabilizedSpawnerLogic extends BaseSpawner {
 
     @OnlyIn (Dist.CLIENT)
     @Override
-    public double getoSpin() {
+    public double getOSpin() {
         return prevMobRotation;
     }
 
     @Override
-    public CompoundTag save(CompoundTag compound) {
-        return compound;
+    public void save(ValueOutput output) {
     }
 
     @Override
-    public void load(@Nullable Level level, BlockPos pos, CompoundTag tag) {
+    public void load(@Nullable Level level, BlockPos pos, ValueInput input) {
     }
 
     @Override
