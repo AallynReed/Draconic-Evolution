@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
 import codechicken.lib.gui.modular.elements.GuiElement;
-import codechicken.lib.gui.modular.lib.GuiRender;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.api.BCStreamCodec;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
@@ -18,6 +17,8 @@ import com.brandon3055.draconicevolution.init.ItemData;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -191,16 +192,16 @@ public class EnergyLinkEntity extends ModuleEntity<EnergyLinkData> {
 
     @Override
     @OnlyIn (Dist.CLIENT)
-    public void renderModule(GuiElement<?> parent, GuiRender render, int x, int y, int width, int height, double mouseX, double mouseY, boolean stackRender, float partialTicks) {
+    public void renderModule(GuiElement<?> parent, GuiGraphicsExtractor render, int x, int y, int width, int height, double mouseX, double mouseY, boolean stackRender, float partialTicks) {
         super.renderModule(parent, render, x, y, width, height, mouseX, mouseY, stackRender, partialTicks);
 
         EnergyLinkData data = module.getData();
         if (linkCharge >= data.activationEnergy()) return;
         double progress = linkCharge / (double) data.activationEnergy();
 
-        boolean crossDimension = linkedPos.isPresent() && render.mc().level.dimension() != linkedPos.get().dimension();
+        boolean crossDimension = linkedPos.isPresent() && Minecraft.getInstance().level.dimension() != linkedPos.get().dimension();
         if (crossDimension && !data.xDimensional()) {
-            render.rect(x, y, width, height, 0x60FF0000);
+            render.cc$fill(x, y, x + width, y + height, 0x60FF0000);
             return;
         }
 

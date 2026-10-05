@@ -3,11 +3,10 @@ package com.brandon3055.draconicevolution.api.modules.lib;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.gui.modular.elements.GuiElement;
-import codechicken.lib.gui.modular.lib.GuiRender;
-import codechicken.lib.gui.modular.sprite.Material;
-import codechicken.lib.render.buffer.TransformingVertexConsumer;
+import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.client.render.RenderUtils;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.modules.Module;
@@ -15,16 +14,29 @@ import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.brandon3055.draconicevolution.init.DEModules;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.google.common.collect.Multimap;
+import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.render.TextureSetup;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.TextureTransform;
+import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -37,6 +49,9 @@ import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2fc;
+import org.joml.Matrix4f;
+import org.joml.Vector4f;
 
 import java.util.List;
 import java.util.Objects;
@@ -48,6 +63,19 @@ import java.util.stream.Stream;
  * Created by brandon3055 on 18/4/20.
  */
 public abstract class ModuleEntity<T extends ModuleData<T>> {
+    @OnlyIn (Dist.CLIENT)
+    private static class ClientPipelines {
+        private static final RenderPipeline GUI_GLINT = RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET)
+                .withLocation(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "pipeline/gui_glint"))
+                .withVertexShader("core/position_tex")
+                .withFragmentShader("core/position_tex")
+                .withSampler("Sampler0")
+                .withColorTargetState(new ColorTargetState(BlendFunction.GLINT))
+                .withCull(false)
+                .withVertexFormat(DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS)
+                .build();
+    }
+
 
     public static final Codec<ModuleEntity<?>> CODEC = new ModuleEntityCodec();
     public static final StreamCodec<RegistryFriendlyByteBuf, ModuleEntity<?>> STREAM_CODEC = new StreamCodec<>() {
@@ -322,42 +350,43 @@ public abstract class ModuleEntity<T extends ModuleData<T>> {
     //end
 
     @OnlyIn (Dist.CLIENT)
-    public void renderModule(GuiElement<?> parent, GuiRender render, int x, int y, int width, int height, double mouseX, double mouseY, boolean stackRender, float partialTicks) {
+    public void renderModule(GuiElement<?> parent, GuiGraphicsExtractor render, int x, int y, int width, int height, double mouseX, double mouseY, boolean stackRender, float partialTicks) {
         if (stackRender) {
 //            render.pose().translate(0, 0, 210);
         }
 
         int colour = getModuleColour(module);
-        render.rect(x, y, width, height, colour);
-        render.borderRect(x, y, width, height, 1, colour, GuiRender.mixColours(colour, 0x20202000, true));
+        render.cc$fill(x, y, x + width, y + height, colour);
+        render.cc$borderRect(x, y, width, height, 1, colour, mixColours(colour, 0x20202000, true));
 
         if (module.getProperties().getTechLevel() == TechLevel.CHAOTIC) {
-            VertexConsumer builder = new TransformingVertexConsumer(render.buffers().getBuffer(RenderType.glint()), render.pose());
-            builder.addVertex(x, y + height, 0).setUv(0, ((float) height / width) / 64F);
-            builder.addVertex(x + width, y + height, 0).setUv(((float) width / height) / 64F, ((float) height / width) / 64F);
-            builder.addVertex(x + width, y, 0).setUv(((float) width / height) / 64F, 0);
-            builder.addVertex(x, y, 0).setUv(0, 0);
-            RenderUtils.endBatch(render.buffers());
+            AbstractTexture glint = Minecraft.getInstance().getTextureManager().getTexture(ItemFeatureRenderer.ENCHANTED_GLINT_ITEM);
+            Matrix4f texMat = TextureTransform.GLINT_TEXTURING.getMatrix();
+            render.cc$submitCustom(ClientPipelines.GUI_GLINT, TextureSetup.singleTexture(glint.getTextureView(), glint.getSampler()), x, x + width, y, y + height, (builder, pose) -> {
+                glintVertex(builder, pose, texMat, x, y + height, 0, ((float) height / width) / 64F);
+                glintVertex(builder, pose, texMat, x + width, y + height, ((float) width / height) / 64F, ((float) height / width) / 64F);
+                glintVertex(builder, pose, texMat, x + width, y, ((float) width / height) / 64F, 0);
+                glintVertex(builder, pose, texMat, x, y, 0, 0);
+            });
         }
 
-        Material texture = module.getTexture();
-        TextureAtlasSprite sprite = texture.sprite();
+        TextureAtlasSprite sprite = module.getTexture().get();
         float ar = (float) sprite.contents().width() / (float) sprite.contents().height();
         float iar = (float) sprite.contents().height() / (float) sprite.contents().width();
 
         if (iar * width <= height) { //Fit Width
             double h = width * iar;
-            render.texRect(texture, x, y + (height / 2D) - (h / 2D), width, h);
+            render.cc$blitSprite(RenderPipelines.GUI_TEXTURED, sprite, x, y + (height / 2D) - (h / 2D), width, h);
         } else { //Fit height
             double w = height * ar;
-            render.texRect(texture, x + (width / 2D) - (w / 2D), y, w, height);
+            render.cc$blitSprite(RenderPipelines.GUI_TEXTURED, sprite, x + (width / 2D) - (w / 2D), y, w, height);
         }
 
         //Hover highlight
         if (stackRender) {
 //            render.pose().translate(0, 0, -210);
-        } else if (GuiRender.isInRect(x, y, width, height, mouseX, mouseY)) {
-            render.rect(x, y, width, height, 0x50FFFFFF);
+        } else if (MathHelper.isInRect(x, y, width, height, mouseX, mouseY)) {
+            render.cc$fill(x, y, x + width, y + height, 0x50FFFFFF);
         }
     }
 
@@ -368,14 +397,14 @@ public abstract class ModuleEntity<T extends ModuleData<T>> {
      * @return true to block further overlay rendering. (Equivalent to returning true in {@link GuiElement#renderOverlay(GuiRender, double, double, float, boolean)} )
      */
     @OnlyIn (Dist.CLIENT)
-    public boolean renderModuleOverlay(GuiElement<?> parent, ModuleContext context, GuiRender render, int x, int y, int width, int height, double mouseX, double mouseY, float partialTicks, int hoverTicks) {
+    public boolean renderModuleOverlay(GuiElement<?> parent, ModuleContext context, GuiGraphicsExtractor render, int x, int y, int width, int height, double mouseX, double mouseY, float partialTicks, int hoverTicks) {
         if (hoverTicks > 10) {
             Minecraft mc = Minecraft.getInstance();
             Item item = getModule().getItem();
             ItemStack stack = new ItemStack(item);
             saveEntityToStack(stack, context);
             List<Component> list = stack.getTooltipLines(Item.TooltipContext.of(mc.level), mc.player, mc.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
-            render.componentTooltip(list, mouseX, mouseY);
+            render.setComponentTooltipForNextFrame(mc.font, list, (int) mouseX, (int) mouseY);
             //TODO, need a new get stack that encodes the required data. Probably going to need tata components for module data.... but maybe I can atleast use the builtin data component tooltip stuff?
             return true;
         }
@@ -548,19 +577,11 @@ public abstract class ModuleEntity<T extends ModuleData<T>> {
 
     @Deprecated //TODO, Can probably use RenderUtils version... maybe.
     @OnlyIn (Dist.CLIENT)
-    protected void drawChargeProgress(GuiRender render, int x, int y, int width, int height, double progress, @Nullable Component text1, @Nullable Component text2) {
+    protected void drawChargeProgress(GuiGraphicsExtractor render, int x, int y, int width, int height, double progress, @Nullable Component text1, @Nullable Component text2) {
         double diameter = Math.min(width, height) * 0.425;
 
-        render.rect(x, y, width, height, 0x60FF0000);
-        VertexConsumer builder = new TransformingVertexConsumer(render.buffers().getBuffer(RenderUtils.FAN_TYPE), render.pose());
-        builder.addVertex(x + (width / 2F), y + (height / 2F), 0).setColor(0, 255, 255, 128);
-        for (double d = 0; d <= 1; d += 1D / 30D) {
-            double angle = (d * progress) + 0.5 - progress;
-            double vertX = x + (width / 2D) + Math.sin(angle * (Math.PI * 2)) * diameter;
-            double vertY = y + (height / 2D) + Math.cos(angle * (Math.PI * 2)) * diameter;
-            builder.addVertex((float) vertX, (float) vertY, 0).setColor(255, 255, 255, 128);
-        }
-        RenderUtils.endBatch(render.buffers());
+        render.cc$fill(x, y, x + width, y + height, 0x60FF0000);
+        RenderUtils.drawPieProgress(render, x + (width / 2D) - diameter, y + (height / 2D) - diameter, diameter * 2, progress, 0, 0x8000FFFF, 0x80FFFFFF);
 
         if (text1 != null) {
             drawBackgroundString(render, text1, x + width / 2F, y + height / 2F - (text2 == null ? 4 : 8), 0, 0x8000FF00, 1, false, true);
@@ -571,11 +592,29 @@ public abstract class ModuleEntity<T extends ModuleData<T>> {
     }
 
     @OnlyIn (Dist.CLIENT)
-    public static void drawBackgroundString(GuiRender render, Component text, float x, float y, int colour, int background, int padding, boolean shadow, boolean centered) {
-        int width = render.font().width(text);
+    public static void drawBackgroundString(GuiGraphicsExtractor render, Component text, float x, float y, int colour, int background, int padding, boolean shadow, boolean centered) {
+        Font font = Minecraft.getInstance().font;
+        int width = font.width(text);
         x = centered ? x - width / 2F : x;
-        render.rect(x - padding, y - padding, width + padding * 2, render.font().lineHeight - 2 + padding * 2, background);
-        render.drawString(text, x, y, colour, shadow);
+        render.cc$fill(x - padding, y - padding, x + width + padding, y - padding + font.lineHeight - 2 + padding * 2, background);
+        render.cc$drawString(font, text, x, y, colour, shadow);
+    }
+
+    @OnlyIn (Dist.CLIENT)
+    private static void glintVertex(VertexConsumer builder, Matrix3x2fc pose, Matrix4f texMat, float x, float y, float u, float v) {
+        Vector4f uv = texMat.transform(new Vector4f(u, v, 0, 1));
+        builder.addVertexWith2DPose(pose, x, y).setUv(uv.x(), uv.y());
+    }
+
+    /**
+     * Adds (or subtracts) the R, G, B and A values of colour2 to colour1.
+     */
+    protected static int mixColours(int colour1, int colour2, boolean subtract) {
+        int alpha = Mth.clamp((colour1 >> 24 & 255) + (subtract ? -(colour2 >> 24 & 255) : colour2 >> 24 & 255), 0, 255);
+        int red = Mth.clamp((colour1 >> 16 & 255) + (subtract ? -(colour2 >> 16 & 255) : colour2 >> 16 & 255), 0, 255);
+        int green = Mth.clamp((colour1 >> 8 & 255) + (subtract ? -(colour2 >> 8 & 255) : colour2 >> 8 & 255), 0, 255);
+        int blue = Mth.clamp((colour1 & 255) + (subtract ? -(colour2 & 255) : colour2 & 255), 0, 255);
+        return alpha << 24 | red << 16 | green << 8 | blue;
     }
 
     public static class ModuleEntityCodec implements Codec<ModuleEntity<?>> {

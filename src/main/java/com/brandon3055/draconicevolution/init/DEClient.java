@@ -33,7 +33,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterItemModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
@@ -58,7 +57,6 @@ public class DEClient {
 //        modBus.addListener(ClientInit::onModelRegistryEvent);
         modBus.addListener(DEClient::registerRenderers);
         modBus.addListener(DEClient::onAddRenderLayers);
-        modBus.addListener(DEClient::onResourceReload);
         modBus.addListener(DEClient::registerClientExtensions);
         modBus.addListener(DEClient::registerItemModels);
         modBus.addListener(DEClient::registerMenuScreens);
@@ -76,6 +74,7 @@ public class DEClient {
         AtlasTextureHelper.init(modBus);
         KeyBindings.init(modBus);
         DEGuiTextures.init(modBus);
+        ModuleTextures.init(modBus);
     }
 
     private static final CrashLock LOCK2 = new CrashLock("Already Initialized.");
@@ -85,10 +84,6 @@ public class DEClient {
         CustomBossInfoHandler.init();
 
         NeoForge.EVENT_BUS.register(new KeyInputHandler());
-    }
-
-    public static void onResourceReload(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener(ModuleTextures.getAtlasHolder());
     }
 
     private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {

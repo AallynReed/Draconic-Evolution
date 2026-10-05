@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
 import codechicken.lib.gui.modular.elements.GuiElement;
-import codechicken.lib.gui.modular.lib.GuiRender;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
@@ -19,6 +18,7 @@ import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -38,6 +38,7 @@ import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 
 public class UndyingEntity extends ModuleEntity<UndyingData> {
@@ -92,9 +93,9 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
                 LivingEntity entity = ((StackModuleContext) moduleContext).getEntity();
                 if (entity instanceof Player) {
                     if (invulnerableTime == 0) {
-                        ((Player) entity).displayClientMessage(Component.literal(""), true);
+                        ((Player) entity).sendOverlayMessage(Component.literal(""));
                     } else {
-                        ((Player) entity).displayClientMessage(Component.translatable("module.draconicevolution.undying.invuln.active", MathUtils.round(invulnerableTime / 20D, 10)).withStyle(ChatFormatting.GOLD), true);
+                        ((Player) entity).sendOverlayMessage(Component.translatable("module.draconicevolution.undying.invuln.active", MathUtils.round(invulnerableTime / 20D, 10)).withStyle(ChatFormatting.GOLD));
                     }
                 }
             }
@@ -176,7 +177,7 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
                 while (iterator.hasNext()) {
                     MobEffectInstance effect = iterator.next();
                     if (!effect.getEffect().value().isBeneficial()) {
-                        entity.onEffectRemoved(effect);
+                        entity.onEffectsRemoved(List.of(effect));
                         iterator.remove();
                     }
                 }
@@ -193,7 +194,7 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderModule(GuiElement<?> parent, GuiRender render, int x, int y, int width, int height, double mouseX, double mouseY, boolean renderStack, float partialTicks) {
+    public void renderModule(GuiElement<?> parent, GuiGraphicsExtractor render, int x, int y, int width, int height, double mouseX, double mouseY, boolean renderStack, float partialTicks) {
         super.renderModule(parent, render, x, y, width, height, mouseX, mouseY, renderStack, partialTicks);
 
         UndyingData data = module.getData();

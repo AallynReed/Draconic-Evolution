@@ -4,9 +4,8 @@ import codechicken.enderstorage.api.Frequency;
 import codechicken.enderstorage.manager.EnderStorageManager;
 import codechicken.enderstorage.storage.EnderItemStorage;
 import codechicken.lib.colour.EnumColour;
+import codechicken.lib.gui.modular.SpriteSupplier;
 import codechicken.lib.gui.modular.elements.GuiElement;
-import codechicken.lib.gui.modular.lib.GuiRender;
-import codechicken.lib.gui.modular.sprite.Material;
 import codechicken.lib.inventory.InventoryUtils;
 import com.brandon3055.brandonscore.api.BCStreamCodec;
 import com.brandon3055.brandonscore.api.TechLevel;
@@ -17,6 +16,7 @@ import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.data.NoData;
+import com.brandon3055.draconicevolution.api.modules.items.EnderCollectionModuleItem;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.client.DEGuiTextures;
@@ -26,10 +26,14 @@ import com.brandon3055.draconicevolution.init.ItemData;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -112,7 +116,7 @@ public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
 
     @Override
     @OnlyIn (Dist.CLIENT)
-    protected Material getSlotOverlay() {
+    protected SpriteSupplier getSlotOverlay() {
         return BCGuiTextures.get("slots/filter");
     }
 
@@ -194,18 +198,18 @@ public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
         if (frequencyTag.isEmpty()) {
             return player.getEnderChestInventory();
         }
-        Frequency frequency = new Frequency(frequencyTag);
+        Frequency frequency = EnderCollectionModuleItem.readFrequency(frequencyTag);
         return EnderStorageManager.instance(false).getStorage(frequency, EnderItemStorage.TYPE);
     }
 
     private EnumColour[] getColours() {
-        Frequency frequency = new Frequency(frequencyTag);
+        Frequency frequency = EnderCollectionModuleItem.readFrequency(frequencyTag);
         return new EnumColour[]{frequency.left(), frequency.middle(), frequency.right()};
     }
 
     @Override
     @OnlyIn (Dist.CLIENT)
-    public void renderModule(GuiElement<?> parent, GuiRender render, int x, int y, int width, int height, double mouseX, double mouseY, boolean renderStack, float partialTicks) {
+    public void renderModule(GuiElement<?> parent, GuiGraphicsExtractor render, int x, int y, int width, int height, double mouseX, double mouseY, boolean renderStack, float partialTicks) {
         super.renderModule(parent, render, x, y, width, height, mouseX, mouseY, renderStack, partialTicks);
         if (frequencyTag.isEmpty() || !ModHelper.ENDERSTORAGE) {
             return;
@@ -214,9 +218,6 @@ public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
         float dist = (float) Utils.distToRect(x, y, width, height, mouseX, mouseY);
         float alpha = dist <= 10 ? (dist / 10F) : 1;
         if (alpha == 0) return;
-        if (alpha != 1) {
-            render.pose().translate(0, 0, 201);
-        }
 
         float p = width / 16F;
         float w = p * 2;    //Indicator Width
@@ -225,17 +226,14 @@ public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
         float py = y + (height / 2F) - (h / 2);
         EnumColour[] colours = getColours();
 
-        Material mat = DEGuiTextures.get("misc/es_buttons");
+        TextureAtlasSprite sprite = DEGuiTextures.get("misc/es_buttons").get();
         float hp = 1 / 32F;
         for (int i = 0; i < 3; i++) {
             float px = mid - (w / 2F) - (p * 3) + (i * (p * 3));
             float u = (hp * 3) + ((hp * 8) * (colours[i].getWoolMeta() % 4));
             //noinspection IntegerDivisionInFloatingPointContext
             float v = (hp * 2) + ((hp * 8) * (colours[i].getWoolMeta() / 4));
-            render.partialSprite(mat.renderType(GuiRender::texColType), px, py, px + w, py + h, mat.sprite(), u, v, u + (hp * 2), v + (hp * 4), 1, 1, 1, alpha);
-        }
-        if (alpha != 1) {
-            render.pose().translate(0, 0, -201);
+            render.cc$blitPartialSprite(RenderPipelines.GUI_TEXTURED, px, py, px + w, py + h, sprite, u, v, u + (hp * 2), v + (hp * 4), ARGB.colorFromFloat(alpha, 1, 1, 1));
         }
     }
 }

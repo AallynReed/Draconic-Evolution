@@ -2,13 +2,12 @@ package com.brandon3055.draconicevolution.api.modules.entities;
 
 import codechicken.lib.data.MCDataByteBuf;
 import codechicken.lib.data.MCDataInput;
+import codechicken.lib.gui.modular.SpriteSupplier;
 import codechicken.lib.gui.modular.elements.*;
 import codechicken.lib.gui.modular.lib.Constraints;
-import codechicken.lib.gui.modular.lib.GuiRender;
 import codechicken.lib.gui.modular.lib.TextState;
 import codechicken.lib.gui.modular.lib.geometry.Align;
 import codechicken.lib.gui.modular.lib.geometry.Axis;
-import codechicken.lib.gui.modular.sprite.Material;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.BCConfig;
 import com.brandon3055.brandonscore.api.BCStreamCodec;
@@ -31,6 +30,8 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.covers1624.quack.collection.FastStream;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
@@ -44,6 +45,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -143,11 +145,11 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
     //Render
 
     @OnlyIn (Dist.CLIENT)
-    protected abstract Material getSlotOverlay();
+    protected abstract SpriteSupplier getSlotOverlay();
 
     @Override
     @OnlyIn (Dist.CLIENT)
-    public void renderModule(GuiElement<?> parent, GuiRender render, int x, int y, int width, int height, double mouseX, double mouseY, boolean renderStack, float partialTicks) {
+    public void renderModule(GuiElement<?> parent, GuiGraphicsExtractor render, int x, int y, int width, int height, double mouseX, double mouseY, boolean renderStack, float partialTicks) {
         if (slotsCount == 0) {
             super.renderModule(parent, render, x, y, width, height, mouseX, mouseY, renderStack, partialTicks);
             return;
@@ -155,23 +157,22 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
 
         float dist = (float) Utils.distToRect(x, y, width, height, mouseX, mouseY);
         float alpha = dist <= 10 ? (dist / 10F) : 1;
-        render.pose().pushPose();
+        render.pose().pushMatrix();
 
         List<Slot> slots = layoutSlots(x, y, width, height);
 
         //Draw slots and stacks
         if (alpha < 1) {
-            Material slotTex = BCGuiTextures.getThemed("slot");
-            Material overlayTex = getSlotOverlay();
+            SpriteSupplier slotTex = BCGuiTextures.getThemed("slot");
+            SpriteSupplier overlayTex = getSlotOverlay();
 
             //Draw Slots
             for (Slot slot : slots) {
-                render.texRect(slotTex, slot.x, slot.y, slot.size, slot.size);
+                render.cc$blitSprite(RenderPipelines.GUI_TEXTURED, slotTex.get(), slot.x, slot.y, slot.size, slot.size);
                 if (overlayTex == null || !getStackFilter(slot.index).isEmpty()) continue;
-                render.texRect(overlayTex, slot.x, slot.y, slot.size, slot.size);
+                render.cc$blitSprite(RenderPipelines.GUI_TEXTURED, overlayTex.get(), slot.x, slot.y, slot.size, slot.size);
             }
 
-            render.pose().translate(0, 0, 100);
             //Draw Items
             for (Slot slot : slots) {
                 ItemStack stack = getStackFilter(slot.index);
@@ -185,44 +186,43 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
                 double itemY = slot.y + (slot.size / 16);
                 double itemSize = slot.size - ((slot.size / 16) * 2);
                 if (!stack.isEmpty()) {
-                    render.renderItem(stack, itemX, itemY, itemSize);
+                    render.pose().pushMatrix();
+                    render.pose().translate((float) itemX, (float) itemY);
+                    render.pose().scale((float) (itemSize / 16D));
+                    render.cc$renderItem(stack, 0, 0, 0);
+                    render.pose().popMatrix();
                 }
-                if (GuiRender.isInRect(slot.x, slot.y, slot.size, slot.size, mouseX, mouseY)) {
-                    render.pose().translate(0, 0, 100);
-                    render.rect(itemX, itemY, itemSize, itemSize, 0x80ffffff);
-                    render.pose().translate(0, 0, -100);
+                if (MathHelper.isInRect(slot.x, slot.y, slot.size, slot.size, mouseX, mouseY)) {
+                    render.cc$fill(itemX, itemY, itemX + itemSize, itemY + itemSize, 0x80ffffff);
                 }
             }
-            render.pose().translate(0, 0, 100);
-        } else if (renderStack) {
-            render.pose().translate(0, 0, 200);
         }
 
         //Draw module texture
         if (alpha > 0) {
             int bgColour = (getModuleColour(module) & 0x00FFFFFF) | ((int) (alpha * 255) << 24);
-            render.rect(x, y, width, height, bgColour);
-            render.borderRect(x, y, width, height, 1, bgColour, GuiRender.mixColours(bgColour, 0x20202000, true));
+            render.cc$fill(x, y, x + width, y + height, bgColour);
+            render.cc$borderRect(x, y, width, height, 1, bgColour, mixColours(bgColour, 0x20202000, true));
 
-            Material texture = ModuleTextures.get(module);
-            TextureAtlasSprite sprite = texture.sprite();
+            TextureAtlasSprite sprite = ModuleTextures.get(module).get();
             ;
             float ar = (float) sprite.contents().width() / (float) sprite.contents().height();
             float iar = (float) sprite.contents().height() / (float) sprite.contents().width();
 
             if (iar * width <= height) { //Fit Width
                 double h = width * iar;
-                render.texRect(texture, x, y + (height / 2D) - (h / 2D), width, h, 1F, 1F, 1F, alpha);
+                render.cc$blitSprite(RenderPipelines.GUI_TEXTURED, sprite, (double) x, y + (height / 2D) - (h / 2D), width, h, ARGB.colorFromFloat(alpha, 1F, 1F, 1F));
             } else { //Fit height
                 double w = height * ar;
-                render.texRect(texture, x + (width / 2D) - (w / 2D), y, w, height, 1F, 1F, 1F, alpha);
+                render.cc$blitSprite(RenderPipelines.GUI_TEXTURED, sprite, x + (width / 2D) - (w / 2D), y, w, height, ARGB.colorFromFloat(alpha, 1F, 1F, 1F));
             }
         }
+        render.pose().popMatrix();
     }
 
     @Override
     @OnlyIn (Dist.CLIENT)
-    public boolean renderModuleOverlay(GuiElement<?> parent, ModuleContext context, GuiRender render, int x, int y, int width, int height, double mouseX, double mouseY, float partialTicks, int hoverTicks) {
+    public boolean renderModuleOverlay(GuiElement<?> parent, ModuleContext context, GuiGraphicsExtractor render, int x, int y, int width, int height, double mouseX, double mouseY, float partialTicks, int hoverTicks) {
         if (slotsCount == 0) {
             return super.renderModuleOverlay(parent, context, render, x, y, width, height, mouseX, mouseY, partialTicks, hoverTicks);
         }
@@ -234,7 +234,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
             ItemStack stack = new ItemStack(item);
             saveEntityToStack(stack, context);
             List<Component> list = stack.getTooltipLines(Item.TooltipContext.of(mc.level), mc.player, mc.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
-            render.componentTooltip(list, (int) mouseX, (int) mouseY);
+            render.setComponentTooltipForNextFrame(mc.font, list, (int) mouseX, (int) mouseY);
             return true;
         }
         if (hoverTicks <= 5) return false;
@@ -263,7 +263,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
         list.add(Component.translatable("module." + MODID + ".filtered_module.configure_slot").withStyle(ChatFormatting.DARK_GRAY));
         list.add(Component.translatable("module." + MODID + ".filtered_module.clear_slot").withStyle(ChatFormatting.DARK_GRAY));
 
-        render.componentTooltip(list, (int) mouseX, (int) mouseY);
+        render.setComponentTooltipForNextFrame(Minecraft.getInstance().font, list, (int) mouseX, (int) mouseY);
         return true;
     }
 
@@ -322,7 +322,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
         root.setOpaque(true);
         root.jeiExclude();
 
-        Constraints.bind(new GuiTexture(root, () -> BCGuiTextures.getThemed("background_dynamic")), root);
+        Constraints.bind(new GuiTexture(root, () -> BCGuiTextures.getThemed("background_dynamic").get()), root);
 
         GuiText heading = new GuiText(root, Component.translatable("module." + MODID + ".filtered_module.filter_by_tag"))
                 .constrain(WIDTH, relative(root.get(WIDTH), -10))
@@ -387,7 +387,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
         List<TagKey<Item>> tagOps = new ArrayList<>();
         ItemStack filterStack = getStackFilter(index);
         if (!filterStack.isEmpty()) {
-            tagOps.addAll(filterStack.getTags().toList());
+            tagOps.addAll(filterStack.typeHolder().tags().toList());
         }
 
         if (!tagOps.isEmpty()) {
@@ -573,7 +573,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
 
     protected record Slot(int index, double x, double y, double size) {
         public boolean isInSlot(double testX, double textY) {
-            return GuiRender.isInRect(x, y, size, size, testX, textY);
+            return MathHelper.isInRect(x, y, size, size, testX, textY);
         }
     }
 
