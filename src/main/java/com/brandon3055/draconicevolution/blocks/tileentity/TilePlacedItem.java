@@ -13,6 +13,7 @@ import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -197,7 +198,7 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
     }
 
     public static void popResource(Level world, BlockPos pos, ItemStack stack, boolean noPickupDelay) {
-        if (!world.isClientSide() && !stack.isEmpty() && world.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS) && !world.restoringBlockSnapshots) {
+        if (!world.isClientSide() && !stack.isEmpty() && ((ServerLevel) world).getGameRules().get(GameRules.BLOCK_DROPS) && !world.restoringBlockSnapshots) {
             double d0 = (double) (world.getRandom().nextFloat() * 0.5F) + 0.25D;
             double d1 = (double) (world.getRandom().nextFloat() * 0.5F) + 0.25D;
             double d2 = (double) (world.getRandom().nextFloat() * 0.5F) + 0.25D;
