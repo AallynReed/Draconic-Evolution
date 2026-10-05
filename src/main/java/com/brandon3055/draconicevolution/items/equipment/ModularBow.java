@@ -143,9 +143,9 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
     }
 
     @Override
-    public void releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeLeft) {
+    public boolean releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeLeft) {
         if (!(entity instanceof Player player)) {
-            return;
+            return false;
         }
 
         boolean infinity = hasInfinity(level, stack);
@@ -154,18 +154,18 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
             if (infinity) {
                 ammoStack = new ItemStack(Items.ARROW);
             } else {
-                return;
+                return false;
             }
         }
 
         int drawTime = this.getUseDuration(stack, entity) - timeLeft;
         drawTime = EventHooks.onArrowLoose(stack, level, player, drawTime, !ammoStack.isEmpty() || infinity);
         if (drawTime < 0) {
-            return;
+            return false;
         }
 
         if (ammoStack.isEmpty() && !infinity) {
-            return;
+            return false;
         }
 
         float powerForTime;
@@ -175,7 +175,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
 
             powerForTime = getPowerForTime(drawTime, stack, player.registryAccess()) * (projData.velocity() + 1);
             if (!(powerForTime >= 0.1D)) {
-                return;
+                return false;
             }
 
             infiniteAmmo = infinity || player.getAbilities().instabuild || (ammoStack.getItem() instanceof ArrowItem && ((ArrowItem) ammoStack.getItem()).isInfinite(ammoStack, stack, player));
@@ -199,11 +199,11 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
                     arrowEntity.setCritArrow(true);
                 }
 
-                arrowEntity.setBaseDamage(arrowEntity.getBaseDamage() * (projData.damage() + 1));
+                arrowEntity.setBaseDamage(arrowEntity.baseDamage * (projData.damage() + 1));
 
-                long energyRequired = (long) (EquipCfg.bowBaseEnergy * arrowEntity.getBaseDamage() * powerForTime * 3);
+                long energyRequired = (long) (EquipCfg.bowBaseEnergy * arrowEntity.baseDamage * powerForTime * 3);
                 if (extractEnergy(player, stack, energyRequired) < energyRequired) {
-                    return;
+                    return false;
                 }
 
                 if (infiniteAmmo) {
@@ -223,6 +223,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
         }
 
         player.awardStat(Stats.ITEM_USED.get(this));
+        return true;
     }
 
     @Override
