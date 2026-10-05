@@ -162,7 +162,7 @@ public class RenderModularStaff extends ToolRenderBase {
         return transform == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND || transform == ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
     }
 
-    public static void doMixinStuff(LivingEntity entity, PlayerModel<?> model) {
+    public static void doMixinStuff(LivingEntity entity, PlayerModel model) {
         ItemStack mainHand = entity.getMainHandItem();
         ItemStack offHand = entity.getOffhandItem();
         boolean rightHanded = entity.getMainArm() == HumanoidArm.RIGHT;
@@ -176,11 +176,6 @@ public class RenderModularStaff extends ToolRenderBase {
             if (hasMain) {
                 setStaffPose(entity, model.rightArm, model.leftArm, model.body, model.head, !rightHanded, !hasOff);
             }
-            model.leftPants.copyFrom(model.leftLeg);
-            model.rightPants.copyFrom(model.rightLeg);
-            model.leftSleeve.copyFrom(model.leftArm);
-            model.rightSleeve.copyFrom(model.rightArm);
-            model.jacket.copyFrom(model.body);
         }
     }
 

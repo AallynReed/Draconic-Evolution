@@ -49,5 +49,5 @@ public interface EntityOverridesItemUse {
      * Counterpart to modifyFirstPersonUsingPose that lets you modify the third person player model.
      */
     @OnlyIn(Dist.CLIENT)
-    default void modifyPlayerModelPose(Player player, PlayerModel<?> model, boolean leftHand) {}
+    default void modifyPlayerModelPose(Player player, PlayerModel model, boolean leftHand) {}
 }

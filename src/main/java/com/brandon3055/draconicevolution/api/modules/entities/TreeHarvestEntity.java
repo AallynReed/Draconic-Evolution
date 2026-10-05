@@ -227,7 +227,7 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
 
     @Override
     @OnlyIn (Dist.CLIENT)
-    public void modifyPlayerModelPose(Player player, PlayerModel<?> model, boolean leftHand) {
+    public void modifyPlayerModelPose(Player player, PlayerModel model, boolean leftHand) {
         if (!leftHand) {
             model.rightArm.yRot = -0.1F + model.head.yRot;
             model.leftArm.yRot = 0.1F + model.head.yRot + 0.4F;
@@ -239,12 +239,6 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
             model.rightArm.xRot = (-(float) Math.PI / 2F) + model.head.xRot;
             model.leftArm.xRot = (-(float) Math.PI / 2F) + model.head.xRot;
         }
-
-        model.leftPants.copyFrom(model.leftLeg);
-        model.rightPants.copyFrom(model.rightLeg);
-        model.leftSleeve.copyFrom(model.leftArm);
-        model.rightSleeve.copyFrom(model.rightArm);
-        model.jacket.copyFrom(model.body);
     }
 
     @Override

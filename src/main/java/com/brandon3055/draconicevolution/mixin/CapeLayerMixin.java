@@ -1,17 +1,16 @@
 package com.brandon3055.draconicevolution.mixin;
 
+import com.brandon3055.brandonscore.client.model.EquippedItemModelLayer;
 import com.brandon3055.draconicevolution.init.DEClient;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.layers.CapeLayer;
-import net.minecraft.world.entity.player.PlayerSkin;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 /**
  * Created by brandon3055 on 4/2/21
@@ -20,17 +19,14 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public class CapeLayerMixin {
 
     @Inject (
-            method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/client/player/AbstractClientPlayer;FFFFFF)V",
-            at = @At (
-                    value = "INVOKE_ASSIGN",
-                    target = "Lnet/minecraft/client/player/AbstractClientPlayer;getItemBySlot(Lnet/minecraft/world/entity/EquipmentSlot;)Lnet/minecraft/world/item/ItemStack;",
-                    shift = At.Shift.AFTER
-            ),
-            locals = LocalCapture.CAPTURE_FAILHARD,
-            cancellable = true
+            method = "submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/client/renderer/entity/state/AvatarRenderState;FF)V",
+            at = @At ("HEAD"),
+            cancellable = true,
+            remap = false
     )
-    private void render(PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight, AbstractClientPlayer pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTicks, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch, CallbackInfo ci, PlayerSkin playerskin, ItemStack itemstack) {
-        if (DEClient.deElytraVisible(itemstack, pLivingEntity)) {
+    private void submit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, AvatarRenderState state, float yRot, float xRot, CallbackInfo ci) {
+        LivingEntity entity = state.getRenderData(EquippedItemModelLayer.ENTITY);
+        if (entity != null && DEClient.deElytraVisible(state.chestEquipment, entity)) {
             ci.cancel();
         }
     }

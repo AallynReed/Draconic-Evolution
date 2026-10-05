@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.init;
 
-import codechicken.lib.gui.modular.sprite.GuiTextures;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.hud.AbstractHudElement;
 import com.brandon3055.brandonscore.client.hud.HudManager;
@@ -15,6 +14,7 @@ import com.brandon3055.draconicevolution.client.handler.ModularItemRenderOverrid
 import com.brandon3055.draconicevolution.client.handler.OverlayRenderHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
+import com.brandon3055.draconicevolution.client.render.entity.DEWingsLayer;
 import com.brandon3055.draconicevolution.client.render.entity.DraconicGuardianRenderer;
 import com.brandon3055.draconicevolution.client.render.entity.GuardianCrystalRenderer;
 import com.brandon3055.draconicevolution.client.render.entity.GuardianProjectileRenderer;
@@ -26,12 +26,9 @@ import com.brandon3055.draconicevolution.client.render.tile.*;
 import com.brandon3055.draconicevolution.items.equipment.IModularArmor;
 import net.covers1624.quack.util.CrashLock;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.layers.ElytraLayer;
-import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.PlayerSkin;
+import net.minecraft.world.entity.player.PlayerModelType;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -43,7 +40,6 @@ import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsE
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import org.jetbrains.annotations.NotNull;
 
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
@@ -86,7 +82,6 @@ public class DEClient {
     private static void clientSetupEvent(FMLClientSetupEvent event) {
         LOCK2.lock();
         registerItemRenderers();
-        setupRenderLayers();
         CustomBossInfoHandler.init();
 
         NeoForge.EVENT_BUS.register(new KeyInputHandler());
@@ -221,17 +216,6 @@ public class DEClient {
 //        }
     }
 
-    private static void setupRenderLayers() {
-        ItemBlockRenderTypes.setRenderLayer(DEContent.GRINDER.get(), RenderType.cutoutMipped());
-        ItemBlockRenderTypes.setRenderLayer(DEContent.GENERATOR.get(), RenderType.cutoutMipped());
-        ItemBlockRenderTypes.setRenderLayer(DEContent.ENERGY_TRANSFUSER.get(), RenderType.cutoutMipped());
-        ItemBlockRenderTypes.setRenderLayer(DEContent.PORTAL.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(DEContent.OVERWORLD_DRACONIUM_ORE.get(), renderType -> renderType == RenderType.solid() || renderType == RenderType.cutoutMipped());
-        ItemBlockRenderTypes.setRenderLayer(DEContent.END_DRACONIUM_ORE.get(), renderType -> renderType == RenderType.solid() || renderType == RenderType.cutoutMipped());
-        ItemBlockRenderTypes.setRenderLayer(DEContent.NETHER_DRACONIUM_ORE.get(), renderType -> renderType == RenderType.solid() || renderType == RenderType.cutoutMipped());
-        ItemBlockRenderTypes.setRenderLayer(DEContent.DEEPSLATE_DRACONIUM_ORE.get(), renderType -> renderType == RenderType.solid() || renderType == RenderType.cutoutMipped());
-    }
-
     public static boolean deElytraVisible(ItemStack stack, LivingEntity entity) {
         if (ContributorHandler.shouldCancelElytra(entity)) return false;
         if (stack.getItem() instanceof IModularArmor item) {
@@ -246,15 +230,10 @@ public class DEClient {
 
     @SuppressWarnings ({"rawtypes", "unchecked"})
     private static void onAddRenderLayers(EntityRenderersEvent.AddLayers event) {
-        for (PlayerSkin.Model skin : event.getSkins()) {
-            LivingEntityRenderer renderer = event.getSkin(skin);
+        for (PlayerModelType skin : event.getSkins()) {
+            LivingEntityRenderer renderer = event.getPlayerRenderer(skin);
             assert renderer != null;
-            renderer.addLayer(new ElytraLayer(renderer, event.getEntityModels()) {
-                @Override
-                public boolean shouldRender(@NotNull ItemStack stack, @NotNull LivingEntity entity) {
-                    return deElytraVisible(stack, entity);
-                }
-            });
+            renderer.addLayer(new DEWingsLayer(renderer, event.getEntityModels(), event.getContext().getEquipmentRenderer()));
         }
     }
 }
