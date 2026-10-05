@@ -14,9 +14,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 
 /**
@@ -32,7 +32,7 @@ public class TileFluidGate extends TileFlowGate {
     }
 
     public static void register(RegisterCapabilitiesEvent event) {
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, DEContent.TILE_FLUID_GATE.get(), (tile, side) -> {
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, DEContent.TILE_FLUID_GATE.get(), (tile, side) -> {
             if (side != null && side.getAxis() == tile.getDirection().getAxis()) {
                 return side == tile.getDirection() ? tile.outputHandler : tile.inputHandler;
             }
@@ -59,7 +59,7 @@ public class TileFluidGate extends TileFlowGate {
         return InteractionResult.SUCCESS;
     }
 
-    private class FlowHandler implements IFluidHandler {
+    private class FlowHandler implements ResourceHandler<FluidResource> {
         private final TileFluidGate gate;
         private final boolean isInput;
 
@@ -69,43 +69,57 @@ public class TileFluidGate extends TileFlowGate {
         }
 
         @Override
-        public int getTanks() {
+        public int size() {
             if (isInput) {
                 BlockEntity tile = getTarget();
                 if (tile != null) {
-                    IFluidHandler fluidHandler = Capabilities.FluidHandler.BLOCK.getCapability(tile.getLevel(), tile.getBlockPos(), tile.getBlockState(), tile, getDirection().getOpposite());
+                    ResourceHandler<FluidResource> fluidHandler = Capabilities.Fluid.BLOCK.getCapability(tile.getLevel(), tile.getBlockPos(), tile.getBlockState(), tile, getDirection().getOpposite());
                     if (fluidHandler != null) {
-                        return fluidHandler.getTanks();
+                        return fluidHandler.size();
                     }
                 }
             }
             return 1;
         }
 
-        @NotNull
         @Override
-        public FluidStack getFluidInTank(int tank) {
+        public FluidResource getResource(int index) {
             if (!isInput) {
                 BlockEntity tile = getSource();
                 if (tile != null) {
-                    IFluidHandler fluidHandler = Capabilities.FluidHandler.BLOCK.getCapability(tile.getLevel(), tile.getBlockPos(), tile.getBlockState(), tile, getDirection().getOpposite());
+                    ResourceHandler<FluidResource> fluidHandler = Capabilities.Fluid.BLOCK.getCapability(tile.getLevel(), tile.getBlockPos(), tile.getBlockState(), tile, getDirection().getOpposite());
                     if (fluidHandler != null) {
-                        return fluidHandler.getFluidInTank(tank);
+                        return fluidHandler.getResource(index);
                     }
                 }
             }
 
-            return FluidStack.EMPTY;
+            return FluidResource.EMPTY;
         }
 
         @Override
-        public int getTankCapacity(int tank) {
+        public long getAmountAsLong(int index) {
+            if (!isInput) {
+                BlockEntity tile = getSource();
+                if (tile != null) {
+                    ResourceHandler<FluidResource> fluidHandler = Capabilities.Fluid.BLOCK.getCapability(tile.getLevel(), tile.getBlockPos(), tile.getBlockState(), tile, getDirection().getOpposite());
+                    if (fluidHandler != null) {
+                        return fluidHandler.getAmountAsLong(index);
+                    }
+                }
+            }
+
+            return 0;
+        }
+
+        @Override
+        public long getCapacityAsLong(int index, FluidResource resource) {
             if (isInput) {
                 BlockEntity tile = getTarget();
                 if (tile != null) {
-                    IFluidHandler fluidHandler = Capabilities.FluidHandler.BLOCK.getCapability(tile.getLevel(), tile.getBlockPos(), tile.getBlockState(), tile, getDirection().getOpposite());
+                    ResourceHandler<FluidResource> fluidHandler = Capabilities.Fluid.BLOCK.getCapability(tile.getLevel(), tile.getBlockPos(), tile.getBlockState(), tile, getDirection().getOpposite());
                     if (fluidHandler != null) {
-                        return fluidHandler.getTankCapacity(tank);
+                        return fluidHandler.getCapacityAsLong(index, resource);
                     }
                 }
             }
@@ -113,13 +127,13 @@ public class TileFluidGate extends TileFlowGate {
         }
 
         @Override
-        public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+        public boolean isValid(int index, FluidResource resource) {
             if (isInput) {
                 BlockEntity tile = getTarget();
                 if (tile != null) {
-                    IFluidHandler fluidHandler = Capabilities.FluidHandler.BLOCK.getCapability(tile.getLevel(), tile.getBlockPos(), tile.getBlockState(), tile, getDirection().getOpposite());
+                    ResourceHandler<FluidResource> fluidHandler = Capabilities.Fluid.BLOCK.getCapability(tile.getLevel(), tile.getBlockPos(), tile.getBlockState(), tile, getDirection().getOpposite());
                     if (fluidHandler != null) {
-                        return fluidHandler.isFluidValid(tank, stack);
+                        return fluidHandler.isValid(index, resource);
                     }
                 }
             }
@@ -127,58 +141,59 @@ public class TileFluidGate extends TileFlowGate {
         }
 
         @Override
-        public int fill(FluidStack resource, FluidAction action) {
+        public int insert(int index, FluidResource resource, int amount, TransactionContext transaction) {
             if (isInput) {
                 BlockEntity tile = getTarget();
                 if (tile != null) {
-                    IFluidHandler handler = Capabilities.FluidHandler.BLOCK.getCapability(tile.getLevel(), tile.getBlockPos(), tile.getBlockState(), tile, getDirection().getOpposite());
+                    ResourceHandler<FluidResource> handler = Capabilities.Fluid.BLOCK.getCapability(tile.getLevel(), tile.getBlockPos(), tile.getBlockState(), tile, getDirection().getOpposite());
                     if (handler != null) {
-                        int transfer = (int) Math.min(getFlow(), handler.fill(resource, FluidAction.SIMULATE));
-                        if (transfer < resource.getAmount()) {
-                            FluidStack newStack = resource.copy();
-                            newStack.setAmount(transfer);
-//                            resource.shrink(transfer);
-                            return handler.fill(newStack, action);
-                        }
-                        return handler.fill(resource, action);
+                        return handler.insert(index, resource, (int) Math.min(getFlow(), amount), transaction);
                     }
                 }
             }
             return 0;
         }
 
-        @NotNull
         @Override
-        public FluidStack drain(FluidStack resource, FluidAction action) {
-            if (!isInput) {
-                if (resource.getAmount() > getFlow()) {
-                    resource.setAmount((int) getFlow());
-                }
-                BlockEntity tile = getSource();
+        public int insert(FluidResource resource, int amount, TransactionContext transaction) {
+            if (isInput) {
+                BlockEntity tile = getTarget();
                 if (tile != null) {
-                    IFluidHandler fluidHandler = Capabilities.FluidHandler.BLOCK.getCapability(tile.getLevel(), tile.getBlockPos(), tile.getBlockState(), tile, getDirection().getOpposite());
-                    if (fluidHandler != null) {
-                        return fluidHandler.drain(resource, action);
+                    ResourceHandler<FluidResource> handler = Capabilities.Fluid.BLOCK.getCapability(tile.getLevel(), tile.getBlockPos(), tile.getBlockState(), tile, getDirection().getOpposite());
+                    if (handler != null) {
+                        return handler.insert(resource, (int) Math.min(getFlow(), amount), transaction);
                     }
                 }
             }
-            return FluidStack.EMPTY;
+            return 0;
         }
 
-        @NotNull
         @Override
-        public FluidStack drain(int maxDrain, FluidAction action) {
+        public int extract(int index, FluidResource resource, int amount, TransactionContext transaction) {
             if (!isInput) {
                 BlockEntity tile = getSource();
                 if (tile != null) {
-                    if (maxDrain > getFlow()) maxDrain = (int) getFlow();
-                    IFluidHandler fluidHandler = Capabilities.FluidHandler.BLOCK.getCapability(tile.getLevel(), tile.getBlockPos(), tile.getBlockState(), tile, getDirection().getOpposite());
+                    ResourceHandler<FluidResource> fluidHandler = Capabilities.Fluid.BLOCK.getCapability(tile.getLevel(), tile.getBlockPos(), tile.getBlockState(), tile, getDirection().getOpposite());
                     if (fluidHandler != null) {
-                        return fluidHandler.drain(maxDrain, action);
+                        return fluidHandler.extract(index, resource, (int) Math.min(getFlow(), amount), transaction);
                     }
                 }
             }
-            return FluidStack.EMPTY;
+            return 0;
+        }
+
+        @Override
+        public int extract(FluidResource resource, int amount, TransactionContext transaction) {
+            if (!isInput) {
+                BlockEntity tile = getSource();
+                if (tile != null) {
+                    ResourceHandler<FluidResource> fluidHandler = Capabilities.Fluid.BLOCK.getCapability(tile.getLevel(), tile.getBlockPos(), tile.getBlockState(), tile, getDirection().getOpposite());
+                    if (fluidHandler != null) {
+                        return fluidHandler.extract(resource, (int) Math.min(getFlow(), amount), transaction);
+                    }
+                }
+            }
+            return 0;
         }
     }
 }
