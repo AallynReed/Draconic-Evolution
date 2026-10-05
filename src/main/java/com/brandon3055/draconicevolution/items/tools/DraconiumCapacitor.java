@@ -35,6 +35,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.stream.Stream;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -138,11 +139,11 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularEner
         if (entity instanceof Player) {
             Player player = (Player) entity;
             if (hot_bar && main) {
-                stacks.addAll(player.getInventory().items);
+                stacks.addAll(player.getInventory().getNonEquipmentItems());
             } else if (hot_bar) {
-                stacks.addAll(player.getInventory().items.subList(0, 9));
+                stacks.addAll(player.getInventory().getNonEquipmentItems().subList(0, 9));
             } else if (main) {
-                stacks.addAll(player.getInventory().items.subList(9, 36));
+                stacks.addAll(player.getInventory().getNonEquipmentItems().subList(9, 36));
             }
             if (held) {
                 if (!hot_bar) {
@@ -152,12 +153,13 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularEner
             }
         } else {
             if (held) {
-                entity.getHandSlots().forEach(stacks::add);
+                stacks.add(entity.getMainHandItem());
+                stacks.add(entity.getOffhandItem());
             }
         }
 
         if (armor) {
-            entity.getArmorSlots().forEach(stacks::add);
+            Stream.of(EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD).map(entity::getItemBySlot).forEach(stacks::add);
         }
 
         stacks.remove(stack);
@@ -173,7 +175,7 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularEner
             for (ItemStack stack : stacks) {
                 if (EnergyUtils.canReceiveEnergy(stack)) {
                     Item item = stack.getItem();
-                    if (item instanceof IInvCharge && !((IInvCharge) item).canCharge(stack, player, DataUtils.contains(player.getHandSlots(), stack))) {
+                    if (item instanceof IInvCharge && !((IInvCharge) item).canCharge(stack, player, DataUtils.contains(List.of(player.getMainHandItem(), player.getOffhandItem()), stack))) {
                         continue;
                     }
                     EnergyUtils.insertEnergy(stack, EnergyUtils.extractEnergy(capacitor, EnergyUtils.insertEnergy(stack, storage.getOPStored(), true), false), false);

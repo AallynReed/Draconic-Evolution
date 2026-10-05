@@ -248,7 +248,7 @@ public class ModularHoe extends HoeItem implements IModularTieredItem, IDraconic
             if (!level.isClientSide()) {
                 consumer.accept(context);
                 if (player != null) {
-                    context.getItemInHand().hurtAndBreak(1, player, LivingEntity.getSlotForHand(context.getHand()));
+                    context.getItemInHand().hurtAndBreak(1, player, context.getHand().asEquipmentSlot());
                 }
             }
 
@@ -259,7 +259,7 @@ public class ModularHoe extends HoeItem implements IModularTieredItem, IDraconic
     }
 
     public boolean consumeItem(Item target, Inventory inventory) {
-        for (ItemStack item : inventory.items) {
+        for (ItemStack item : inventory.getNonEquipmentItems()) {
             if (!item.isEmpty() && item.is(target)) {
                 item.shrink(1);
                 inventory.setChanged();

@@ -430,7 +430,7 @@ public class DislocatorAdvanced extends Dislocator {
             return stack;
         }
 
-        for (int i = 0; i < player.getInventory().getContainerSize() - player.getInventory().offhand.size(); i++) {
+        for (int i = 0; i < player.getInventory().getContainerSize() - 1; i++) {
             stack = player.getInventory().getItem(i);
             if (stack.getItem() == DEContent.DISLOCATOR_ADVANCED.get()) {
                 return stack;
