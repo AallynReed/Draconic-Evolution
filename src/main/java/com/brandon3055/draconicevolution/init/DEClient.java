@@ -57,6 +57,7 @@ public class DEClient {
         modBus.addListener(DEClient::clientSetupEvent);
 //        modBus.addListener(ClientInit::onModelRegistryEvent);
         modBus.addListener(DEClient::registerRenderers);
+        modBus.addListener(DEClient::registerLayerDefinitions);
         modBus.addListener(DEClient::onAddRenderLayers);
         modBus.addListener(DEClient::registerClientExtensions);
         modBus.addListener(DEClient::registerItemModels);
@@ -86,6 +87,10 @@ public class DEClient {
         CustomBossInfoHandler.init();
 
         NeoForge.EVENT_BUS.register(new KeyInputHandler());
+    }
+
+    private static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(DraconicGuardianRenderer.LAYER, DraconicGuardianRenderer::createBodyLayer);
     }
 
     private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
