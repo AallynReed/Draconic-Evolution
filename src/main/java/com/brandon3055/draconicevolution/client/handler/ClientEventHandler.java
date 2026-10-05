@@ -1,32 +1,26 @@
 package com.brandon3055.draconicevolution.client.handler;
 
 
-import codechicken.lib.gui.modular.lib.GuiRender;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.client.ProcessHandlerClient;
-import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.brandonscore.lib.DelayedExecutor;
 import com.brandon3055.draconicevolution.api.energy.ICrystalBinder;
 import com.brandon3055.draconicevolution.client.DEShaders;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackSelectionConfig;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.PathPackResources;
-import net.minecraft.server.packs.repository.BuiltInPackSource;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
@@ -37,6 +31,7 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
+import net.neoforged.neoforge.resource.JarContentsPackResources;
 import org.joml.Vector4f;
 
 import java.nio.FloatBuffer;
@@ -61,14 +56,6 @@ public class ClientEventHandler {
     public static int explosionTime = 0;
     public static boolean explosionRetreating = false;
 
-    public static final RenderType explosionFlashType = RenderType.create(MODID + ":explosion_flash", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256,
-            RenderType.CompositeState.builder()
-                    .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.explosionFlashShader))
-                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-                    .setCullState(RenderStateShard.NO_CULL)
-                    .createCompositeState(false)
-    );
-
     public static void init(IEventBus modBus) {
         mc = Minecraft.getInstance();
         modBus.addListener(EventPriority.LOW, ClientEventHandler::registerOverlays);
@@ -78,8 +65,8 @@ public class ClientEventHandler {
 
     public static void addPackFinders(AddPackFindersEvent event) {
         if (event.getPackType() == PackType.CLIENT_RESOURCES) {
-            var resourcePath = ModList.get().getModFileById(MODID).getFile().findResource("2d_item_models");
-            var pack = Pack.readMetaAndCreate(new PackLocationInfo("builtin/2d_item_models", Component.literal("Draconic Evolution 2D"), PackSource.BUILT_IN, Optional.empty()), BuiltInPackSource.fromName((path) -> new PathPackResources(path, resourcePath)), PackType.CLIENT_RESOURCES, new PackSelectionConfig(false, Pack.Position.TOP, false));
+            var contents = ModList.get().getModFileById(MODID).getFile().getContents();
+            var pack = Pack.readMetaAndCreate(new PackLocationInfo("builtin/2d_item_models", Component.literal("Draconic Evolution 2D"), PackSource.BUILT_IN, Optional.empty()), new JarContentsPackResources.JarContentsResourcesSupplier(contents, "2d_item_models"), PackType.CLIENT_RESOURCES, new PackSelectionConfig(false, Pack.Position.TOP, false));
 
             event.addRepositorySource((packConsumer) -> packConsumer.accept(pack));
         }
@@ -88,7 +75,7 @@ public class ClientEventHandler {
     private static void registerOverlays(RegisterGuiLayersEvent event) {
         event.registerBelowAll(Identifier.fromNamespaceAndPath(MODID, "explosion_overlay"), (graphics, deltaTracker) -> {
             if (explosionPos != null) {
-                updateExplosionAnimation(mc, GuiRender.convert(graphics), mc.getWindow(), deltaTracker.getGameTimeDeltaPartialTick(false));
+                updateExplosionAnimation(mc, graphics, mc.getWindow(), deltaTracker.getGameTimeDeltaPartialTick(false));
             }
         });
     }
@@ -312,7 +299,7 @@ public class ClientEventHandler {
 //        explosionAnimation = explosionTime * 0.05;
     }
 
-    private static void updateExplosionAnimation(Minecraft mc, GuiRender render, Window window, float partialTick) {
+    private static void updateExplosionAnimation(Minecraft mc, GuiGraphicsExtractor render, Window window, float partialTick) {
         if (/*true || */explosionRetreating) {
             float alpha;
             if (explosionAnimation <= 0) {
@@ -323,11 +310,10 @@ public class ClientEventHandler {
                 alpha = (float) explosionAnimation + (partialTick * 0.05F);
             }
             if (alpha > 1) alpha = 1;
-            render.rect(0, 0, window.getGuiScaledWidth(), window.getGuiScaledHeight(), 0x00FFFFFF | (int) (alpha * 255F) << 24);
-            RenderUtils.endBatch(render.buffers());
+            render.cc$fill(0, 0, window.getGuiScaledWidth(), window.getGuiScaledHeight(), 0x00FFFFFF | (int) (alpha * 255F) << 24);
 
         } else {
-            Vec3 camPos = mc.gameRenderer.getMainCamera().getPosition();
+            Vec3 camPos = mc.gameRenderer.getMainCamera().position();
             Vector3 targetPos = Vector3.fromBlockPosCenter(explosionPos);
             targetPos.subtract(camPos.x, camPos.y, camPos.z);
             Vector3 winPos = gluProject(targetPos, MODELVIEW, PROJECTION);
@@ -336,11 +322,15 @@ public class ClientEventHandler {
             float screenX = behind ? -1 : (float) winPos.x / window.getScreenWidth();
             float screenY = behind ? -1 : (float) winPos.y / window.getScreenHeight();
 
-            DEShaders.explosionFlashScreenPos.glUniform2f(screenX, screenY);
-            DEShaders.explosionFlashIntensity.glUniform1f((float) explosionAnimation);
-            DEShaders.explosionFlashScreenSize.glUniform2f(window.getScreenWidth(), window.getScreenHeight());
-            render.rect(explosionFlashType, 0, 0, window.getGuiScaledWidth(), window.getGuiScaledHeight(), 0xFFFFFFFF);
-            RenderUtils.endBatch(render.buffers());
+            int width = window.getGuiScaledWidth();
+            int height = window.getGuiScaledHeight();
+            int colour = ARGB.colorFromFloat((float) explosionAnimation, 1F, 1F, 1F);
+            render.cc$submitCustom(DEShaders.EXPLOSION_FLASH, TextureSetup.noTexture(), 0, width, 0, height, (buffer, pose) -> {
+                buffer.addVertexWith2DPose(pose, 0, height).setUv(screenX, screenY).setColor(colour);
+                buffer.addVertexWith2DPose(pose, width, height).setUv(screenX, screenY).setColor(colour);
+                buffer.addVertexWith2DPose(pose, width, 0).setUv(screenX, screenY).setColor(colour);
+                buffer.addVertexWith2DPose(pose, 0, 0).setUv(screenX, screenY).setColor(colour);
+            });
         }
     }
 
@@ -362,8 +352,8 @@ public class ClientEventHandler {
         Vector3 winPos = new Vector3();
         winPos.z = o.z();
 
-        winPos.x = o.x() * GlStateManager.Viewport.width();
-        winPos.y = o.y() * GlStateManager.Viewport.height();
+        winPos.x = o.x() * mc.getWindow().getWidth();
+        winPos.y = o.y() * mc.getWindow().getHeight();
         return winPos;
     }
 
