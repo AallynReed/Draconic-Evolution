@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.model.WitherBossModel;
 import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.model.monster.wither.WitherBossModel;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;

@@ -9,7 +9,7 @@ import com.brandon3055.draconicevolution.items.equipment.ModularStaff;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.covers1624.quack.util.CrashLock;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;

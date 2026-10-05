@@ -8,7 +8,6 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCoreStabili
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyPylon;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileStructureBlock;
 import com.brandon3055.draconicevolution.init.ItemData;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Registry;
@@ -18,6 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Util;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;

@@ -23,7 +23,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.entity.animal.FrogVariant;
+import net.minecraft.world.entity.animal.frog.FrogVariant;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.PotDecorations;
 import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
