@@ -9,6 +9,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -54,7 +55,7 @@ public class StabilizedSpawner extends EntityBlockBCore {
             }
         }
         if (data.contains("mob_soul")) {
-            ItemStack soul = ItemStack.parseOptional(context.level().registryAccess(), data.getCompound("mob_soul"));
+            ItemStack soul = ItemStack.OPTIONAL_CODEC.parse(context.level().registryAccess().createSerializationContext(NbtOps.INSTANCE), data.getCompoundOrEmpty("mob_soul")).result().orElse(ItemStack.EMPTY);
             if (!soul.isEmpty()) {
                 tooltip.add(soul.getDisplayName().copy().withStyle(ChatFormatting.YELLOW));
             }
