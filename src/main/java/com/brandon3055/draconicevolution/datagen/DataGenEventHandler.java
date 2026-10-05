@@ -7,13 +7,22 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DETags;
 import com.brandon3055.draconicevolution.integration.equipment.CuriosIntegration;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.data.registries.RegistryPatchGenerator;
 import net.minecraft.data.tags.EnchantmentTagsProvider;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -52,11 +61,31 @@ public class DataGenEventHandler {
         BlockTagGenerator blockGenerator = new BlockTagGenerator(gen.getPackOutput(), event.getLookupProvider(), DraconicEvolution.MODID);
         gen.addProvider(true, blockGenerator);
         gen.addProvider(true, new ItemTagGenerator(gen.getPackOutput(), event.getLookupProvider(), DraconicEvolution.MODID));
-        gen.addProvider(true, new DamageTypeGenerator(gen.getPackOutput(), event.getLookupProvider(), DraconicEvolution.MODID));
+        CompletableFuture<HolderLookup.Provider> dataLookup = withExistingData(event);
+        gen.addProvider(true, new DamageTypeGenerator(gen.getPackOutput(), dataLookup, DraconicEvolution.MODID));
 
         gen.addProvider(true, new CuriosProvider(event.getGenerator().getPackOutput(), event.getLookupProvider()));
 
-        gen.addProvider(true, new EnchantmentTagGenerator(gen.getPackOutput(), event.getLookupProvider(), DraconicEvolution.MODID));
+        gen.addProvider(true, new EnchantmentTagGenerator(gen.getPackOutput(), dataLookup, DraconicEvolution.MODID));
+    }
+
+    /**
+     * DE's damage types and enchantments are hand-written JSON. Tag providers check their references against the
+     * registry lookup, so this adds placeholder entries for every one of those files.
+     */
+    private static CompletableFuture<HolderLookup.Provider> withExistingData(GatherDataEvent event) {
+        ResourceManager data = event.getResourceManager(PackType.SERVER_DATA);
+        RegistrySetBuilder builder = new RegistrySetBuilder()
+                .add(Registries.DAMAGE_TYPE, context -> existingKeys(data, Registries.DAMAGE_TYPE).forEach(key -> context.register(key, new DamageType(key.identifier().getPath(), 0))))
+                .add(Registries.ENCHANTMENT, context -> existingKeys(data, Registries.ENCHANTMENT).forEach(key -> context.register(key, Enchantment.enchantment(Enchantment.definition(HolderSet.empty(), 1, 1, Enchantment.constantCost(1), Enchantment.constantCost(1), 1)).build(key.identifier()))));
+        return RegistryPatchGenerator.createLookup(event.getLookupProvider(), builder).thenApply(RegistrySetBuilder.PatchedRegistries::full);
+    }
+
+    private static <T> List<ResourceKey<T>> existingKeys(ResourceManager data, ResourceKey<? extends Registry<T>> registry) {
+        String dir = Registries.elementsDirPath(registry);
+        return data.listResources(dir, id -> id.getNamespace().equals(DraconicEvolution.MODID) && id.getPath().endsWith(".json")).keySet().stream()
+                .map(id -> ResourceKey.create(registry, id.withPath(path -> path.substring(dir.length() + 1, path.length() - 5))))
+                .toList();
     }
 
     private static class ItemTagGenerator extends ItemTagsProvider {
