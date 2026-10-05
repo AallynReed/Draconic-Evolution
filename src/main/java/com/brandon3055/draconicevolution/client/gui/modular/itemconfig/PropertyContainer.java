@@ -894,26 +894,26 @@ public class PropertyContainer extends GuiManipulable {
 
     //
     public static PropertyContainer deserialize(ConfigurableItemGui gui, GuiParent<?> parent, CompoundTag nbt, HolderLookup.Provider provider) {
-        boolean isGroup = nbt.getBoolean("group");
+        boolean isGroup = nbt.getBooleanOr("group", false);
         PropertyContainer container = new PropertyContainer(parent, gui, isGroup);
         if (isGroup) {
-            container.presetMode = nbt.getBoolean("preset");
-            container.collapsed = nbt.getBoolean("collapsed");
-            container.groupName.getTextState().setText(nbt.getString("name"));
+            container.presetMode = nbt.getBooleanOr("preset", false);
+            container.collapsed = nbt.getBooleanOr("collapsed", false);
+            container.groupName.getTextState().setText(nbt.getStringOr("name", ""));
 //            container.prevUserHeight = nbt.getInt("user_height");
-            container.boundKey = nbt.getString("binding");
-            container.modifier = KeyModifier.values()[nbt.getInt("modifier")];
-            container.globalKeyBind = nbt.getBoolean("global_key");
+            container.boundKey = nbt.getStringOr("binding", "");
+            container.modifier = KeyModifier.values()[nbt.getIntOr("modifier", 0)];
+            container.globalKeyBind = nbt.getBooleanOr("global_key", false);
         }
-        container.xMin = nbt.getInt("x_min");
-        container.xMax = nbt.getInt("x_max");
-        container.yMin = nbt.getInt("y_min");
-        container.yMax = nbt.getInt("y_max");
-        container.customHeight = nbt.getBoolean("custom_height");
+        container.xMin = nbt.getIntOr("x_min", 0);
+        container.xMax = nbt.getIntOr("x_max", 0);
+        container.yMin = nbt.getIntOr("y_min", 0);
+        container.yMax = nbt.getIntOr("y_max", 0);
+        container.customHeight = nbt.getBooleanOr("custom_height", false);
 //        container.expandedHeight = nbt.getInt("y_size");
 //        container.setYSize(container.expandedHeight);
 
-        container.dataList.addAll(nbt.getList("data", 10).stream()
+        container.dataList.addAll(nbt.getListOrEmpty("data").stream()
                 .map(e -> (CompoundTag) e)
                 .map(e -> PropertyData.deserialize(e, provider))
                 .filter(Objects::nonNull)

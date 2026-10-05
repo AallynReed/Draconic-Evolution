@@ -109,7 +109,7 @@ public class EnderCollectionModuleItem extends ModuleItem<NoData> {
     }
 
     private void addEnderStorageInfo(CompoundTag tagIn, List<Component> tooltip) {
-        CompoundTag tag = tagIn.getCompound("frequency");
+        CompoundTag tag = tagIn.getCompoundOrEmpty("frequency");
         if (tag.isEmpty()) return;
 
         Frequency frequency = new Frequency(tag);

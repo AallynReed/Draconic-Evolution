@@ -362,46 +362,46 @@ public class PropertyData {
         PropertyData data = new PropertyData(
                 nbt.getUUID("prov_id"),
                 nbt.getString("prov_name"),
-                Type.getSafe(nbt.getByte("type")));
+                Type.getSafe(nbt.getByteOr("type", (byte) 0)));
 
         if (nbt.hasUUID("prop_name")) {
             data.propUniqueName = nbt.getUUID("prop_name");
         } else {
-            data.propName = nbt.getString("prop_name");
+            data.propName = nbt.getStringOr("prop_name", "");
         }
 
         if (nbt.contains("tooltip")) {
             try {
                 data.toolTip = Component.Serializer.fromJsonLenient(nbt.getString("tooltip"), provider);
             } catch (JsonParseException ignored) {
-                data.toolTip = Component.literal(nbt.getString("tooltip"));
+                data.toolTip = Component.literal(nbt.getStringOr("tooltip", ""));
             }
         }
         try {
             data.displayName = Component.Serializer.fromJsonLenient(nbt.getString("display_name"), provider);
         }catch (JsonParseException ignored) {
-            data.displayName = Component.literal(nbt.getString("display_name"));
+            data.displayName = Component.literal(nbt.getStringOr("display_name", ""));
         }
 
-        data.displayValue = nbt.getString("display_value");
-        data.isGlobal = nbt.getBoolean("global");
+        data.displayValue = nbt.getStringOr("display_value", "");
+        data.isGlobal = nbt.getBooleanOr("global", false);
 
         switch (data.type) {
             case BOOLEAN -> {
-                data.booleanValue = nbt.getBoolean("value");
-                data.booleanFormatter = BooleanFormatter.getSafe(nbt.getByte("formatter"));
+                data.booleanValue = nbt.getBooleanOr("value", false);
+                data.booleanFormatter = BooleanFormatter.getSafe(nbt.getByteOr("formatter", (byte) 0));
             }
             case INTEGER -> {
-                data.integerValue = nbt.getInt("value");
-                data.integerFormatter = IntegerFormatter.getSafe(nbt.getByte("formatter"));
-                data.minValue = nbt.getInt("min");
-                data.maxValue = nbt.getInt("max");
+                data.integerValue = nbt.getIntOr("value", 0);
+                data.integerFormatter = IntegerFormatter.getSafe(nbt.getByteOr("formatter", (byte) 0));
+                data.minValue = nbt.getIntOr("min", 0);
+                data.maxValue = nbt.getIntOr("max", 0);
             }
             case DECIMAL -> {
-                data.decimalValue = nbt.getDouble("value");
-                data.decimalFormatter = DecimalFormatter.getSafe(nbt.getByte("formatter"));
-                data.minValue = nbt.getDouble("min");
-                data.maxValue = nbt.getDouble("max");
+                data.decimalValue = nbt.getDoubleOr("value", 0);
+                data.decimalFormatter = DecimalFormatter.getSafe(nbt.getByteOr("formatter", (byte) 0));
+                data.minValue = nbt.getDoubleOr("min", 0);
+                data.maxValue = nbt.getDoubleOr("max", 0);
             }
 //            case ENUM -> {
 //                data.enumValueIndex = nbt.getInt("value");

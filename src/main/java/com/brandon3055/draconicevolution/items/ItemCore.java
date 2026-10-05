@@ -43,7 +43,7 @@ public class ItemCore extends Item {
                 if (data == null) {
                     return InteractionResult.FAIL;
                 }
-                String id = data.getEntityToSpawn().getString("id");
+                String id = data.getEntityToSpawn().getStringOr("id", "");
                 if (id.isEmpty()) {
                     return InteractionResult.FAIL;
                 }

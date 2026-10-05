@@ -92,7 +92,7 @@ public class TileTarget extends DislocatorTarget {
     @Override
     protected void loadInternal(CompoundTag nbt) {
         super.loadInternal(nbt);
-        tilePos = new BlockPos(nbt.getInt("x"), nbt.getInt("y"), nbt.getInt("z"));
+        tilePos = new BlockPos(nbt.getIntOr("x", 0), nbt.getIntOr("y", 0), nbt.getIntOr("z", 0));
     }
 
     @Override

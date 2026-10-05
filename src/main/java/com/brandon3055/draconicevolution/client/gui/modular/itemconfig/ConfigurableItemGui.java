@@ -412,11 +412,11 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
     private void loadInterfaceState() {
         cancelAutoPos();
         CompoundTag nbt = ItemConfigDataHandler.retrieveData();
-        advancedUI = nbt.getBoolean("advanced");
-        minimize = nbt.getBoolean("minimize");
+        advancedUI = nbt.getBooleanOr("advanced", false);
+        minimize = nbt.getBooleanOr("minimize", false);
         propertyContainers.forEach(root::removeChild);
         propertyContainers.clear();
-        nbt.getList("property_containers", 10)
+        nbt.getListOrEmpty("property_containers")
                 .stream()
                 .map(e -> (CompoundTag) e)
                 .map(e -> PropertyContainer.deserialize(this, root, e, gui.mc().player.registryAccess()))
@@ -458,7 +458,7 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
             ModularGui dummy = new ModularGui(e -> {});
             keyBindCache = new ArrayList<>();
             CompoundTag nbt = ItemConfigDataHandler.retrieveData();
-            List<PropertyContainer> containers = nbt.getList("property_containers", 10)
+            List<PropertyContainer> containers = nbt.getListOrEmpty("property_containers")
                     .stream()
                     .map(e -> (CompoundTag) e)
                     .map(e -> PropertyContainer.deserialize(null, dummy.getRoot(), e, player.registryAccess()))

@@ -246,7 +246,7 @@ public class SmeltingLogic {
     }
 
     public void loadAdditionalNBT(CompoundTag nbt) {
-        CompoundTag compound = nbt.getCompound("recipes_used");
+        CompoundTag compound = nbt.getCompoundOrEmpty("recipes_used");
         for (String s : compound.getAllKeys()) {
             this.recipesUsed.put(Identifier.parse(s), compound.getInt(s));
         }

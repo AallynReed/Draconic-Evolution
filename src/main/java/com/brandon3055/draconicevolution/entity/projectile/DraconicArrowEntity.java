@@ -572,7 +572,7 @@ public class DraconicArrowEntity extends AbstractArrow {
         super.readAdditionalSaveData(compound);
         
         if (compound.contains("spectral_time")) {
-            setSpectral(compound.getInt("spectral_time"));
+            setSpectral(compound.getIntOr("spectral_time", 0));
         }
         if (compound.contains("tech_level")) {
             entityData.set(TECH_LEVEL, compound.getByte("tech_level"));

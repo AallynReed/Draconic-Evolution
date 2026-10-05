@@ -376,10 +376,10 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
     public void receivePacketFromServer(MCDataInput data, int id) {
         super.receivePacketFromServer(data, id);
         if (id == 16) {
-            ListTag list = data.readCompoundNBT().getList("List", 8);
+            ListTag list = data.readCompoundNBT().getListOrEmpty("List");
             playerNames.clear();
             for (int i = 0; i < list.size(); i++) {
-                playerNames.add(list.getString(i));
+                playerNames.add(list.getStringOr(i, ""));
             }
         }
     }

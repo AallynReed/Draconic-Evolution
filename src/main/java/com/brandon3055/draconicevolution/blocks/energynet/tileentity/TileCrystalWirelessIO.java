@@ -392,15 +392,15 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     @Override
     public void readExtraNBT(HolderLookup.Provider provider, CompoundTag compound) {
         super.readExtraNBT(provider, compound);
-        ListTag list = compound.getList("linked_receivers", 10);
+        ListTag list = compound.getListOrEmpty("linked_receivers");
         linkedReceivers.clear();
         receiverSideMap.clear();
         for (int i = 0; i < list.size(); i++) {
-            CompoundTag receiver = list.getCompound(i);
+            CompoundTag receiver = list.getCompoundOrEmpty(i);
             byte[] offset = receiver.getByteArray("offset");
             Vec3B vec = new Vec3B(offset[0], offset[1], offset[2]);
             linkedReceivers.add(vec);
-            receiverSideMap.put(vec, Direction.from3DDataValue(receiver.getByte("side")));
+            receiverSideMap.put(vec, Direction.from3DDataValue(receiver.getByteOr("side", (byte) 0)));
         }
 
         receiverCache = null;
@@ -452,11 +452,11 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
 
         if (id == 1) {
             CompoundTag compound = data.readCompoundNBT();
-            ListTag list = compound.getList("L", 10);
+            ListTag list = compound.getListOrEmpty("L");
 
             for (int i = 0; i < list.size(); i++) {
-                CompoundTag tagData = list.getCompound(i);
-                containerReceiverFlow.put((int) tagData.getByte("I"), tagData.getInt("E"));
+                CompoundTag tagData = list.getCompoundOrEmpty(i);
+                containerReceiverFlow.put((int) tagData.getByteOr("I", (byte) 0), tagData.getIntOr("E", 0));
             }
         }
     }

@@ -49,11 +49,11 @@ public class StabilizedSpawner extends EntityBlockBCore {
             return;
         }
         CompoundTag tag = stack.get(BlockBCore.BC_TILE_DATA_TAG).copyTag();
-        CompoundTag data = tag.getCompound(BlockBCore.BC_MANAGED_DATA_FLAG);
+        CompoundTag data = tag.getCompoundOrEmpty(BlockBCore.BC_MANAGED_DATA_FLAG);
 
-        CompoundTag tier = data.getCompound("spawner_tier");
+        CompoundTag tier = data.getCompoundOrEmpty("spawner_tier");
         if (tier.contains("value")) {
-            int index = tier.getByte("value");
+            int index = tier.getByteOr("value", (byte) 0);
             if (index >= 0 && index < TileStabilizedSpawner.SpawnerTier.values().length) {
                 TechLevel techLevel = TileStabilizedSpawner.SpawnerTier.values()[index].getTechLevel();
                 tooltip.add(techLevel.getDisplayName().copy().withStyle(techLevel.getTextColour()));

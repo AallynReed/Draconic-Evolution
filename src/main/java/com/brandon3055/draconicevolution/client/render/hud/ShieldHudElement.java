@@ -338,9 +338,9 @@ public class ShieldHudElement extends AbstractHudElement {
     @Override
     public void readNBT(CompoundTag nbt) {
         super.readNBT(nbt);
-        numericEnergy = nbt.getBoolean("show_numeric");
-        showUndying = nbt.getBoolean("show_undying");
-        scale = nbt.getFloat("scale");
+        numericEnergy = nbt.getBooleanOr("show_numeric", false);
+        showUndying = nbt.getBooleanOr("show_undying", false);
+        scale = nbt.getFloatOr("scale", 0);
     }
 
     private Material[] getEffectMats() {

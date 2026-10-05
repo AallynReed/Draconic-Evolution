@@ -466,8 +466,8 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
 
     @Override
     public void readExtraNBT(HolderLookup.Provider provider, CompoundTag compound) {
-        techLevel = TechLevel.values()[compound.getInt("tech_level")];
-        ListTag list = compound.getList("linked_crystals", 7);
+        techLevel = TechLevel.values()[compound.getIntOr("tech_level", 0)];
+        ListTag list = compound.getListOrEmpty("linked_crystals");
         linkedCrystals.clear();
         for (int i = 0; i < list.size(); i++) {
             byte[] data = ((ByteArrayTag) list.get(i)).getAsByteArray();
@@ -578,11 +578,11 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
     public void receivePacketFromServer(MCDataInput data, int id) {
         if (id == 0) {
             CompoundTag compound = data.readCompoundNBT();
-            ListTag list = compound.getList("L", 10);
+            ListTag list = compound.getListOrEmpty("L");
 
             for (int i = 0; i < list.size(); i++) {
-                CompoundTag tagData = list.getCompound(i);
-                containerEnergyFlow.put((int) tagData.getByte("I"), tagData.getInt("E"));
+                CompoundTag tagData = list.getCompoundOrEmpty(i);
+                containerEnergyFlow.put((int) tagData.getByteOr("I", (byte) 0), tagData.getIntOr("E", 0));
             }
         }
 

@@ -380,10 +380,10 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
         if (nbt.hasUUID("guardian")) {
             guardianUniqueId = nbt.getUUID("guardian");
         }
-        guardianKilled = nbt.getBoolean("guardian_killed");
+        guardianKilled = nbt.getBooleanOr("guardian_killed", false);
         arenaOrigin = NbtUtils.readBlockPos(nbt, "arena_origin").orElse(arenaOrigin);
         validPlayer = EntitySelector.ENTITY_STILL_ALIVE.and(EntitySelector.withinDistance(arenaOrigin.getX(), arenaOrigin.getY(), arenaOrigin.getZ(), 192.0D));
-        if (nbt.getBoolean("respawning")) {
+        if (nbt.getBooleanOr("respawning", false)) {
             respawnState = GuardianSpawnState.START_WAIT_FOR_PLAYER;
         }
     }

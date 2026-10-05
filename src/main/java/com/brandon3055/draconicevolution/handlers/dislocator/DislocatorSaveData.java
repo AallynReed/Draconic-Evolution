@@ -81,11 +81,11 @@ public class DislocatorSaveData extends SavedData {
 
     public static DislocatorSaveData load(CompoundTag nbt, HolderLookup.Provider provider) {
         DislocatorSaveData data = new DislocatorSaveData();
-        ListTag linkList = nbt.getList("link_map", 10);
+        ListTag linkList = nbt.getListOrEmpty("link_map");
         for (Tag lnbt : linkList) {
             CompoundTag linkNBT = (CompoundTag) lnbt;
             UUID linkID = linkNBT.getUUID("link_id");
-            ListTag targetList = linkNBT.getList("targets", 10);
+            ListTag targetList = linkNBT.getListOrEmpty("targets");
             Map<UUID, DislocatorTarget> targetMap = data.linkTargetMap.computeIfAbsent(linkID, uuid -> new HashMap<>());
             for (Tag tnbt : targetList) {
                 CompoundTag targetNBT = (CompoundTag) tnbt;

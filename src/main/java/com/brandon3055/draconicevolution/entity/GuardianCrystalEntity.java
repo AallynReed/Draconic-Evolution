@@ -151,12 +151,12 @@ public class GuardianCrystalEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
-        if (compound.contains("BeamTarget", 10)) {
+        if (compound.getCompound("BeamTarget").isPresent()) {
             setBeamTarget(NbtUtils.readBlockPos(compound, "BeamTarget").orElse(null));
         }
 
-        if (compound.contains("ShowBottom", 1)) {
-            setShowBottom(compound.getBoolean("ShowBottom"));
+        if (compound.getByte("ShowBottom").isPresent()) {
+            setShowBottom(compound.getBooleanOr("ShowBottom", false));
         }
         if (compound.contains("manager_id")) {
             managerId = compound.getUUID("manager_id");

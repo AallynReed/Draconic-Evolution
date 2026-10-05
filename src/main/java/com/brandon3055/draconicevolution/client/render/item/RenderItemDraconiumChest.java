@@ -45,7 +45,7 @@ public class RenderItemDraconiumChest implements IItemRenderer {
         if (stack.has(BlockBCore.BC_TILE_DATA_TAG)) {
             CompoundTag tag = stack.get(BlockBCore.BC_TILE_DATA_TAG).copyTag();
             if (tag.contains("bc_managed_data")) {
-                colour = tag.getCompound("bc_managed_data").getInt("colour");
+                colour = tag.getCompoundOrEmpty("bc_managed_data").getIntOr("colour", 0);
             }
         }
         renderer.renderChest(mStack, getter, 180, 0, packedLight, packedOverlay, colour);
