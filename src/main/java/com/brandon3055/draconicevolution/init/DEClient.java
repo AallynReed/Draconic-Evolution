@@ -32,6 +32,7 @@ import net.minecraft.world.entity.player.PlayerModelType;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
@@ -57,6 +58,7 @@ public class DEClient {
         modBus.addListener(DEClient::registerRenderers);
         modBus.addListener(DEClient::registerLayerDefinitions);
         modBus.addListener(DEClient::onAddRenderLayers);
+        modBus.addListener(DEClient::onResourceReload);
         modBus.addListener(DEClient::registerClientExtensions);
         modBus.addListener(DEClient::registerMenuScreens);
         modBus.addListener(DEParticles::registerFactories);
@@ -74,7 +76,6 @@ public class DEClient {
         AtlasTextureHelper.init(modBus);
         KeyBindings.init(modBus);
         DEGuiTextures.init(modBus);
-        ModuleTextures.init(modBus);
     }
 
     private static final CrashLock LOCK2 = new CrashLock("Already Initialized.");
@@ -88,6 +89,10 @@ public class DEClient {
 
     private static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(DraconicGuardianRenderer.LAYER, DraconicGuardianRenderer::createBodyLayer);
+    }
+
+    public static void onResourceReload(AddClientReloadListenersEvent event) {
+        event.addListener(ModuleTextures.getAtlasHolder().atlasLocation(), ModuleTextures.getAtlasHolder());
     }
 
     private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {

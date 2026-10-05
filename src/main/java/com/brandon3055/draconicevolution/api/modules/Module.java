@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.api.modules;
 
-import codechicken.lib.gui.modular.SpriteSupplier;
+import codechicken.lib.gui.modular.sprite.Material;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleProperties;
@@ -154,7 +154,7 @@ public interface Module<T extends ModuleData<T>> {
      * @return the texture used to render this module in the modules gui.
      * Mods adding their own modules will need to override this and point it to their own version of {@link ModuleTextures}
      */
-    default SpriteSupplier getTexture() {
+    default Material getTexture() {
         return ModuleTextures.get(this);
     }
 }

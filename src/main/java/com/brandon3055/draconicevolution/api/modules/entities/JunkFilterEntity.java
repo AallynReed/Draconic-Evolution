@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
-import codechicken.lib.gui.modular.SpriteSupplier;
+import codechicken.lib.gui.modular.sprite.Material;
 import com.brandon3055.brandonscore.api.BCStreamCodec;
 import com.brandon3055.brandonscore.client.BCGuiTextures;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
@@ -80,7 +80,7 @@ public class JunkFilterEntity extends FilteredModuleEntity<NoData> {
     }
 
     @Override
-    protected SpriteSupplier getSlotOverlay() {
+    protected Material getSlotOverlay() {
         return BCGuiTextures.get("slots/trash");
     }
 

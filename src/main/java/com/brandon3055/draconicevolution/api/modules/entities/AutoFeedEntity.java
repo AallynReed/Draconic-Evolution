@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
 import codechicken.lib.gui.modular.elements.GuiElement;
+import codechicken.lib.gui.modular.lib.GuiRender;
 import com.brandon3055.brandonscore.api.BCStreamCodec;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.client.BCGuiTextures;
@@ -17,8 +18,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -35,6 +34,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.List;
 import java.util.Objects;
@@ -140,7 +141,7 @@ public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
     }
 
     @Override
-    public void renderModule(GuiElement<?> parent, GuiGraphicsExtractor render, int x, int y, int width, int height, double mouseX, double mouseY, boolean renderStack, float partialTicks) {
+    public void renderModule(GuiElement<?> parent, GuiRender render, int x, int y, int width, int height, double mouseX, double mouseY, boolean renderStack, float partialTicks) {
         super.renderModule(parent, render, x, y, width, height, mouseX, mouseY, renderStack, partialTicks);
         AutoFeedData data = module.getData();
         double progress = getStoredFood() / data.foodStorage();
@@ -148,12 +149,12 @@ public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
         progress = (20 - progress) - 1;
         for (int i = 0; i < 10; i++){
             float size = (width - 3) / 10F;
-            render.cc$blitSprite(RenderPipelines.GUI_TEXTURED, BCGuiTextures.get("bars/food_empty").get(), x + 1 + i * size, y + height - size - 2, size + 1, size + 1);
+            render.texRect(BCGuiTextures.get("bars/food_empty"), x + 1 + i * size, y + height - size - 2, size + 1, size + 1);
             if (progress / 2F <= i){
                 if (progress / 2F < i){
-                    render.cc$blitSprite(RenderPipelines.GUI_TEXTURED, BCGuiTextures.get("bars/food_full").get(), x + 1 + i * size, y + height - size - 2, size + 1, size + 1);
+                    render.texRect(BCGuiTextures.get("bars/food_full"), x + 1 + i * size, y + height - size - 2, size + 1, size + 1);
                 } else {
-                    render.cc$blitSprite(RenderPipelines.GUI_TEXTURED, BCGuiTextures.get("bars/food_half").get(), x + 1 + i * size, y + height - size - 2, size + 1, size + 1);
+                    render.texRect(BCGuiTextures.get("bars/food_half"), x + 1 + i * size, y + height - size - 2, size + 1, size + 1);
                 }
             }
         }
