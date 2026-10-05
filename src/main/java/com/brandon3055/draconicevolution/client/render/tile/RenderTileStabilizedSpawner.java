@@ -21,7 +21,7 @@ import net.minecraft.world.item.ItemStack;
  */
 public class RenderTileStabilizedSpawner implements DETileRenderer<TileStabilizedSpawner> {
 
-    private static final ItemStack[] CORE_RENDER_ITEMS = new ItemStack[]{new ItemStack(DEContent.CORE_DRACONIUM.get()), new ItemStack(DEContent.CORE_WYVERN.get()), new ItemStack(DEContent.CORE_AWAKENED.get()), new ItemStack(DEContent.CORE_CHAOTIC.get())};
+    private static ItemStack[] CORE_RENDER_ITEMS;
 
     public RenderTileStabilizedSpawner(BlockEntityRendererProvider.Context context) {
     }
@@ -56,6 +56,7 @@ public class RenderTileStabilizedSpawner implements DETileRenderer<TileStabilize
         mStack.scale(0.75F, 0.75F, 0.75F);
         mStack.mulPose(Axis.XP.rotationDegrees(90.0F));
 
+        if (CORE_RENDER_ITEMS == null) CORE_RENDER_ITEMS = new ItemStack[]{new ItemStack(DEContent.CORE_DRACONIUM.get()), new ItemStack(DEContent.CORE_WYVERN.get()), new ItemStack(DEContent.CORE_AWAKENED.get()), new ItemStack(DEContent.CORE_CHAOTIC.get())};
         ItemStack stack = CORE_RENDER_ITEMS[tile.spawnerTier.get().ordinal()];
         DETileRenderer.renderItem(stack, ItemDisplayContext.FIXED, packedLight, packedOverlay, mStack, collector, tile.getLevel(), tile.posSeed());
     }

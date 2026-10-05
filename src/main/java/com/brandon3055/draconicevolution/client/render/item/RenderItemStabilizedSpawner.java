@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
  */
 public class RenderItemStabilizedSpawner implements DEItemRenderer {
 
-    private static ItemStack[] CORE_RENDER_ITEMS = new ItemStack[]{new ItemStack(DEContent.CORE_DRACONIUM.get()), new ItemStack(DEContent.CORE_WYVERN.get()), new ItemStack(DEContent.CORE_AWAKENED.get()), new ItemStack(DEContent.CORE_CHAOTIC.get())};
+    private static ItemStack[] CORE_RENDER_ITEMS;
 
     public RenderItemStabilizedSpawner() {
 //        new ModelResourceLocation(DEContent.stabilized_spawner.getRegistryName())
