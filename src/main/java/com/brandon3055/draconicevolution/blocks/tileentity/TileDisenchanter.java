@@ -27,7 +27,6 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -104,7 +103,7 @@ public class TileDisenchanter extends TileBCore implements MenuProvider, IIntera
                 input.set(DataComponents.REPAIR_COST, Math.max(repairCost, 0));
             }
 
-            ItemStack book = EnchantedBookItem.createForEnchantment(new EnchantmentInstance(enchantHolder, lvl));
+            ItemStack book = EnchantmentHelper.createBook(new EnchantmentInstance(enchantHolder, lvl));
             itemHandler.setStackInSlot(2, book);
 
             EnchantmentHelper.updateEnchantments(input, mutable -> mutable.removeIf(e -> e == enchantHolder));
