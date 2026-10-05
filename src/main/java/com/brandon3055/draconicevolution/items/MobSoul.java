@@ -16,9 +16,9 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -67,7 +67,7 @@ public class MobSoul extends Item {
 
             if (!level.isClientSide()) {
                 if (!stack.has(ItemData.SOUL_DATA) && entity instanceof Mob mob && level instanceof ServerLevel serverLevel) {
-                    EventHooks.finalizeMobSpawn(mob, serverLevel, serverLevel.getCurrentDifficultyAt(new BlockPos(0, 0, 0)), MobSpawnType.SPAWN_EGG, null);
+                    EventHooks.finalizeMobSpawn(mob, serverLevel, serverLevel.getCurrentDifficultyAt(new BlockPos(0, 0, 0)), EntitySpawnReason.SPAWN_ITEM_USE, null);
                 }
                 level.addFreshEntity(entity);
                 if (!player.getAbilities().instabuild) {
@@ -121,7 +121,7 @@ public class MobSoul extends Item {
                 entity.load(entityData);
             } else {
                 if (entity instanceof Mob mob && level instanceof ServerLevel serverLevel) {
-                    EventHooks.finalizeMobSpawn(mob, serverLevel, serverLevel.getCurrentDifficultyAt(new BlockPos(0, 0, 0)), MobSpawnType.SPAWN_EGG, null);
+                    EventHooks.finalizeMobSpawn(mob, serverLevel, serverLevel.getCurrentDifficultyAt(new BlockPos(0, 0, 0)), EntitySpawnReason.SPAWN_ITEM_USE, null);
                 }
             }
             return entity;

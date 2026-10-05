@@ -8,9 +8,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -133,10 +133,10 @@ public class StabilizedSpawnerLogic extends BaseSpawner {
     }
 
     public boolean canEntitySpawnSpawner(Mob entity, ServerLevel level, float x, float y, float z, BaseSpawner spawner) {
-        var event = new MobSpawnEvent.PositionCheck(entity, level, MobSpawnType.SPAWNER, null);
+        var event = new MobSpawnEvent.PositionCheck(entity, level, EntitySpawnReason.SPAWNER, null);
         NeoForge.EVENT_BUS.post(event);
         if (event.getResult() == MobSpawnEvent.PositionCheck.Result.DEFAULT) {
-            return (tile.spawnerTier.get().ignoreSpawnReq() || entity.checkSpawnRules(level, MobSpawnType.SPAWNER)) && entity.checkSpawnObstruction(level);
+            return (tile.spawnerTier.get().ignoreSpawnReq() || entity.checkSpawnRules(level, EntitySpawnReason.SPAWNER)) && entity.checkSpawnObstruction(level);
         }
         return event.getResult() == MobSpawnEvent.PositionCheck.Result.SUCCEED;
     }
