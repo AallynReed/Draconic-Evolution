@@ -4,7 +4,7 @@ import codechicken.lib.render.shader.CCUniform;
 import com.brandon3055.brandonscore.client.shader.BCShader;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Objects;
 
@@ -17,10 +17,10 @@ public class ShieldShader extends BCShader<ShieldShader> {
     private CCUniform baseColourUniform;
 
     public ShieldShader(String path, VertexFormat format) {
-        super(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, path), format);
+        super(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, path), format);
     }
 
-    public ShieldShader(ResourceLocation location, VertexFormat format) {
+    public ShieldShader(Identifier location, VertexFormat format) {
         super(location, format);
     }
 

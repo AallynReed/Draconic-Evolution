@@ -8,7 +8,7 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
@@ -27,7 +27,7 @@ public class RenderModularPickaxe extends ToolRenderBase {
 
     public RenderModularPickaxe(TechLevel techLevel) {
         super(techLevel, "pickaxe");
-        Map<String, CCModel> model = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/item/equipment/pickaxe.obj")).ignoreMtl().parse();
+        Map<String, CCModel> model = new OBJParser(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "models/item/equipment/pickaxe.obj")).ignoreMtl().parse();
         basePart = basePart(model.get("handle").backfacedCopy());
         materialPart = materialPart(model.get("head").backfacedCopy());
         gemPart = gemPart(model.get("gem").backfacedCopy());

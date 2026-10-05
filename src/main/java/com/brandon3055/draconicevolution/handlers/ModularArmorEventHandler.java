@@ -22,7 +22,7 @@ import com.brandon3055.draconicevolution.items.equipment.IModularItem;
 import com.brandon3055.draconicevolution.items.equipment.IModularMiningTool;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -51,10 +51,10 @@ import java.util.function.Supplier;
 public class ModularArmorEventHandler {
     private static final EquipmentSlot[] ARMOR_SLOTS = new EquipmentSlot[]{EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD};
 
-    public static final ResourceLocation WALK_SPEED_ID = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "walk_speed");
-    public static final ResourceLocation STEP_HEIGHT_ID = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "step_height");
-    public static final ResourceLocation FLY_SPEED_ID = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "fly_speed");
-    public static final ResourceLocation SUBMERGED_MINE_SPEED_ID = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "aqua_speed");
+    public static final Identifier WALK_SPEED_ID = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "walk_speed");
+    public static final Identifier STEP_HEIGHT_ID = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "step_height");
+    public static final Identifier FLY_SPEED_ID = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "fly_speed");
+    public static final Identifier SUBMERGED_MINE_SPEED_ID = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "aqua_speed");
 
     public static final EntityAttributeHandler<ArmorAbilities> ATTRIBUTE_HANDLER = new EntityAttributeHandler<>();
 

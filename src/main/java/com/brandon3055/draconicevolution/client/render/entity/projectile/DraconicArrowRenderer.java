@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -23,8 +23,8 @@ import java.util.Random;
 
 @OnlyIn(Dist.CLIENT)
 public class DraconicArrowRenderer extends EntityRenderer<DraconicArrowEntity> {
-    public static final ResourceLocation RES_ARROW = ResourceLocation.withDefaultNamespace("textures/entity/projectiles/arrow.png");
-    public static final ResourceLocation RES_TIPPED_ARROW = ResourceLocation.withDefaultNamespace("textures/entity/projectiles/tipped_arrow.png");
+    public static final Identifier RES_ARROW = Identifier.withDefaultNamespace("textures/entity/projectiles/arrow.png");
+    public static final Identifier RES_TIPPED_ARROW = Identifier.withDefaultNamespace("textures/entity/projectiles/tipped_arrow.png");
 
     public DraconicArrowRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -85,7 +85,7 @@ public class DraconicArrowRenderer extends EntityRenderer<DraconicArrowEntity> {
         vertexBuilder.addVertex(matrix, (float) offsetX, (float) offsetY, (float) offsetZ).setColor(255, 255, 255, 255).setUv(textureX, textureY).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLightIn).setNormal(normals, (float) p_229039_9_, (float) p_229039_11_, (float) p_229039_10_);
     }
 
-    public ResourceLocation getTextureLocation(DraconicArrowEntity entity) {
+    public Identifier getTextureLocation(DraconicArrowEntity entity) {
         return entity.getColor() > 0 ? RES_TIPPED_ARROW : RES_ARROW;
     }
 

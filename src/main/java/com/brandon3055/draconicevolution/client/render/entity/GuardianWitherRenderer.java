@@ -8,15 +8,15 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.WitherArmorLayer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuardianWitherRenderer extends MobRenderer<WitherBoss, WitherBossModel<WitherBoss>> {
-   private static final ResourceLocation WITHER_INVULNERABLE_LOCATION = ResourceLocation.withDefaultNamespace("textures/entity/wither/wither_invulnerable.png");
-   private static final ResourceLocation WITHER_LOCATION = ResourceLocation.withDefaultNamespace("textures/entity/wither/wither.png");
+   private static final Identifier WITHER_INVULNERABLE_LOCATION = Identifier.withDefaultNamespace("textures/entity/wither/wither_invulnerable.png");
+   private static final Identifier WITHER_LOCATION = Identifier.withDefaultNamespace("textures/entity/wither/wither.png");
 
    public GuardianWitherRenderer(EntityRendererProvider.Context context) {
       super(context, new WitherBossModel<>(context.bakeLayer(ModelLayers.WITHER)), 1.0F);
@@ -27,7 +27,7 @@ public class GuardianWitherRenderer extends MobRenderer<WitherBoss, WitherBossMo
       return 15;
    }
 
-   public ResourceLocation getTextureLocation(WitherBoss p_110775_1_) {
+   public Identifier getTextureLocation(WitherBoss p_110775_1_) {
       int i = p_110775_1_.getInvulnerableTicks();
       return i > 0 && (i > 80 || i / 5 % 2 != 1) ? WITHER_INVULNERABLE_LOCATION : WITHER_LOCATION;
    }

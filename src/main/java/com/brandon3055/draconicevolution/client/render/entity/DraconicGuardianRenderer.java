@@ -21,7 +21,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
@@ -34,11 +34,11 @@ import java.util.Random;
 
 @OnlyIn (Dist.CLIENT)
 public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEntity> {
-    public static final ResourceLocation ENDERCRYSTAL_BEAM_TEXTURES = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/entity/guardian_crystal_beam.png");
-    private static final ResourceLocation DRAGON_EXPLODING_TEXTURES = ResourceLocation.withDefaultNamespace("textures/entity/enderdragon/dragon_exploding.png");
-    private static final ResourceLocation DRAGON_TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/enderdragon/dragon.png");
-    private static final ResourceLocation GUARDIAN_TEXTURE = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/entity/chaos_guardian.png");
-    private static final ResourceLocation EYES_TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/enderdragon/dragon_eyes.png");
+    public static final Identifier ENDERCRYSTAL_BEAM_TEXTURES = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/entity/guardian_crystal_beam.png");
+    private static final Identifier DRAGON_EXPLODING_TEXTURES = Identifier.withDefaultNamespace("textures/entity/enderdragon/dragon_exploding.png");
+    private static final Identifier DRAGON_TEXTURE = Identifier.withDefaultNamespace("textures/entity/enderdragon/dragon.png");
+    private static final Identifier GUARDIAN_TEXTURE = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/entity/chaos_guardian.png");
+    private static final Identifier EYES_TEXTURE = Identifier.withDefaultNamespace("textures/entity/enderdragon/dragon_eyes.png");
     private static final RenderType dragonCutoutType = RenderType.entityCutoutNoCull(GUARDIAN_TEXTURE);
     private static final RenderType dragonDeathType = RenderType.entityDecal(GUARDIAN_TEXTURE);
     private static final RenderType eyesType = RenderType.eyes(EYES_TEXTURE);
@@ -323,7 +323,7 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
     }
 
     @Override
-    public ResourceLocation getTextureLocation(DraconicGuardianEntity entity) {
+    public Identifier getTextureLocation(DraconicGuardianEntity entity) {
         return DRAGON_TEXTURE;
     }
 

@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.SpriteLoader;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.Resource;
@@ -23,8 +23,8 @@ import java.util.stream.Stream;
  */
 public class MultiModAtlasHolder implements PreparableReloadListener, AutoCloseable {
     private final TextureAtlas textureAtlas;
-    private final ResourceLocation atlasLocation;
-    private final ResourceLocation atlasInfoLocation;
+    private final Identifier atlasLocation;
+    private final Identifier atlasInfoLocation;
     private final Set<String> modIds;
 
     /**
@@ -39,17 +39,17 @@ public class MultiModAtlasHolder implements PreparableReloadListener, AutoClosea
      */
     public MultiModAtlasHolder(String hostModId, String atlasLocation, String atlasInfoLocation, Set<String> modIds) {
         this.modIds = modIds;
-        this.atlasInfoLocation = ResourceLocation.fromNamespaceAndPath(hostModId, atlasInfoLocation);
-        this.atlasLocation = ResourceLocation.fromNamespaceAndPath(hostModId, atlasLocation);
+        this.atlasInfoLocation = Identifier.fromNamespaceAndPath(hostModId, atlasInfoLocation);
+        this.atlasLocation = Identifier.fromNamespaceAndPath(hostModId, atlasLocation);
         this.textureAtlas = new TextureAtlas(this.atlasLocation);
         Minecraft.getInstance().getTextureManager().register(this.textureAtlas.location(), this.textureAtlas);
     }
 
-    public ResourceLocation atlasLocation() {
+    public Identifier atlasLocation() {
         return atlasLocation;
     }
 
-    public TextureAtlasSprite getSprite(ResourceLocation resourceLocation) {
+    public TextureAtlasSprite getSprite(Identifier resourceLocation) {
         return this.textureAtlas.getSprite(resourceLocation);
     }
 
@@ -84,16 +84,16 @@ public class MultiModAtlasHolder implements PreparableReloadListener, AutoClosea
         }
 
         @Override
-        public Map<ResourceLocation, Resource> listResources(String pPath, Predicate<ResourceLocation> pFilter) {
+        public Map<Identifier, Resource> listResources(String pPath, Predicate<Identifier> pFilter) {
             return wrapped.listResources(pPath, pFilter.and(e -> modIds.contains(e.getNamespace())));
         }
 
         //@formatter:off
         @Override public Set<String> getNamespaces() { return wrapped.getNamespaces(); }
-        @Override public List<Resource> getResourceStack(ResourceLocation pLocation) { return wrapped.getResourceStack(pLocation); }
-        @Override public Map<ResourceLocation, List<Resource>> listResourceStacks(String pPath, Predicate<ResourceLocation> pFilter) { return wrapped.listResourceStacks(pPath, pFilter); }
+        @Override public List<Resource> getResourceStack(Identifier pLocation) { return wrapped.getResourceStack(pLocation); }
+        @Override public Map<Identifier, List<Resource>> listResourceStacks(String pPath, Predicate<Identifier> pFilter) { return wrapped.listResourceStacks(pPath, pFilter); }
         @Override public Stream<PackResources> listPacks() { return wrapped.listPacks(); }
-        @Override public Optional<Resource> getResource(ResourceLocation pLocation) { return wrapped.getResource(pLocation); }
+        @Override public Optional<Resource> getResource(Identifier pLocation) { return wrapped.getResource(pLocation); }
         //@formatter:on
     }
 }

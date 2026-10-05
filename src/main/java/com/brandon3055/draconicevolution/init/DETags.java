@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.init;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -35,10 +35,10 @@ public class DETags {
 
         public static final TagKey<Item> ORES_DRACONIUM = tag("ores/draconium");
 
-        public static final TagKey<Item> MODULES = ItemTags.create(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "modules"));
+        public static final TagKey<Item> MODULES = ItemTags.create(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "modules"));
 
         private static TagKey<Item> tag(String name) {
-            return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
+            return ItemTags.create(Identifier.fromNamespaceAndPath("c", name));
         }
     }
 
@@ -50,18 +50,18 @@ public class DETags {
 
         public static final TagKey<Block> ORES_DRACONIUM = tag("ores/draconium");
 
-        public static final TagKey<Block> NEEDS_WYVERN_TOOL = BlockTags.create(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "needs_wyvern_tool"));
-        public static final TagKey<Block> NEEDS_AWAKENED_TOOL = BlockTags.create(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "needs_awakened_tool"));
-        public static final TagKey<Block> NEEDS_CHAOTIC_TOOL = BlockTags.create(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "needs_chaotic_tool"));
+        public static final TagKey<Block> NEEDS_WYVERN_TOOL = BlockTags.create(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "needs_wyvern_tool"));
+        public static final TagKey<Block> NEEDS_AWAKENED_TOOL = BlockTags.create(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "needs_awakened_tool"));
+        public static final TagKey<Block> NEEDS_CHAOTIC_TOOL = BlockTags.create(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "needs_chaotic_tool"));
 
-        public static final TagKey<Block> INCORRECT_FOR_WYVERN_TOOL = BlockTags.create(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "incorrect_for_wyvern_tool"));
-        public static final TagKey<Block> INCORRECT_FOR_AWAKENED_TOOL = BlockTags.create(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "incorrect_for_awakened_tool"));
-        public static final TagKey<Block> INCORRECT_FOR_CHAOTIC_TOOL = BlockTags.create(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "incorrect_for_chaotic_tool"));
+        public static final TagKey<Block> INCORRECT_FOR_WYVERN_TOOL = BlockTags.create(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "incorrect_for_wyvern_tool"));
+        public static final TagKey<Block> INCORRECT_FOR_AWAKENED_TOOL = BlockTags.create(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "incorrect_for_awakened_tool"));
+        public static final TagKey<Block> INCORRECT_FOR_CHAOTIC_TOOL = BlockTags.create(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "incorrect_for_chaotic_tool"));
 
-        public static final TagKey<Block> MINEABLE_WITH_STAFF = BlockTags.create(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "mineable_with_staff"));
+        public static final TagKey<Block> MINEABLE_WITH_STAFF = BlockTags.create(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "mineable_with_staff"));
 
         private static TagKey<Block> tag(String name) {
-            return BlockTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
+            return BlockTags.create(Identifier.fromNamespaceAndPath("c", name));
         }
     }
 }

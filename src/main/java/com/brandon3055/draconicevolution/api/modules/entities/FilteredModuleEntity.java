@@ -42,7 +42,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
@@ -422,7 +422,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
         }
 
         textField.setTextState(TextState.simpleState("", s -> {
-            ResourceLocation location = ResourceLocation.tryParse(s);
+            Identifier location = Identifier.tryParse(s);
             TagKey<Item> key = getTagFilter(index);
             if (s.isEmpty() && key == null) return;
 

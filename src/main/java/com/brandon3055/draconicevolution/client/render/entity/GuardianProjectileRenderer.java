@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Matrix3f;
@@ -19,7 +19,7 @@ import org.joml.Matrix4f;
 
 @OnlyIn(Dist.CLIENT)
 public class GuardianProjectileRenderer extends EntityRenderer<GuardianProjectileEntity> {
-   private static final ResourceLocation DRAGON_FIREBALL_TEXTURE = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/entity/guardian_fireball.png");
+   private static final Identifier DRAGON_FIREBALL_TEXTURE = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/entity/guardian_fireball.png");
    private static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(DRAGON_FIREBALL_TEXTURE);
 
    public GuardianProjectileRenderer(EntityRendererProvider.Context context) {
@@ -53,7 +53,7 @@ public class GuardianProjectileRenderer extends EntityRenderer<GuardianProjectil
    }
 
    @Override
-   public ResourceLocation getTextureLocation(GuardianProjectileEntity entity) {
+   public Identifier getTextureLocation(GuardianProjectileEntity entity) {
       return DRAGON_FIREBALL_TEXTURE;
    }
 }

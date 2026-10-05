@@ -20,7 +20,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.InventoryMenu;
 
 import java.util.Map;
@@ -31,11 +31,11 @@ import java.util.Map;
 public class RenderTileGenerator implements BlockEntityRenderer<TileGenerator> {
 
     private static final RenderType MODEL_TYPE = RenderType.SOLID;
-    private static final ResourceLocation GEN_TEXTURE = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "block/generator/generator_2");
+    private static final Identifier GEN_TEXTURE = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "block/generator/generator_2");
     private final CCModel fanModel;
 
     public RenderTileGenerator(BlockEntityRendererProvider.Context context) {
-        Map<String, CCModel> map = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/generator/generator_fan.obj")).quads().ignoreMtl().parse();
+        Map<String, CCModel> map = new OBJParser(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/generator/generator_fan.obj")).quads().ignoreMtl().parse();
         fanModel = CCModel.combine(map.values()).backfacedCopy();
     }
 

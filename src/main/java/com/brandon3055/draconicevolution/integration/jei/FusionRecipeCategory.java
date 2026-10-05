@@ -18,7 +18,7 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -40,7 +40,7 @@ public class FusionRecipeCategory implements IRecipeCategory<RecipeHolder<IFusio
     private final int ySize = 111;
 
     public FusionRecipeCategory(IGuiHelper guiHelper) {
-        background = guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/gui/jei_fusion_background.png"), 0, 0, xSize, ySize);
+        background = guiHelper.createDrawable(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/gui/jei_fusion_background.png"), 0, 0, xSize, ySize);
         localizedName = Component.translatable(DEContent.CRAFTING_CORE.get().getDescriptionId());
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(DEContent.CRAFTING_CORE.get()));
     }

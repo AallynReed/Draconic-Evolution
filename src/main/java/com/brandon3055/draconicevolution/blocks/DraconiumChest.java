@@ -8,7 +8,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -54,7 +54,7 @@ public class DraconiumChest extends EntityBlockBCore {
 
     public static boolean isStackValid(ItemStack stack) {
         if (!stack.isEmpty()) {
-            ResourceLocation name = BuiltInRegistries.ITEM.getKey(stack.getItem());
+            Identifier name = BuiltInRegistries.ITEM.getKey(stack.getItem());
             for (String key : DEConfig.chestBlacklist) {
                 if (key.contains(":") ? name.toString().contains(key) : name.getPath().contains(key)) {
                     return false;

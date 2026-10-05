@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.api.modules;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Created by brandon3055 on 19/4/20.
@@ -15,7 +15,7 @@ public class ModuleRegistry {
 
     public static Registry<Module<?>> getRegistry() {
         if (REGISTRY == null) {
-            REGISTRY = (Registry<Module<?>>) BuiltInRegistries.REGISTRY.get(ResourceLocation.fromNamespaceAndPath("draconicevolution", "modules"));
+            REGISTRY = (Registry<Module<?>>) BuiltInRegistries.REGISTRY.get(Identifier.fromNamespaceAndPath("draconicevolution", "modules"));
         }
         return REGISTRY;
     }

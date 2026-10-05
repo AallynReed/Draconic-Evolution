@@ -4,7 +4,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import net.covers1624.quack.util.SneakyUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.capabilities.BlockCapability;
@@ -29,9 +29,9 @@ public class DECapabilities {
 //    }
 
     public static class Module {
-        public static final BlockCapability<ModuleProvider, @Nullable Direction> BLOCK = BlockCapability.createSided(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "module"), ModuleProvider.class);
-        public static final EntityCapability<ModuleProvider, @Nullable Direction> ENTITY = EntityCapability.createSided(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "module"), ModuleProvider.class);
-        public static final ItemCapability<ModuleProvider, Void> ITEM = ItemCapability.createVoid(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "module"), ModuleProvider.class);
+        public static final BlockCapability<ModuleProvider, @Nullable Direction> BLOCK = BlockCapability.createSided(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "module"), ModuleProvider.class);
+        public static final EntityCapability<ModuleProvider, @Nullable Direction> ENTITY = EntityCapability.createSided(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "module"), ModuleProvider.class);
+        public static final ItemCapability<ModuleProvider, Void> ITEM = ItemCapability.createVoid(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "module"), ModuleProvider.class);
 
         public Module() {}
 
@@ -47,9 +47,9 @@ public class DECapabilities {
     }
 
     public static class Host {
-        public static final BlockCapability<ModuleHost, @Nullable Direction> BLOCK = BlockCapability.createSided(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "module_host"), ModuleHost.class);
-        public static final EntityCapability<ModuleHost, @Nullable Direction> ENTITY = EntityCapability.createSided(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "module_host"), ModuleHost.class);
-        public static final ItemCapability<ModuleHost, Void> ITEM = ItemCapability.createVoid(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "module_host"), ModuleHost.class);
+        public static final BlockCapability<ModuleHost, @Nullable Direction> BLOCK = BlockCapability.createSided(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "module_host"), ModuleHost.class);
+        public static final EntityCapability<ModuleHost, @Nullable Direction> ENTITY = EntityCapability.createSided(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "module_host"), ModuleHost.class);
+        public static final ItemCapability<ModuleHost, Void> ITEM = ItemCapability.createVoid(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "module_host"), ModuleHost.class);
 
         public Host() {}
 

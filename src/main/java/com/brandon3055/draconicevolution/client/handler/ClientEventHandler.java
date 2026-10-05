@@ -19,7 +19,7 @@ import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackSelectionConfig;
 import net.minecraft.server.packs.PackType;
@@ -86,7 +86,7 @@ public class ClientEventHandler {
     }
 
     private static void registerOverlays(RegisterGuiLayersEvent event) {
-        event.registerBelowAll(ResourceLocation.fromNamespaceAndPath(MODID, "explosion_overlay"), (graphics, deltaTracker) -> {
+        event.registerBelowAll(Identifier.fromNamespaceAndPath(MODID, "explosion_overlay"), (graphics, deltaTracker) -> {
             if (explosionPos != null) {
                 updateExplosionAnimation(mc, GuiRender.convert(graphics), mc.getWindow(), deltaTracker.getGameTimeDeltaPartialTick(false));
             }

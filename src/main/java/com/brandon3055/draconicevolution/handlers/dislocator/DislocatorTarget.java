@@ -4,8 +4,8 @@ import com.brandon3055.brandonscore.utils.TargetPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -61,7 +61,7 @@ public abstract class DislocatorTarget {
     public static DislocatorTarget load(CompoundTag nbt) {
         try {
             TargetType type = TargetType.values()[nbt.getByte("target_type")];
-            ResourceKey<Level> worldKey = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(nbt.getString("world_key")));
+            ResourceKey<Level> worldKey = ResourceKey.create(Registries.DIMENSION, Identifier.parse(nbt.getString("world_key")));
             DislocatorTarget target = type.createInstance(worldKey);
             target.loadInternal(nbt);
             return target;

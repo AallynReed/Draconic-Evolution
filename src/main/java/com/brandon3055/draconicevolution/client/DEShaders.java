@@ -10,7 +10,7 @@ import com.brandon3055.draconicevolution.client.shader.ToolShader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.covers1624.quack.util.CrashLock;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 
@@ -109,19 +109,19 @@ public class DEShaders {
     }
 
     private static void onRegisterShaders(RegisterShadersEvent event) {
-        event.registerShader(CCShaderInstance.create(event.getResourceProvider(), ResourceLocation.fromNamespaceAndPath(MODID, "reactor"), DefaultVertexFormat.POSITION_TEX), e -> {
+        event.registerShader(CCShaderInstance.create(event.getResourceProvider(), Identifier.fromNamespaceAndPath(MODID, "reactor"), DefaultVertexFormat.POSITION_TEX), e -> {
             reactorShader = (CCShaderInstance) e;
             reactorTime = reactorShader.getUniform("time");
             reactorIntensity = reactorShader.getUniform("intensity");
         });
 
-        event.registerShader(CCShaderInstance.create(event.getResourceProvider(), ResourceLocation.fromNamespaceAndPath(MODID, "reactor_shield"), DefaultVertexFormat.POSITION_TEX), e -> {
+        event.registerShader(CCShaderInstance.create(event.getResourceProvider(), Identifier.fromNamespaceAndPath(MODID, "reactor_shield"), DefaultVertexFormat.POSITION_TEX), e -> {
             reactorShieldShader = (CCShaderInstance) e;
             reactorShieldTime = reactorShieldShader.getUniform("time");
             reactorShieldIntensity = reactorShieldShader.getUniform("intensity");
         });
 
-        event.registerShader(CCShaderInstance.create(event.getResourceProvider(), ResourceLocation.fromNamespaceAndPath(MODID, "chaos_block"), DefaultVertexFormat.BLOCK), e -> {
+        event.registerShader(CCShaderInstance.create(event.getResourceProvider(), Identifier.fromNamespaceAndPath(MODID, "chaos_block"), DefaultVertexFormat.BLOCK), e -> {
             chaosBlockShader = (CCShaderInstance) e;
             chaosBlockTime = chaosBlockShader.getUniform("Time");
             chaosBlockYaw = chaosBlockShader.getUniform("Yaw");
@@ -129,7 +129,7 @@ public class DEShaders {
             chaosBlockAlpha = chaosBlockShader.getUniform("Alpha");
         });
 
-        event.registerShader(CCShaderInstance.create(event.getResourceProvider(), ResourceLocation.fromNamespaceAndPath(MODID, "shield"), DefaultVertexFormat.POSITION_TEX), e -> {
+        event.registerShader(CCShaderInstance.create(event.getResourceProvider(), Identifier.fromNamespaceAndPath(MODID, "shield"), DefaultVertexFormat.POSITION_TEX), e -> {
             shieldShader = (CCShaderInstance) e;
             shieldTime = shieldShader.getUniform("Time");
             shieldActivation = shieldShader.getUniform("Activation");
@@ -138,7 +138,7 @@ public class DEShaders {
             shieldShader.onApply(() -> shieldTime.glUniform1f((TimeKeeper.getClientTick() + RenderUtils.partialTick()) / 20F));
         });
 
-        event.registerShader(CCShaderInstance.create(event.getResourceProvider(), ResourceLocation.fromNamespaceAndPath(MODID, "energy_crystal"), DefaultVertexFormat.POSITION_TEX), e -> {
+        event.registerShader(CCShaderInstance.create(event.getResourceProvider(), Identifier.fromNamespaceAndPath(MODID, "energy_crystal"), DefaultVertexFormat.POSITION_TEX), e -> {
             energyCrystalShader = (CCShaderInstance) e;
             energyCrystalTime = energyCrystalShader.getUniform("Time");
             energyCrystalColour = energyCrystalShader.getUniform("Colour");
@@ -167,7 +167,7 @@ public class DEShaders {
 //            e.printStackTrace();
 //        }
 
-        event.registerShader(CCShaderInstance.create(event.getResourceProvider(), ResourceLocation.fromNamespaceAndPath(MODID, "energy_core"), DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP), e -> {
+        event.registerShader(CCShaderInstance.create(event.getResourceProvider(), Identifier.fromNamespaceAndPath(MODID, "energy_core"), DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP), e -> {
             energyCoreShader = (CCShaderInstance) e;
             energyCoreTime = energyCoreShader.getUniform("Time");
             energyCoreActivation = energyCoreShader.getUniform("Activation");
@@ -179,7 +179,7 @@ public class DEShaders {
             });
         });
 
-        event.registerShader(CCShaderInstance.create(event.getResourceProvider(), ResourceLocation.fromNamespaceAndPath(MODID, "reactor_beam"), DefaultVertexFormat.POSITION_TEX_COLOR), e -> {
+        event.registerShader(CCShaderInstance.create(event.getResourceProvider(), Identifier.fromNamespaceAndPath(MODID, "reactor_beam"), DefaultVertexFormat.POSITION_TEX_COLOR), e -> {
             reactorBeamShader = (CCShaderInstance) e;
             reactorBeamTime = reactorBeamShader.getUniform("Time");
             reactorBeamFade = reactorBeamShader.getUniform("Fade");
@@ -189,14 +189,14 @@ public class DEShaders {
             reactorBeamShader.onApply(() -> reactorBeamTime.glUniform1f((TimeKeeper.getClientTick() + RenderUtils.partialTick()) * 0.02F));
         });
 
-        event.registerShader(CCShaderInstance.create(event.getResourceProvider(), ResourceLocation.fromNamespaceAndPath(MODID, "explosion_flash"), DefaultVertexFormat.POSITION_COLOR), e -> {
+        event.registerShader(CCShaderInstance.create(event.getResourceProvider(), Identifier.fromNamespaceAndPath(MODID, "explosion_flash"), DefaultVertexFormat.POSITION_COLOR), e -> {
             explosionFlashShader = (CCShaderInstance) e;
             explosionFlashScreenPos = explosionFlashShader.getUniform("ScreenPos");
             explosionFlashScreenSize = explosionFlashShader.getUniform("ScreenSize");
             explosionFlashIntensity = explosionFlashShader.getUniform("Intensity");
         });
 
-        event.registerShader(CCShaderInstance.create(event.getResourceProvider(), ResourceLocation.fromNamespaceAndPath(MODID, "explosion"), DefaultVertexFormat.POSITION_TEX), e -> {
+        event.registerShader(CCShaderInstance.create(event.getResourceProvider(), Identifier.fromNamespaceAndPath(MODID, "explosion"), DefaultVertexFormat.POSITION_TEX), e -> {
             explosionShader = (CCShaderInstance) e;
             explosionTime = explosionShader.getUniform("Time");
             explosionScale = explosionShader.getUniform("Scale");

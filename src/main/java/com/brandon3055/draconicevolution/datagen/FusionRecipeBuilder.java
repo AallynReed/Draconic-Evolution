@@ -5,7 +5,7 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.crafting.FusionRecipe;
 import com.brandon3055.draconicevolution.api.crafting.StackIngredient;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +24,7 @@ public class FusionRecipeBuilder extends AbstractItemStackRecipeBuilder<FusionRe
     private TechLevel techLevel = null;
     private List<FusionRecipe.FusionIngredient> ingredients = new ArrayList<>();
 
-    protected FusionRecipeBuilder(ResourceLocation id, ItemStack result) {
+    protected FusionRecipeBuilder(Identifier id, ItemStack result) {
         super(id, result);
         this.result = result;
     }
@@ -37,7 +37,7 @@ public class FusionRecipeBuilder extends AbstractItemStackRecipeBuilder<FusionRe
         return builder(new ItemStack(result, count));
     }
 
-    public static FusionRecipeBuilder builder(ItemLike result, int count, ResourceLocation id) {
+    public static FusionRecipeBuilder builder(ItemLike result, int count, Identifier id) {
         return builder(new ItemStack(result, count), id);
     }
 
@@ -45,7 +45,7 @@ public class FusionRecipeBuilder extends AbstractItemStackRecipeBuilder<FusionRe
         return builder(result, BuiltInRegistries.ITEM.getKey(result.getItem()));
     }
 
-    public static FusionRecipeBuilder builder(ItemStack result, ResourceLocation id) {
+    public static FusionRecipeBuilder builder(ItemStack result, Identifier id) {
         return new FusionRecipeBuilder(id, result);
     }
 

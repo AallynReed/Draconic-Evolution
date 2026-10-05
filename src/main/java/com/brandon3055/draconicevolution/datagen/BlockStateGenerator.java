@@ -11,7 +11,7 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -255,7 +255,7 @@ public class BlockStateGenerator extends BlockStateProvider {
                 });
     }
 
-    public void multiLayerBlock(Supplier<? extends Block> block, ResourceLocation solid, ResourceLocation overlay) {
+    public void multiLayerBlock(Supplier<? extends Block> block, Identifier solid, Identifier overlay) {
 
         simpleBlock(block,
                 models().getBuilder(BuiltInRegistries.BLOCK.getKey(block.get()).getPath())

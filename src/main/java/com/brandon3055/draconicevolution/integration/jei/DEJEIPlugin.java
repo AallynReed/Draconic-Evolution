@@ -28,7 +28,7 @@ import mezz.jei.api.runtime.IJeiRuntime;
 import net.covers1624.quack.collection.FastStream;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -197,8 +197,8 @@ public class DEJEIPlugin implements IModPlugin {
     }
 
     @Override
-    public @NotNull ResourceLocation getPluginUid() {
-        return ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "jei_plugin");
+    public @NotNull Identifier getPluginUid() {
+        return Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "jei_plugin");
     }
 
     public static RecipeType<RecipeHolder<IFusionRecipe>> getFusionRecipeType() {

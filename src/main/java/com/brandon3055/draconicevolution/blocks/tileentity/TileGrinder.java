@@ -25,7 +25,7 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -293,7 +293,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
             return false;
         }
         if (DEConfig.grinderBlackList.isEmpty()) return true;
-        ResourceLocation reg = BuiltInRegistries.ENTITY_TYPE.getKey(livingBase.getType());
+        Identifier reg = BuiltInRegistries.ENTITY_TYPE.getKey(livingBase.getType());
         return !(reg != null && DEConfig.grinderBlackList.contains(reg.toString()));
     }
 

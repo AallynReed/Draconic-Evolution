@@ -26,7 +26,7 @@ import com.brandon3055.draconicevolution.client.DEGuiTextures;
 import com.brandon3055.draconicevolution.inventory.GeneratorMenu;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,13 +42,13 @@ public class GeneratorGui extends ContainerGuiProvider<GeneratorMenu> {
     public static final int GUI_WIDTH = 176;
     public static final int GUI_HEIGHT = 166;
 
-    private static final RenderType modelType = RenderType.entitySolid(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/generator/generator_2.png"));
+    private static final RenderType modelType = RenderType.entitySolid(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/generator/generator_2.png"));
     private static final CCModel storageModel;
 
 //    private ModuleGridPanel gridPanel;
 
     static {
-        Map<String, CCModel> map = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/generator/generator_storage.obj")).quads().ignoreMtl().parse();
+        Map<String, CCModel> map = new OBJParser(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/generator/generator_storage.obj")).quads().ignoreMtl().parse();
         storageModel = CCModel.combine(map.values());
         storageModel.computeNormals();
     }

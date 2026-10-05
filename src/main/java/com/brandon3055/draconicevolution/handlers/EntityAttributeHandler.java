@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.handlers;
 
 import net.covers1624.quack.util.SneakyUtils;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -21,9 +21,9 @@ import java.util.function.Supplier;
  */
 public class EntityAttributeHandler<Data> {
 
-    private final Map<ResourceLocation, AttribData> modifiers = new HashMap<>();
+    private final Map<Identifier, AttribData> modifiers = new HashMap<>();
 
-    public void register(ResourceLocation attribKey, Supplier<Holder<Attribute>> attribute, BiFunction<LivingEntity, Data, @Nullable AttributeModifier> modifierFunc) {
+    public void register(Identifier attribKey, Supplier<Holder<Attribute>> attribute, BiFunction<LivingEntity, Data, @Nullable AttributeModifier> modifierFunc) {
         modifiers.put(attribKey, new AttribData(attribute, SneakyUtils.unsafeCast(modifierFunc)));
     }
 

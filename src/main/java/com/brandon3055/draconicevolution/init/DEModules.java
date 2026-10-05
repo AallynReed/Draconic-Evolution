@@ -17,8 +17,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -40,7 +40,7 @@ import static com.brandon3055.draconicevolution.api.modules.ModuleTypes.*;
  * This class contains a reference to all blocks and items in Draconic Evolution
  */
 public class DEModules {
-    public static final ResourceKey<Registry<Module<?>>> MODULE_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(MODID, "modules"));
+    public static final ResourceKey<Registry<Module<?>>> MODULE_KEY = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath(MODID, "modules"));
     public static Registry<Module<?>> REGISTRY;
 
     public static final DeferredRegister<Module<?>> MODULES = DeferredRegister.create(MODULE_KEY, MODID);

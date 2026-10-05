@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.AABB;
 import org.joml.Quaternionf;
 
@@ -28,10 +28,10 @@ import java.util.Map;
  */
 public class RenderEnergyCoreStabilizer implements BlockEntityRenderer<TileEnergyCoreStabilizer> {
 
-    private static final RenderType MODEL_TYPE = RenderType.entitySolid(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_large.png"));
+    private static final RenderType MODEL_TYPE = RenderType.entitySolid(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_large.png"));
 
     private static final RenderType MODEL_TYPE_ACTIVE = RenderType.create("stab_type_a", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-            .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_large.png"), false, false))
+            .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_large.png"), false, false))
             .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getPositionColorTexLightmapShader))
             .setLightmapState(RenderStateShard.LIGHTMAP)
             .createCompositeState(false)
@@ -40,7 +40,7 @@ public class RenderEnergyCoreStabilizer implements BlockEntityRenderer<TileEnerg
     private CCModel model;
 
     public RenderEnergyCoreStabilizer(BlockEntityRendererProvider.Context context) {
-        Map<String, CCModel> map = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/energy_core/stabilizer_large.obj")).quads().ignoreMtl().parse();
+        Map<String, CCModel> map = new OBJParser(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/energy_core/stabilizer_large.obj")).quads().ignoreMtl().parse();
         model = CCModel.combine(map.values()).backfacedCopy();
     }
 

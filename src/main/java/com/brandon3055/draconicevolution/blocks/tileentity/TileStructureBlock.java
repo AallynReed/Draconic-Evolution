@@ -10,7 +10,7 @@ import com.brandon3055.draconicevolution.blocks.StructureBlock;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -73,7 +73,7 @@ public class TileStructureBlock extends TileBCore implements IInteractTile {
     }
 
     public Block getOriginalBlock() {
-        ResourceLocation name = blockName.get();
+        Identifier name = blockName.get();
         if (name != null) {
             return BuiltInRegistries.BLOCK.get(name);
         }

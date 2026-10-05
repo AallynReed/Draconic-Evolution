@@ -11,7 +11,7 @@ import com.brandon3055.draconicevolution.items.equipment.IModularMiningTool;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -85,7 +85,7 @@ public class StructureBlock extends EntityBlockBCore implements StructurePart, C
         BlockEntity tile = world.getBlockEntity(pos);
 
         if (tile instanceof TileStructureBlock structureTile) {
-            ResourceLocation blockName = structureTile.blockName.get();
+            Identifier blockName = structureTile.blockName.get();
             if (blockName != null) {
                 Block block = BuiltInRegistries.BLOCK.get(blockName);
                 MultiBlockController controller = structureTile.getController();
@@ -106,7 +106,7 @@ public class StructureBlock extends EntityBlockBCore implements StructurePart, C
     public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader world, BlockPos pos, Player player) {
         BlockEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TileStructureBlock structureTile) {
-            ResourceLocation blockName = structureTile.blockName.get();
+            Identifier blockName = structureTile.blockName.get();
             if (blockName != null) {
                 Block block = BuiltInRegistries.BLOCK.get(blockName);
                 return new ItemStack(block);
@@ -155,7 +155,7 @@ public class StructureBlock extends EntityBlockBCore implements StructurePart, C
 
     public static Block getBlock(Level level, BlockPos pos) {
         if (level.getBlockEntity(pos) instanceof TileStructureBlock tile) {
-            ResourceLocation name = tile.blockName.get();
+            Identifier name = tile.blockName.get();
             if (name != null) {
                 return BuiltInRegistries.BLOCK.get(name);
             }

@@ -7,7 +7,7 @@ import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleProperties;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
@@ -46,8 +46,8 @@ public class ModuleImpl<T extends ModuleData<T>> extends BaseModule<T> {
     @Override
     public Item getItem() {
         if (moduleItem == null) {
-            ResourceLocation key = ModuleRegistry.getRegistry().getKey(this);
-            moduleItem = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(key.getNamespace(), "item_" + key.getPath()));
+            Identifier key = ModuleRegistry.getRegistry().getKey(this);
+            moduleItem = BuiltInRegistries.ITEM.get(Identifier.fromNamespaceAndPath(key.getNamespace(), "item_" + key.getPath()));
             if (moduleItem == Items.AIR) {
                 throw new IllegalStateException("Module item was not provided and no matching item was found in the item registry.");
             }

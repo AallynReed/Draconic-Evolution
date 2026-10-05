@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.integration.equipment;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.lib.WTFException;
 import net.minecraft.data.tags.TagsProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,8 +29,8 @@ import java.util.function.Predicate;
  */
 public class CuriosIntegration extends EquipmentManager {
 
-    public static final TagKey<Item> CURIO_TAG = ItemTags.create(ResourceLocation.fromNamespaceAndPath("curios", "curio"));
-    public static final TagKey<Item> BODY_TAG = ItemTags.create(ResourceLocation.fromNamespaceAndPath("curios", "body"));
+    public static final TagKey<Item> CURIO_TAG = ItemTags.create(Identifier.fromNamespaceAndPath("curios", "curio"));
+    public static final TagKey<Item> BODY_TAG = ItemTags.create(Identifier.fromNamespaceAndPath("curios", "body"));
 
 //    public static void sendIMC(InterModEnqueueEvent event) {
 //        InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.CURIO.getMessageBuilder().size(2).build());
@@ -68,15 +68,15 @@ public class CuriosIntegration extends EquipmentManager {
     }
 
     @Override
-    public List<ResourceLocation> getSlotIcons(LivingEntity entity) {
+    public List<Identifier> getSlotIcons(LivingEntity entity) {
         Optional<ICuriosItemHandler> optional = CuriosApi.getCuriosInventory(entity);
         if (optional.isPresent()) {
             ICuriosItemHandler handler = optional.orElseThrow(WTFException::new);
-            List<ResourceLocation> icons = new ArrayList<>();
+            List<Identifier> icons = new ArrayList<>();
             handler.getCurios().forEach((s, h) -> {
                 for (int i = 0; i < h.getSlots(); i++) {
-                    ResourceLocation icon = CuriosApi.getSlotIcon(s); //Why couldnt this just be the full path?
-                    icons.add(ResourceLocation.fromNamespaceAndPath(icon.getNamespace(), "textures/" + icon.getPath() + ".png"));
+                    Identifier icon = CuriosApi.getSlotIcon(s); //Why couldnt this just be the full path?
+                    icons.add(Identifier.fromNamespaceAndPath(icon.getNamespace(), "textures/" + icon.getPath() + ".png"));
                 }
             });
             return icons;

@@ -4,7 +4,7 @@ import codechicken.lib.render.shader.CCUniform;
 import com.brandon3055.brandonscore.client.shader.BCShader;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Objects;
 
@@ -19,10 +19,10 @@ public final class ToolShader extends BCShader<ToolShader> {
     private CCUniform baseColorUniform;
 
     public ToolShader(String path, VertexFormat format) {
-        super(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, path), format);
+        super(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, path), format);
     }
 
-    public ToolShader(ResourceLocation location, VertexFormat format) {
+    public ToolShader(Identifier location, VertexFormat format) {
         super(location, format);
     }
 

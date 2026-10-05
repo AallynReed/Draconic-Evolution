@@ -22,7 +22,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -76,14 +76,14 @@ public class RenderModularStaff extends ToolRenderBase {
     public RenderModularStaff(TechLevel techLevel) {
         super(techLevel, "staff");
 
-        Map<String, CCModel> guiModel = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/item/equipment/staff_gui.obj")).ignoreMtl().parse();
+        Map<String, CCModel> guiModel = new OBJParser(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "models/item/equipment/staff_gui.obj")).ignoreMtl().parse();
         baseGuiPart = basePart(CCModel.combine(Arrays.asList(guiModel.get("handle"), guiModel.get("head_connection"))).backfacedCopy());
         materialGuiPart = materialPart(guiModel.get("head").backfacedCopy());
         traceGuiPart = tracePart(guiModel.get("trace"));
         bladeGuiPart = bladePart(guiModel.get("blade").backfacedCopy());
         gemGuiPart = gemPart(guiModel.get("focus_gem").backfacedCopy());
 
-        Map<String, CCModel> model = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/item/equipment/staff.obj")).ignoreMtl().parse();
+        Map<String, CCModel> model = new OBJParser(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "models/item/equipment/staff.obj")).ignoreMtl().parse();
         basePart = basePart(CCModel.combine(Arrays.asList(model.get("handle"), model.get("head_connection"), model.get("cage_connection"))).backfacedCopy());
         materialPart = materialPart(CCModel.combine(Arrays.asList(model.get("head"), model.get("crystal_cage"))).backfacedCopy());
         tracePart = tracePart(model.get("trace"));

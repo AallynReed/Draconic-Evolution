@@ -28,7 +28,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.AABB;
 
 import java.util.Map;
@@ -39,37 +39,37 @@ import java.util.Map;
 public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore> {
     public static final double[] SCALES = {1.1, 1.7, 2.3, 3.6, 5.5, 7.1, 8.6, 10.2};
 
-    private static final RenderType innerCoreType = RenderType.entitySolid(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/energy_core/energy_core_base.png"));
+    private static final RenderType innerCoreType = RenderType.entitySolid(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/energy_core/energy_core_base.png"));
 
     private static final RenderType outerCoreType = RenderType.create("outer_core", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-            .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/energy_core/energy_core_overlay.png"), false, false))
+            .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/energy_core/energy_core_overlay.png"), false, false))
             .setShaderState(new RenderStateShard.ShaderStateShard(() -> BCShaders.posColourTexAlpha0))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .createCompositeState(false)
     );
 
     private static final RenderType innerStabType = RenderType.create("inner_stab", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-            .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_sphere.png"), false, false))
+            .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_sphere.png"), false, false))
             .setShaderState(new RenderStateShard.ShaderStateShard(() -> BCShaders.posColourTexAlpha0))
             .setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
             .createCompositeState(false)
     );
     private static final RenderType outerStabType = RenderType.create("outer_stab", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-            .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_sphere.png"), false, false))
+            .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_sphere.png"), false, false))
             .setShaderState(new RenderStateShard.ShaderStateShard(() -> BCShaders.posColourTexAlpha0))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .createCompositeState(false)
     );
 
     private static final RenderType beamType = RenderType.create("inner_beam", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-            .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_beam.png"), false, false))
+            .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_beam.png"), false, false))
             .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getPositionTexShader))
             .setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
             .createCompositeState(false)
     );
 
     private static final RenderType outerBeamType = RenderType.create("outer_beam", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.TRIANGLE_STRIP, 256, false, false, RenderType.CompositeState.builder()
-            .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_beam.png"), false, false))
+            .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_beam.png"), false, false))
             .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getPositionTexColorShader))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .setWriteMaskState(RenderStateShard.COLOR_WRITE)
@@ -77,7 +77,7 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
     );
 
     private static RenderType coreShaderType = RenderType.create("test_shader", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-            .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/energy_core/energy_core_overlay.png"), false, false))
+            .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/energy_core/energy_core_overlay.png"), false, false))
             .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.energyCoreShader))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .setCullState(RenderStateShard.NO_CULL)
@@ -92,11 +92,11 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
 //    private final VBORenderType shieldType;
 
     public RenderTileEnergyCore(BlockEntityRendererProvider.Context context) {
-        Map<String, CCModel> map = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/energy_core/stabilizer_sphere.obj")).quads().ignoreMtl().parse();
+        Map<String, CCModel> map = new OBJParser(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/energy_core/stabilizer_sphere.obj")).quads().ignoreMtl().parse();
         modelStabilizerSphere = CCModel.combine(map.values());
         modelStabilizerSphere.computeNormals();
 
-        map = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/energy_core/energy_core_model.obj")).quads().ignoreMtl().parse();
+        map = new OBJParser(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/energy_core/energy_core_model.obj")).quads().ignoreMtl().parse();
         modelEnergyCore = CCModel.combine(map.values());
         modelEnergyCore.computeNormals();
 

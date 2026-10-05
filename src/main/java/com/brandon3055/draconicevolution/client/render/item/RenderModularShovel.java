@@ -7,7 +7,7 @@ import codechicken.lib.vec.Matrix4;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
@@ -26,7 +26,7 @@ public class RenderModularShovel extends ToolRenderBase {
 
     public RenderModularShovel(TechLevel techLevel) {
         super(techLevel, "shovel");
-        Map<String, CCModel> model = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/item/equipment/shovel.obj")).ignoreMtl().parse();
+        Map<String, CCModel> model = new OBJParser(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "models/item/equipment/shovel.obj")).ignoreMtl().parse();
 
         basePart = basePart(CCModel.combine(Arrays.asList(model.get("handle"), model.get("gem_holder"))).backfacedCopy());
         materialPart = materialPart(model.get("blade").twoFacedCopy());

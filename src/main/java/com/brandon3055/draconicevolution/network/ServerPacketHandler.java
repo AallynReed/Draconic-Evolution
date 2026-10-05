@@ -23,7 +23,7 @@ import com.brandon3055.draconicevolution.items.tools.Magnet;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
@@ -230,7 +230,7 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
     }
 
     private void jeiFusionTransfer(ServerPlayer sender, PacketCustom packet) {
-        ResourceLocation id = packet.readResourceLocation();
+        Identifier id = packet.readResourceLocation();
         boolean maxTransfer = packet.readBoolean();
         RecipeHolder<?> recipe = sender.level().getRecipeManager().byKey(id).orElse(null);
         if (recipe != null && recipe.value() instanceof IFusionRecipe fusionRecipe && sender.containerMenu instanceof FusionCraftingCoreMenu) {

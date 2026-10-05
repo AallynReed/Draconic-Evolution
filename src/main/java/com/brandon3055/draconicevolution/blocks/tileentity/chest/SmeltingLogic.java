@@ -10,7 +10,7 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedFloat;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -25,7 +25,7 @@ import java.util.Locale;
  * Created by brandon3055 on 19/04/2022
  */
 public class SmeltingLogic {
-    private final Object2IntOpenHashMap<ResourceLocation> recipesUsed = new Object2IntOpenHashMap<>();
+    private final Object2IntOpenHashMap<Identifier> recipesUsed = new Object2IntOpenHashMap<>();
     public final ManagedEnum<FeedMode> feedMode;
     public final ManagedFloat smeltProgress;
     /**
@@ -248,7 +248,7 @@ public class SmeltingLogic {
     public void loadAdditionalNBT(CompoundTag nbt) {
         CompoundTag compound = nbt.getCompound("recipes_used");
         for (String s : compound.getAllKeys()) {
-            this.recipesUsed.put(ResourceLocation.parse(s), compound.getInt(s));
+            this.recipesUsed.put(Identifier.parse(s), compound.getInt(s));
         }
     }
 

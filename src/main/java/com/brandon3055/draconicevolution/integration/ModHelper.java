@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.integration;
 import com.brandon3055.brandonscore.handlers.HandHelper;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -42,7 +42,7 @@ public class ModHelper {
             return false;
         }
         else if (cleaver == null) {
-            cleaver = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("tconstruct", "cleaver"));
+            cleaver = BuiltInRegistries.ITEM.get(Identifier.fromNamespaceAndPath("tconstruct", "cleaver"));
         }
         return cleaver != null && HandHelper.getItem(player, cleaver) != null;
     }
@@ -52,7 +52,7 @@ public class ModHelper {
             return false;
         }
         else if (avaritiaSword == null) {
-            avaritiaSword = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("avaritia", "infinity_sword"));
+            avaritiaSword = BuiltInRegistries.ITEM.get(Identifier.fromNamespaceAndPath("avaritia", "infinity_sword"));
         }
 
         return avaritiaSword != null && !player.getMainHandItem().isEmpty() && player.getMainHandItem().getItem().equals(avaritiaSword);
@@ -63,7 +63,7 @@ public class ModHelper {
             return false;
         }
         else if (bedrockSword == null) {
-            bedrockSword =  BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("rotarycraft", "rotarycraft_item_bedsword"));
+            bedrockSword =  BuiltInRegistries.ITEM.get(Identifier.fromNamespaceAndPath("rotarycraft", "rotarycraft_item_bedsword"));
         }
 
         return bedrockSword != null && !player.getMainHandItem().isEmpty() && player.getMainHandItem().getItem().equals(bedrockSword);
@@ -73,7 +73,7 @@ public class ModHelper {
         if (stack.isEmpty()) {
             return false;
         }
-        ResourceLocation registry = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        Identifier registry = BuiltInRegistries.ITEM.getKey(stack.getItem());
         if (registry == null || registry.getNamespace().equals("tconstruct")) {
             return false;
         }

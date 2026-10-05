@@ -17,7 +17,7 @@ import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
@@ -144,7 +144,7 @@ public class CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
     private static final ParticleRenderType HANDLER = new FXHandler();
 
     public static class FXHandler implements ParticleRenderType {
-        private static final ResourceLocation highlightTexture = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_highlight.png");
+        private static final Identifier highlightTexture = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_highlight.png");
 
         public FXHandler() {
         }

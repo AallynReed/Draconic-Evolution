@@ -6,7 +6,7 @@ import com.brandon3055.draconicevolution.api.modules.items.ModuleItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
@@ -32,11 +32,11 @@ public class DECreativeTabs {
             List<ItemStack> blocksIcons = new ArrayList<>();
             List<ItemStack> itemsIcons = new ArrayList<>();
             List<ItemStack> modulesIcons = new ArrayList<>();
-            helper.register(ResourceLocation.fromNamespaceAndPath(MODID, "blocks"), CreativeModeTab.builder().title(Component.translatable("itemGroup.draconicevolution.blocks"))
+            helper.register(Identifier.fromNamespaceAndPath(MODID, "blocks"), CreativeModeTab.builder().title(Component.translatable("itemGroup.draconicevolution.blocks"))
                             .displayItems((params, output) -> {
-                                List<ResourceLocation> sorted = new ArrayList<>(BuiltInRegistries.BLOCK.keySet());
-                                sorted.sort(ResourceLocation::compareNamespaced);
-                                for (ResourceLocation key : sorted) {
+                                List<Identifier> sorted = new ArrayList<>(BuiltInRegistries.BLOCK.keySet());
+                                sorted.sort(Identifier::compareNamespaced);
+                                for (Identifier key : sorted) {
                                     if (key.getNamespace().equals(MODID)) {
                                         Block block = BuiltInRegistries.BLOCK.get(key);
                                         if (block instanceof CustomTabHandling) continue;
@@ -49,11 +49,11 @@ public class DECreativeTabs {
                             .build()
             );
 
-            helper.register(ResourceLocation.fromNamespaceAndPath(MODID, "items"), CreativeModeTab.builder().title(Component.translatable("itemGroup.draconicevolution.items"))
+            helper.register(Identifier.fromNamespaceAndPath(MODID, "items"), CreativeModeTab.builder().title(Component.translatable("itemGroup.draconicevolution.items"))
                             .displayItems((params, output) -> {
-                                List<ResourceLocation> sorted = new ArrayList<>(BuiltInRegistries.ITEM.keySet());
-                                sorted.sort(ResourceLocation::compareNamespaced);
-                                for (ResourceLocation key : sorted) {
+                                List<Identifier> sorted = new ArrayList<>(BuiltInRegistries.ITEM.keySet());
+                                sorted.sort(Identifier::compareNamespaced);
+                                for (Identifier key : sorted) {
                                     if (key.getNamespace().equals(MODID)) {
                                         Item item = BuiltInRegistries.ITEM.get(key);
                                         if (item instanceof CustomTabHandling || item instanceof BlockItem || item instanceof ModuleItem) continue;
@@ -66,11 +66,11 @@ public class DECreativeTabs {
                             .build()
             );
 
-            helper.register(ResourceLocation.fromNamespaceAndPath(MODID, "modules"), CreativeModeTab.builder().title(Component.translatable("itemGroup.draconicevolution.modules"))
+            helper.register(Identifier.fromNamespaceAndPath(MODID, "modules"), CreativeModeTab.builder().title(Component.translatable("itemGroup.draconicevolution.modules"))
                     .displayItems((params, output) -> {
-                        List<ResourceLocation> sorted = new ArrayList<>(BuiltInRegistries.ITEM.keySet());
-                        sorted.sort(ResourceLocation::compareNamespaced);
-                        for (ResourceLocation key : sorted) {
+                        List<Identifier> sorted = new ArrayList<>(BuiltInRegistries.ITEM.keySet());
+                        sorted.sort(Identifier::compareNamespaced);
+                        for (Identifier key : sorted) {
                             if (key.getNamespace().equals(MODID)) {
                                 Item item = BuiltInRegistries.ITEM.get(key);
                                 if (!(item instanceof ModuleItem)) continue;

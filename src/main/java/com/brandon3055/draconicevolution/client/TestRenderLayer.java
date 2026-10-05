@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import org.lwjgl.opengl.GL11;
 
@@ -30,7 +30,7 @@ public class TestRenderLayer extends RenderLayer<LivingEntity, EntityModel<Livin
     ModelPart renderOn;
     ModelPart.Cube box;
 
-    private static RenderType modelType = RenderType.entitySolid(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/models/block/pylon_sphere_texture.png"));
+    private static RenderType modelType = RenderType.entitySolid(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/models/block/pylon_sphere_texture.png"));
     private CCModel trackerModel;
 
     public TestRenderLayer(RenderLayerParent<LivingEntity, EntityModel<LivingEntity>> entityRenderer) {
@@ -56,7 +56,7 @@ public class TestRenderLayer extends RenderLayer<LivingEntity, EntityModel<Livin
         }
 
         //I just needed something to render
-        Map<String, CCModel> map = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/pylon_sphere.obj")).quads().ignoreMtl().parse();
+        Map<String, CCModel> map = new OBJParser(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "models/pylon_sphere.obj")).quads().ignoreMtl().parse();
         trackerModel = CCModel.combine(map.values()).backfacedCopy();
 //        trackerModel.apply(new Scale(-0.35, -0.35, -0.35));
         trackerModel.computeNormals();

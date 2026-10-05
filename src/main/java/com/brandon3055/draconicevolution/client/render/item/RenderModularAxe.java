@@ -7,7 +7,7 @@ import codechicken.lib.vec.Matrix4;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
@@ -26,7 +26,7 @@ public class RenderModularAxe extends ToolRenderBase {
 
     public RenderModularAxe(TechLevel techLevel) {
         super(techLevel, "axe");
-        Map<String, CCModel> model = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/item/equipment/axe.obj")).ignoreMtl().parse();
+        Map<String, CCModel> model = new OBJParser(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "models/item/equipment/axe.obj")).ignoreMtl().parse();
         basePart = basePart(model.get("handle").backfacedCopy());
         materialPart = materialPart(model.get("head").backfacedCopy());
         gemPart = gemPart(model.get("gem").backfacedCopy());

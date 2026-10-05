@@ -6,7 +6,7 @@ import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.lib.BaseModule;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.nio.file.Paths;
 import java.util.Collections;
@@ -239,7 +239,7 @@ public class ModuleCfg {
         moduleStats.save();
     }
 
-    public static ConfigCategory getModuleTag(ResourceLocation moduleName) {
+    public static ConfigCategory getModuleTag(Identifier moduleName) {
         ConfigCategory tag = moduleStats.getCategory(moduleName.toString());
         return tag;
     }

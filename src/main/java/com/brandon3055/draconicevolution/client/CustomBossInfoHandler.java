@@ -26,7 +26,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
@@ -42,10 +42,10 @@ import java.util.UUID;
  */
 public class CustomBossInfoHandler {
     //TODO Update this to sprites.
-    private static final ResourceLocation GUI_BARS_LOCATION = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/gui/bars.png");
+    private static final Identifier GUI_BARS_LOCATION = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/gui/bars.png");
     private static final Map<UUID, BossShieldInfo> events = Maps.newLinkedHashMap();
 
-    private static final ResourceLocation ENDER_CRYSTAL_TEXTURES = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/entity/guardian_crystal.png");
+    private static final Identifier ENDER_CRYSTAL_TEXTURES = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/entity/guardian_crystal.png");
     private static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(ENDER_CRYSTAL_TEXTURES);
     private static final float SIN_45 = (float) Math.sin((Math.PI / 4D));
 

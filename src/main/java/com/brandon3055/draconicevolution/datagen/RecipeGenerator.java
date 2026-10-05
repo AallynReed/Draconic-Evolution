@@ -11,7 +11,7 @@ import com.brandon3055.draconicevolution.init.DETags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -1748,7 +1748,7 @@ public class RecipeGenerator extends RecipeProvider {
         deCompress(output, 9, from);
     }
 
-    protected FusionRecipeBuilder fusionRecipe(Supplier<? extends ItemLike> result, ResourceLocation id) {
+    protected FusionRecipeBuilder fusionRecipe(Supplier<? extends ItemLike> result, Identifier id) {
         return builder(FusionRecipeBuilder.builder(result.get(), 1, id));
     }
 
@@ -1765,18 +1765,18 @@ public class RecipeGenerator extends RecipeProvider {
     }
 
     protected FusionRecipeBuilder fusionRecipe(Supplier<? extends ItemLike> result, String folder) {
-        ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
-        return builder(FusionRecipeBuilder.builder(result.get(), 1, ResourceLocation.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
+        Identifier id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
+        return builder(FusionRecipeBuilder.builder(result.get(), 1, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
     protected FusionRecipeBuilder fusionRecipe(Supplier<? extends ItemLike> result, String folder, Function<String, String> customPath) {
-        ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
-        return builder(FusionRecipeBuilder.builder(result.get(), 1, ResourceLocation.fromNamespaceAndPath(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
+        Identifier id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
+        return builder(FusionRecipeBuilder.builder(result.get(), 1, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
     }
 
     protected FusionRecipeBuilder fusionRecipe(Supplier<? extends ItemLike> result, int count, String folder) {
-        ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
-        return builder(FusionRecipeBuilder.builder(result.get(), count, ResourceLocation.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
+        Identifier id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
+        return builder(FusionRecipeBuilder.builder(result.get(), count, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
     protected FusionRecipeBuilder fusionRecipe(Supplier<? extends ItemLike> result, int count) {
@@ -1787,61 +1787,61 @@ public class RecipeGenerator extends RecipeProvider {
         return builder(FusionRecipeBuilder.builder(result, BuiltInRegistries.ITEM.getKey(result.getItem())));
     }
 
-    protected FusionRecipeBuilder fusionRecipe(ItemStack result, ResourceLocation id) {
+    protected FusionRecipeBuilder fusionRecipe(ItemStack result, Identifier id) {
         return builder(FusionRecipeBuilder.builder(result, id));
     }
 
     protected FurnaceRecipeBuilder smelting(Supplier<? extends ItemLike> result, String folder) {
-        ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
-        return builder(FurnaceRecipeBuilder.smelting(result.get(), 1, ResourceLocation.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
+        Identifier id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
+        return builder(FurnaceRecipeBuilder.smelting(result.get(), 1, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
     protected FurnaceRecipeBuilder smelting(Supplier<? extends ItemLike> result, String folder, Function<String, String> customPath) {
-        ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
-        return builder(FurnaceRecipeBuilder.smelting(result.get(), 1, ResourceLocation.fromNamespaceAndPath(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
+        Identifier id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
+        return builder(FurnaceRecipeBuilder.smelting(result.get(), 1, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
     }
 
     protected ShapedRecipeBuilder shapedRecipe(Supplier<? extends ItemLike> result, String folder) {
-        ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
-        return builder(ShapedRecipeBuilder.builder(result.get(), 1, ResourceLocation.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
+        Identifier id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
+        return builder(ShapedRecipeBuilder.builder(result.get(), 1, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
     protected ShapedRecipeBuilder shapedRecipe(ItemLike result, String folder) {
-        ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.asItem());
-        return builder(ShapedRecipeBuilder.builder(result, 1, ResourceLocation.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
+        Identifier id = BuiltInRegistries.ITEM.getKey(result.asItem());
+        return builder(ShapedRecipeBuilder.builder(result, 1, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
     protected ShapedRecipeBuilder shapedRecipe(Supplier<? extends ItemLike> result, int count, String folder) {
-        ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
-        return builder(ShapedRecipeBuilder.builder(result.get(), count, ResourceLocation.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
+        Identifier id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
+        return builder(ShapedRecipeBuilder.builder(result.get(), count, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
     protected ShapedRecipeBuilder shapedRecipe(Supplier<? extends ItemLike> result, int count, String folder, Function<String, String> customPath) {
-        ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
-        return builder(ShapedRecipeBuilder.builder(result.get(), count, ResourceLocation.fromNamespaceAndPath(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
+        Identifier id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
+        return builder(ShapedRecipeBuilder.builder(result.get(), count, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
     }
 
     protected ShapelessRecipeBuilder shapelessRecipe(Supplier<? extends ItemLike> result, String folder) {
-        ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
-        return builder(ShapelessRecipeBuilder.builder(new ItemStack(result.get(), 1), ResourceLocation.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
+        Identifier id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
+        return builder(ShapelessRecipeBuilder.builder(new ItemStack(result.get(), 1), Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
     protected ShapelessRecipeBuilder shapelessRecipe(Supplier<? extends ItemLike> result, String folder, Function<String, String> customPath) {
-        ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
-        return builder(ShapelessRecipeBuilder.builder(new ItemStack(result.get(), 1), ResourceLocation.fromNamespaceAndPath(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
+        Identifier id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
+        return builder(ShapelessRecipeBuilder.builder(new ItemStack(result.get(), 1), Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
     }
 
     protected ShapelessRecipeBuilder shapelessRecipe(Supplier<? extends ItemLike> result, int count, String folder) {
-        ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
-        return builder(ShapelessRecipeBuilder.builder(new ItemStack(result.get(), count), ResourceLocation.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
+        Identifier id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
+        return builder(ShapelessRecipeBuilder.builder(new ItemStack(result.get(), count), Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
-    protected ShapelessRecipeBuilder shapelessRecipe(ItemLike result, int count, ResourceLocation id) {
+    protected ShapelessRecipeBuilder shapelessRecipe(ItemLike result, int count, Identifier id) {
         return builder(ShapelessRecipeBuilder.builder(new ItemStack(result, count), id));
     }
 
     protected ShapelessRecipeBuilder shapelessRecipe(ItemLike result, int count, String folder, Function<String, String> customPath) {
-        ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.asItem());
-        return builder(ShapelessRecipeBuilder.builder(new ItemStack(result, count), ResourceLocation.fromNamespaceAndPath(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
+        Identifier id = BuiltInRegistries.ITEM.getKey(result.asItem());
+        return builder(ShapelessRecipeBuilder.builder(new ItemStack(result, count), Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
     }
 }

@@ -28,7 +28,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.AABB;
 
 import java.util.Map;
@@ -63,7 +63,7 @@ public class RenderTileReactorCore implements BlockEntityRendererTransparent<Til
 
     public RenderTileReactorCore(BlockEntityRendererProvider.Context context) {
         if (model == null) {
-            Map<String, CCModel> map = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/reactor/reactor_core.obj")).quads().ignoreMtl().parse();
+            Map<String, CCModel> map = new OBJParser(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/reactor/reactor_core.obj")).quads().ignoreMtl().parse();
             model = CCModel.combine(map.values());
         }
     }
@@ -122,7 +122,7 @@ public class RenderTileReactorCore implements BlockEntityRendererTransparent<Til
     public static void renderCore(Matrix4 mat, CCRenderState ccrs, float animation, double animState, float intensity, float shieldPower, float partialTicks, MultiBufferSource getter) {
         //The model should be generated during startup, unless Embeddium is installed... STOP BREAKING MY SHIT!!!!
         if (model == null) {
-            Map<String, CCModel> map = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/reactor/reactor_core.obj")).quads().ignoreMtl().parse();
+            Map<String, CCModel> map = new OBJParser(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/reactor/reactor_core.obj")).quads().ignoreMtl().parse();
             model = CCModel.combine(map.values());
         }
         DEShaders.reactorTime.glUniform1f(animation);

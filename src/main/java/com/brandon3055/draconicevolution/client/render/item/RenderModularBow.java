@@ -30,7 +30,7 @@ import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.entity.TippableArrowRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -52,7 +52,7 @@ public class RenderModularBow extends ToolRenderBase {
     };
     private static final RenderType bowStringType = RenderType.create("shaderStringType", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
             .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.BOW_STRING_SHADER::getShaderInstance))
-            .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/item/equipment/bow_string.png"), true, false))
+            .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/item/equipment/bow_string.png"), true, false))
             .setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)
             .setCullState(RenderStateShard.NO_CULL)
             .setWriteMaskState(RenderStateShard.WriteMaskStateShard.COLOR_WRITE)
@@ -70,7 +70,7 @@ public class RenderModularBow extends ToolRenderBase {
 
     public RenderModularBow(TechLevel techLevel) {
         super(techLevel, "bow");
-        Map<String, CCModel> model = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/item/equipment/bow.obj")).ignoreMtl().parse();
+        Map<String, CCModel> model = new OBJParser(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "models/item/equipment/bow.obj")).ignoreMtl().parse();
         basePart = basePart(model.get("bow_handle").backfacedCopy());
         materialPart = materialPart(model.get("bow_arm").backfacedCopy());
         gemPart = gemPart(model.get("bow_gem").backfacedCopy());

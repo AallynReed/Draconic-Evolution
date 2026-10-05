@@ -12,7 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -38,8 +38,8 @@ import java.util.*;
  */
 public class MobSoul extends Item {
 
-    private static final Map<ResourceLocation, Entity> renderEntityMap = new HashMap<>();
-    public static List<ResourceLocation> randomDisplayList = null;
+    private static final Map<Identifier, Entity> renderEntityMap = new HashMap<>();
+    public static List<Identifier> randomDisplayList = null;
 
     public MobSoul(Properties properties) {
         super(properties);
@@ -84,11 +84,11 @@ public class MobSoul extends Item {
         return Component.translatable(type.getDescriptionId()).append(" ").append(super.getName(stack));
     }
 
-    public ResourceLocation getEntity(ItemStack stack) {
-        return stack.getOrDefault(ItemData.SOUL_ID, ResourceLocation.withDefaultNamespace("pig"));
+    public Identifier getEntity(ItemStack stack) {
+        return stack.getOrDefault(ItemData.SOUL_ID, Identifier.withDefaultNamespace("pig"));
     }
 
-    public void setEntity(ResourceLocation entityName, ItemStack stack) {
+    public void setEntity(Identifier entityName, ItemStack stack) {
         stack.set(ItemData.SOUL_ID, entityName);
     }
 
@@ -149,8 +149,8 @@ public class MobSoul extends Item {
     }
 
     @OnlyIn (Dist.CLIENT)
-    public Entity getRenderEntity(ResourceLocation name) {
-        if (name == null || name.equals(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "random_display_entity"))) {
+    public Entity getRenderEntity(Identifier name) {
+        if (name == null || name.equals(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "random_display_entity"))) {
             if (randomDisplayList == null) {
                 randomDisplayList = new ArrayList<>();
                 SpawnEggItem.BY_ID.keySet().forEach(type -> randomDisplayList.add(BuiltInRegistries.ENTITY_TYPE.getKey(type)));

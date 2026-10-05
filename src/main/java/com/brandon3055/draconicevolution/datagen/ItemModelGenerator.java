@@ -9,7 +9,7 @@ import com.brandon3055.draconicevolution.init.DEModules;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
@@ -147,8 +147,8 @@ public class ItemModelGenerator extends ItemModelProvider {
 
         DEModules.MODULES.getEntries().stream().filter(e -> e.getId().getNamespace().equals(MODID)).forEach((module) -> {
             String name = Objects.requireNonNull(module.getId()).getPath();
-            ResourceLocation baseTexture = ResourceLocation.fromNamespaceAndPath(MODID, "item/module/" + module.get().getModuleTechLevel().name().toLowerCase(Locale.ENGLISH));
-            ResourceLocation overlay = ResourceLocation.fromNamespaceAndPath(MODID, "module/" + name);
+            Identifier baseTexture = Identifier.fromNamespaceAndPath(MODID, "item/module/" + module.get().getModuleTechLevel().name().toLowerCase(Locale.ENGLISH));
+            Identifier overlay = Identifier.fromNamespaceAndPath(MODID, "module/" + name);
             multiLayerItem(module.get().getItem(), baseTexture, overlay);
         });
 
@@ -226,29 +226,29 @@ public class ItemModelGenerator extends ItemModelProvider {
 
     @SuppressWarnings ("ConstantConditions")
     protected void simpleItem(DeferredHolder<? extends Item, ? extends Item> item, String textureFolder) {
-        ResourceLocation reg = item.getId();
-        simpleItem(item, ResourceLocation.fromNamespaceAndPath(reg.getNamespace(), textureFolder + "/" + reg.getPath()));
+        Identifier reg = item.getId();
+        simpleItem(item, Identifier.fromNamespaceAndPath(reg.getNamespace(), textureFolder + "/" + reg.getPath()));
     }
 
     @SuppressWarnings ("ConstantConditions")
-    protected void simpleItem(DeferredHolder<? extends Item, ? extends Item> item, ResourceLocation texture) {
-        ResourceLocation reg = item.getId();
+    protected void simpleItem(DeferredHolder<? extends Item, ? extends Item> item, Identifier texture) {
+        Identifier reg = item.getId();
         getBuilder(reg.getPath())
                 .parent(new ModelFile.UncheckedModelFile("item/generated"))
                 .texture("layer0", texture);
     }
 
     @SuppressWarnings ("ConstantConditions")
-    protected void multiLayerItem(DeferredHolder<? extends Item, ? extends Item> item, ResourceLocation texture, ResourceLocation overlay) {
-        ResourceLocation reg = item.getId();
+    protected void multiLayerItem(DeferredHolder<? extends Item, ? extends Item> item, Identifier texture, Identifier overlay) {
+        Identifier reg = item.getId();
         getBuilder(reg.getPath())
                 .parent(new ModelFile.UncheckedModelFile("item/generated"))
                 .texture("layer0", texture)
                 .texture("layer1", overlay);
     }
 
-    protected void multiLayerItem(Item item, ResourceLocation texture, ResourceLocation overlay) {
-        ResourceLocation reg = BuiltInRegistries.ITEM.getKey(item);
+    protected void multiLayerItem(Item item, Identifier texture, Identifier overlay) {
+        Identifier reg = BuiltInRegistries.ITEM.getKey(item);
         getBuilder(reg.getPath())
                 .parent(new ModelFile.UncheckedModelFile("item/generated"))
                 .texture("layer0", texture)
@@ -257,13 +257,13 @@ public class ItemModelGenerator extends ItemModelProvider {
 
     protected void blockItem(DeferredHolder<? extends Block, ? extends Block> block) {
         if (block == null) return;
-        ResourceLocation reg = block.getId();
-        blockItem(block, ResourceLocation.fromNamespaceAndPath(reg.getNamespace(), "block/" + reg.getPath()));
+        Identifier reg = block.getId();
+        blockItem(block, Identifier.fromNamespaceAndPath(reg.getNamespace(), "block/" + reg.getPath()));
     }
 
-    protected void blockItem(DeferredHolder<? extends Block, ? extends Block> block, ResourceLocation blockModel) {
+    protected void blockItem(DeferredHolder<? extends Block, ? extends Block> block, Identifier blockModel) {
         if (block == null) return;
-        ResourceLocation reg = block.getId();
+        Identifier reg = block.getId();
         getBuilder(reg.getPath()).parent(new ModelFile.UncheckedModelFile(blockModel));
     }
 

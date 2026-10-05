@@ -17,8 +17,8 @@ import net.covers1624.quack.util.CrashLock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -38,7 +38,7 @@ import java.util.function.Consumer;
 public class DraconicNetwork {
     private static final CrashLock LOCK = new CrashLock("Already Initialized.");
 
-    public static final ResourceLocation CHANNEL_NAME = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "network");
+    public static final Identifier CHANNEL_NAME = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "network");
     public static final PacketCustomChannel CHANNEL = new PacketCustomChannel(CHANNEL_NAME)
             .optional()
             .versioned(BrandonsCore.container().getModInfo().getVersion().toString())

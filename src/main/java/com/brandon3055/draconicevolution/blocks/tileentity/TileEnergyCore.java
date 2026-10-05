@@ -21,7 +21,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -406,7 +406,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     public MultiBlockDefinition getMultiBlockDef() {
         if (definitionCache == null || defCacheLastTier != tier.get()) {
             defCacheLastTier = tier.get();
-            definitionCache = MultiBlockManager.getDefinition(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "energy_core_" + tier.get()));
+            definitionCache = MultiBlockManager.getDefinition(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "energy_core_" + tier.get()));
         }
         return definitionCache;
     }
