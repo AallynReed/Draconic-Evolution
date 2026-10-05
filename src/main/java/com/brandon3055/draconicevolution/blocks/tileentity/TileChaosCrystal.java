@@ -81,7 +81,6 @@ public class TileChaosCrystal extends TileBCore {
             int z = 5 - level.getRandom().nextInt(11);
             LightningBolt bolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
             bolt.setPos(worldPosition.getX() + x, level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE, worldPosition).getY(), worldPosition.getZ() + z);
-            bolt.noCulling = true;
             level.addFreshEntity(bolt);
         }
     }
