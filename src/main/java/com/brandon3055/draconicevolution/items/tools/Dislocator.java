@@ -79,7 +79,7 @@ public class Dislocator extends Item implements IHudItem {
             return true;
         }
 
-        if (!(player.level() instanceof ServerLevel serverLevel) || !(entity instanceof LivingEntity) || player.getCooldowns().getCooldownPercent(this, 0) > 0) {
+        if (!(player.level() instanceof ServerLevel serverLevel) || !(entity instanceof LivingEntity) || player.getCooldowns().getCooldownPercent(stack, 0) > 0) {
             return true;
         }
         TargetPos location = getTargetPos(stack, player.level());
@@ -88,7 +88,7 @@ public class Dislocator extends Item implements IHudItem {
             return true;
         }
 
-        player.getCooldowns().addCooldown(this, 20);
+        player.getCooldowns().addCooldown(stack, 20);
         dislocateEntity(stack, player, entity, location);
         stack.hurtAndBreak(1, serverLevel, player, e -> {});
         if (location != null) {
@@ -122,7 +122,7 @@ public class Dislocator extends Item implements IHudItem {
                 return InteractionResult.PASS;
             }
             if (player.getHealth() > 2 || player.getAbilities().instabuild) {
-                player.getCooldowns().addCooldown(this, 20);
+                player.getCooldowns().addCooldown(stack, 20);
                 dislocateEntity(stack, player, player, targetPos);
                 stack.hurtAndBreak(1, serverLevel, player, e -> {});
 

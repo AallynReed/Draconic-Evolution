@@ -156,7 +156,7 @@ public class DislocatorAdvanced extends Dislocator {
 
     private void handleBlink(ServerPlayer player, ItemStack stack, boolean showFuel) {
         if (!player.getAbilities().instabuild) {
-            if (player.getCooldowns().isOnCooldown(stack.getItem())) {
+            if (player.getCooldowns().isOnCooldown(stack)) {
                 return;
             }
             int blinkFuel = getFuel(stack);
@@ -174,7 +174,7 @@ public class DislocatorAdvanced extends Dislocator {
             if (showFuel) {
                 player.displayClientMessage(Component.translatable("dislocate.draconicevolution.teleport_fuel").append(" " + getFuel(stack)).withStyle(ChatFormatting.WHITE), true);
             }
-            player.getCooldowns().addCooldown(stack.getItem(), 5);
+            player.getCooldowns().addCooldown(stack, 5);
         }
 
         Vec3 playerVec = player.getEyePosition(1);
