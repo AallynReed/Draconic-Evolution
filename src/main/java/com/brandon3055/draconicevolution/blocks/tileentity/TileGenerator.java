@@ -83,7 +83,7 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
 
         //Inventory Cap
         capManager.setInternalManaged("inventory", Capabilities.Item.BLOCK, itemHandler).saveBoth();
-        itemHandler.setStackValidator((slot, stack) -> slot > 2 || stack.getBurnTime(null) > 0);
+        itemHandler.setStackValidator((slot, stack) -> slot > 2 || stack.getBurnTime(null, level.fuelValues()) > 0);
         setupPowerSlot(itemHandler, 3, opStorage, true);
         capManager.set(Capabilities.Item.BLOCK, new ItemHandlerIOControl(itemHandler).setExtractCheck(this::canExtractItem));
         installIOTracker(opStorage);
@@ -153,7 +153,7 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
         for (int i = 0; i < 3; i++) {
             ItemStack stack = itemHandler.getStackInSlot(i);
             if (!stack.isEmpty()) {
-                int itemBurnTime = stack.getBurnTime(null);
+                int itemBurnTime = stack.getBurnTime(null, level.fuelValues());
 
                 if (itemBurnTime > 0) {
                     if (stack.getCount() == 1) {
@@ -171,7 +171,7 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
     }
 
     private boolean canExtractItem(int slot, ItemStack stack) {
-        return (slot == 3 && EnergyUtils.isFullyOrInvalid(stack)) || (slot != 3 && stack.getBurnTime(null) <= 0);
+        return (slot == 3 && EnergyUtils.isFullyOrInvalid(stack)) || (slot != 3 && stack.getBurnTime(null, level.fuelValues()) <= 0);
     }
 
     //Render Stuff
