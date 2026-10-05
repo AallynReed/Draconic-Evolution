@@ -25,7 +25,7 @@ import net.minecraft.world.level.block.state.BlockState;
  * Created by brandon3055 on 4/06/2017.
  */
 public class DraconiumChestTileRenderer implements DETileRenderer<TileDraconiumChest> {
-    private static final RenderType renderType = RenderTypes.entityCutout(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/draconium_chest.png"));
+    private static final RenderType renderType = RenderTypes.entityCutoutCull(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/draconium_chest.png"));
     private final ModelPart lid;
     private final ModelPart bottom;
     private final ModelPart lock;

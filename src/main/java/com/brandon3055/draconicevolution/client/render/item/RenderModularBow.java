@@ -182,7 +182,7 @@ public class RenderModularBow extends ToolRenderBase {
 
     private void renderArrow(Matrix4 arrowMat, SubmitNodeCollector collector, int packedLight) {
         arrowMat.scale(0.05625F, 0.05625F, 0.05625F);
-        nextOrder(collector).cc$submitCustomGeometry(arrowMat, RenderTypes.entityCutout(TippableArrowRenderer.NORMAL_ARROW_LOCATION), (mat, type, buffer) -> {
+        nextOrder(collector).cc$submitCustomGeometry(arrowMat, RenderTypes.entityCutoutCull(TippableArrowRenderer.NORMAL_ARROW_LOCATION), (mat, type, buffer) -> {
             VertexConsumer builder = new TransformingVertexConsumer(buffer, mat);
             bufferVertex(builder, -7, -2, -2, 0.0F, 0.15625F, -1, 0, 0, packedLight);
             bufferVertex(builder, -7, -2, 2, 0.15625F, 0.15625F, -1, 0, 0, packedLight);
