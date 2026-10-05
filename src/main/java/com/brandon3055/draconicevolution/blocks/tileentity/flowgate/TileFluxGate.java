@@ -44,12 +44,12 @@ public class TileFluxGate extends TileFlowGate {
             return tile.getCapManager().getCapability(CapabilityOP.BLOCK, side);
         });
 
-        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, DEContent.TILE_FLUX_GATE.get(), (tile, side) -> {
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, DEContent.TILE_FLUX_GATE.get(), (tile, side) -> {
             if (!tile.capsLoaded) {
                 tile.updateCapabilities();
                 tile.capsLoaded = true;
             }
-            return tile.getCapManager().getCapability(CapabilityOP.BLOCK, side);
+            return tile.getCapManager().getCapability(Capabilities.Energy.BLOCK, side);
         });
     }
 
