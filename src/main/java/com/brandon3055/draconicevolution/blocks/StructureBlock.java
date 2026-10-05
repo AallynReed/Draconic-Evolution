@@ -176,7 +176,7 @@ public class StructureBlock extends EntityBlockBCore implements StructurePart, C
             return 0.0F;
         } else {
             int i = IModularItem.isCorrectToolForDrops(player.getMainHandItem(), state) ? 30 : 100;
-            return player.getDigSpeed(state, pos) / f / (float)i;
+            return player.getDestroySpeed(state, pos) / f / (float)i;
         }
     }
 
