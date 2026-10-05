@@ -39,7 +39,7 @@ public class ShieldHudElement extends AbstractHudElement {
     private static int TOTEM_EFFECT_TIME = 32;
 
     private static Random rand = new Random();
-    private Minecraft mc = Minecraft.getInstance();
+    private Minecraft mc;
     private double shieldCharge = 0;
     private Component shieldText = Component.empty();
     private double coolDown = 0;
@@ -106,6 +106,7 @@ public class ShieldHudElement extends AbstractHudElement {
 
     @Override
     public void tick(boolean configuring) {
+        if (mc == null) mc = Minecraft.getInstance();
         if (mc.player == null || !enabled) {
             renderHud = false;
             if (configuring) setupExample();
