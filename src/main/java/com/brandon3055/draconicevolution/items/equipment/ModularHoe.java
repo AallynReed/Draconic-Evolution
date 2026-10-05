@@ -162,11 +162,6 @@ public class ModularHoe extends HoeItem implements IModularTieredItem, IDraconic
     }
 
     @Override
-    public boolean isEnchantable(ItemStack p_41456_) {
-        return true;
-    }
-
-    @Override
     public InteractionResult useOn(UseOnContext context) {
         ItemStack stack = context.getItemInHand();
 

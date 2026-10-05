@@ -130,8 +130,4 @@ public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTo
         return super.onEntityItemUpdate(stack, entity);
     }
 
-    @Override
-    public boolean isEnchantable(ItemStack p_41456_) {
-        return true;
-    }
 }

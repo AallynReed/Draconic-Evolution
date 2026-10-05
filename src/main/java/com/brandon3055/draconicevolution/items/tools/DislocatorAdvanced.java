@@ -247,11 +247,6 @@ public class DislocatorAdvanced extends Dislocator {
         displayList.add(Component.translatable("dislocate.draconicevolution.fuel").append(" " + getFuel(stack)));
     }
 
-    @Override
-    public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
-        return false;
-    }
-
     public int getFuel(ItemStack stack) {
         return stack.getOrDefault(ItemData.DISLOCATOR_FUEL, 0);
     }

@@ -18,11 +18,6 @@ public class CrystalBinder extends Item implements ICrystalBinder {
         super(properties);
     }
 
-    @Override
-    public boolean isEnchantable(ItemStack stack) {
-        return true;
-    }
-
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {

@@ -167,11 +167,6 @@ public class ModularChestpiece extends Item implements IModularArmor, IDEEquipme
     }
 
     @Override
-    public boolean isEnchantable(ItemStack p_41456_) {
-        return true;
-    }
-
-    @Override
     public boolean isBarVisible(ItemStack stack) {
         return damageBarVisible(stack);
     }

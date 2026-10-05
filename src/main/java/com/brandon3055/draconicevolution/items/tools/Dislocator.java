@@ -43,11 +43,6 @@ public class Dislocator extends Item implements IHudItem {
         super(properties.fireResistant());
     }
 
-    @Override
-    public boolean isEnchantable(ItemStack stack) {
-        return false;
-    }
-
     /**
      * @param stack  The dislocator item, stack
      * @param user   The entity using the dislocator / portal.
@@ -177,11 +172,6 @@ public class Dislocator extends Item implements IHudItem {
     @Override
     public boolean hasCustomEntity(ItemStack stack) {
         return true;
-    }
-
-    @Override
-    public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
-        return repair.getItem() == DEContent.INGOT_DRACONIUM.get();
     }
 
     @Override

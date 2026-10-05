@@ -64,7 +64,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
     private final TechLevel techLevel;
 
     public ModularBow(TechProperties props) {
-        super(props);
+        super(props.enchantable(1));
         this.techLevel = props.getTechLevel();
     }
 
@@ -318,8 +318,4 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
         return super.onEntityItemUpdate(stack, entity);
     }
 
-    @Override
-    public boolean isEnchantable(ItemStack p_41456_) {
-        return true;
-    }
 }

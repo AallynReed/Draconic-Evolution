@@ -47,7 +47,7 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularEner
     private TechLevel techLevel;
 
     public DraconiumCapacitor(TechProperties properties) {
-        super(properties);
+        super(properties.enchantable(DETier.getEnchantability(properties.getTechLevel())));
         techLevel = properties.getTechLevel();
     }
 
@@ -188,16 +188,6 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularEner
         List<Component> tooltip = new ArrayList<>();
         addModularItemInformation(stack, context, tooltip, flagIn);
         tooltip.forEach(builder);
-    }
-
-    @Override
-    public int getEnchantmentValue() {
-        return DETier.getEnchantability(techLevel);
-    }
-
-    @Override
-    public boolean isEnchantable(ItemStack stack) {
-        return true;
     }
 
     @Override

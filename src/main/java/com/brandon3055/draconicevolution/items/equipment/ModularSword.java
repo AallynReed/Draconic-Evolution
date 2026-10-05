@@ -112,8 +112,4 @@ public class ModularSword extends Item implements IReaperItem, IModularMelee, IM
         return super.onEntityItemUpdate(stack, entity);
     }
 
-    @Override
-    public boolean isEnchantable(ItemStack p_41456_) {
-        return true;
-    }
 }

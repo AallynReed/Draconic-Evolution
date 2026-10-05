@@ -152,11 +152,6 @@ public class ModularStaff extends Item implements IReaperItem, IModularMiningToo
         return super.onEntityItemUpdate(stack, entity);
     }
 
-    @Override
-    public boolean isEnchantable(ItemStack p_41456_) {
-        return true;
-    }
-
     //Projectile Attack Handling
 
     //    Ok so here is the plan:

@@ -117,8 +117,4 @@ public class ModularPickaxe extends Item implements IModularMiningTool, IDraconi
         return super.onEntityItemUpdate(stack, entity);
     }
 
-    @Override
-    public boolean isEnchantable(ItemStack p_41456_) {
-        return true;
-    }
 }

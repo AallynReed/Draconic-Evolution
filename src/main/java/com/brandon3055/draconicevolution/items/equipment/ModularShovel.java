@@ -120,8 +120,4 @@ public class ModularShovel extends ShovelItem implements IModularMiningTool, IDr
         return super.onEntityItemUpdate(stack, entity);
     }
 
-    @Override
-    public boolean isEnchantable(ItemStack p_41456_) {
-        return true;
-    }
 }
