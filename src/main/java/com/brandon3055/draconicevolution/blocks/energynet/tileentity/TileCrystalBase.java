@@ -479,7 +479,7 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
         fxHandler.readFromNBT(compound);
 
         if (compound.contains("flow_rates")) {
-            byte[] array = compound.getByteArray("flow_rates");
+            byte[] array = compound.getByteArray("flow_rates").orElse(new byte[0]);
             flowRates.clear();
             for (byte b : array) {
                 flowRates.add(b);

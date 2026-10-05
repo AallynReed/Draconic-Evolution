@@ -397,7 +397,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         receiverSideMap.clear();
         for (int i = 0; i < list.size(); i++) {
             CompoundTag receiver = list.getCompoundOrEmpty(i);
-            byte[] offset = receiver.getByteArray("offset");
+            byte[] offset = receiver.getByteArray("offset").orElse(new byte[0]);
             Vec3B vec = new Vec3B(offset[0], offset[1], offset[2]);
             linkedReceivers.add(vec);
             receiverSideMap.put(vec, Direction.from3DDataValue(receiver.getByteOr("side", (byte) 0)));

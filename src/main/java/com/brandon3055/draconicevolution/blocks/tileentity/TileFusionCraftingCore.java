@@ -421,7 +421,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
     @Override
     public void readExtraNBT(HolderLookup.Provider provider, CompoundTag compound) {
         super.readExtraNBT(provider, compound);
-        injectorPositions = Arrays.stream(compound.getLongArray("injector_positions")).mapToObj(BlockPos::of).collect(Collectors.toList());
+        injectorPositions = Arrays.stream(compound.getLongArray("injector_positions").orElse(new long[0])).mapToObj(BlockPos::of).collect(Collectors.toList());
         injectorCache = null;
     }
 }
