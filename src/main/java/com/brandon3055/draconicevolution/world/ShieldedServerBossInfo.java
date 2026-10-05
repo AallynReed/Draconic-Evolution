@@ -6,6 +6,8 @@ import net.minecraft.network.protocol.game.ClientboundBossEventPacket;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.util.UUID;
+
 /**
  * Created by brandon3055 on 24/7/21
  */
@@ -16,7 +18,7 @@ public class ShieldedServerBossInfo extends ServerBossEvent {
     private boolean immune = false;
 
     public ShieldedServerBossInfo(Component name, BossBarColor color, BossBarOverlay overlay) {
-        super(name, color, overlay);
+        super(UUID.randomUUID(), name, color, overlay);
     }
 
     public void setShieldPower(float shieldPower) {
