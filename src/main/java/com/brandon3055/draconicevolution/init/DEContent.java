@@ -162,7 +162,7 @@ public class DEContent {
     public static final DeferredHolder<Block, DraconiumBlock> DRACONIUM_BLOCK                  = BLOCKS.register("draconium_block",                    () -> (DraconiumBlock) new DraconiumBlock(STORAGE_BLOCK).setMobResistant().setExplosionResistant());
     public static final DeferredHolder<Block, DraconiumBlock> AWAKENED_DRACONIUM_BLOCK         = BLOCKS.register("awakened_draconium_block",           () -> (DraconiumBlock) new DraconiumBlock(STORAGE_BLOCK).setMobResistant().setExplosionResistant());
     //Special
-    public static final DeferredHolder<Block, Portal> PORTAL                                   = BLOCKS.register("portal",                             () -> new Portal(Properties.of().noOcclusion().noCollission().strength(-1F)));
+    public static final DeferredHolder<Block, Portal> PORTAL                                   = BLOCKS.register("portal",                             () -> new Portal(Properties.of().noOcclusion().noCollision().strength(-1F)));
     public static final DeferredHolder<Block, ChaosCrystal> CHAOS_CRYSTAL                      = BLOCKS.register("chaos_crystal",                      () -> new ChaosCrystal(Properties.of().strength(100, 4000).noOcclusion()));
     public static final DeferredHolder<Block, ChaosCrystal> CHAOS_CRYSTAL_PART                 = BLOCKS.register("chaos_crystal_part",                 () -> new ChaosCrystal(Properties.of().strength(100, 4000).noOcclusion()));
     public static final DeferredHolder<Block, BlockBCore> INFUSED_OBSIDIAN                     = BLOCKS.register("infused_obsidian",                   () -> new BlockBCore(Properties.of().mapColor(MapColor.COLOR_BLACK).strength(100.0F, 2400.0F)).setMobResistant().setExplosionResistant());
