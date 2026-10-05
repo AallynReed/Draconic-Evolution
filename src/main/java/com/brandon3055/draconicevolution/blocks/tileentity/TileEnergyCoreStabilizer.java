@@ -61,7 +61,7 @@ public class TileEnergyCoreStabilizer extends TileBCore implements IInteractTile
 
     @Override
     public InteractionResult handleRemoteClick(Player player, BlockHitResult hit) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
 
@@ -86,7 +86,7 @@ public class TileEnergyCoreStabilizer extends TileBCore implements IInteractTile
     // ### Form Multi-block
 
     public void onPlaced() {
-        if (level.isClientSide || checkAndFormMultiBlock()) {
+        if (level.isClientSide() || checkAndFormMultiBlock()) {
             return;
         }
 
@@ -283,7 +283,7 @@ public class TileEnergyCoreStabilizer extends TileBCore implements IInteractTile
         @Override
     public void tick() {
         super.tick();
-        if (level.isClientSide && coreOffset.get() != null && isCoreActive.get()) {
+        if (level.isClientSide() && coreOffset.get() != null && isCoreActive.get()) {
             rotation = TimeKeeper.getClientTick();
             updateVisual();
             if (isValidMultiBlock.get()) {

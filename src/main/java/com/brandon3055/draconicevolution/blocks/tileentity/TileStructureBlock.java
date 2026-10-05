@@ -81,7 +81,7 @@ public class TileStructureBlock extends TileBCore implements IInteractTile {
     }
 
     public void revert() {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
 

@@ -74,7 +74,7 @@ public class TileStabilizedSpawner extends TileBCore implements IInteractTile, I
     @Override
     public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
         if (stack.is(DEContent.MOB_SOUL.get())) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 (mobSoul.set(stack.copy())).setCount(1);
                 if (!player.isCreative()) {
                     InventoryUtils.consumeHeldItem(player, stack, hand);
@@ -114,7 +114,7 @@ public class TileStabilizedSpawner extends TileBCore implements IInteractTile, I
                 case DRACONIC -> new ItemStack(DEContent.CORE_AWAKENED.get());
                 case CHAOTIC -> new ItemStack(DEContent.CORE_CHAOTIC.get());
             };
-            if (!level.isClientSide && !player.getAbilities().instabuild) {
+            if (!level.isClientSide() && !player.getAbilities().instabuild) {
                 ItemEntity entityItem = new ItemEntity(level, worldPosition.getX() + 0.5, worldPosition.getY() + 1, worldPosition.getZ() + 0.5, dropStack);
                 entityItem.setDeltaMovement(entityItem.getDeltaMovement().x, 0.2, entityItem.getDeltaMovement().z);
                 level.addFreshEntity(entityItem);

@@ -28,7 +28,7 @@ public class InfoTablet extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand hand) {
-        if (worldIn.isClientSide) {
+        if (worldIn.isClientSide()) {
             openPIGui();
         }
         return super.use(worldIn, playerIn, hand);

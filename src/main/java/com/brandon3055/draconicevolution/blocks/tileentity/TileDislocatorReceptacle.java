@@ -115,7 +115,7 @@ public class TileDislocatorReceptacle extends TileBCore implements IInteractTile
             return ItemInteractionResult.SUCCESS;
         }
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             ItemStack previousInstalled = itemHandler.getStackInSlot(0);
             InventoryUtils.handleHeldStackTransfer(0, itemHandler, player);
             //Transfer the dislocator that was in the pedestal to the players inventory
@@ -130,7 +130,7 @@ public class TileDislocatorReceptacle extends TileBCore implements IInteractTile
     }
 
     private void onInventoryChange() {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         if (portalHelper.isRunning()) {
             portalHelper.abort();
@@ -145,7 +145,7 @@ public class TileDislocatorReceptacle extends TileBCore implements IInteractTile
     }
 
     public void attemptActivation() {
-        if (level.isClientSide || isActive() || portalHelper.isRunning()) return;
+        if (level.isClientSide() || isActive() || portalHelper.isRunning()) return;
         TargetPos target = getTargetPos();
         if (target != null) {
             portalHelper.startScan();
@@ -164,7 +164,7 @@ public class TileDislocatorReceptacle extends TileBCore implements IInteractTile
     }
 
     public void handleEntityTeleport(Entity entity) {
-        if (level.isClientSide || teleportQ.contains(entity)) {
+        if (level.isClientSide() || teleportQ.contains(entity)) {
             return;
         }
 
@@ -180,7 +180,7 @@ public class TileDislocatorReceptacle extends TileBCore implements IInteractTile
     public void tick() {
         updateCrystalLogic();
         super.tick();
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         if (portalHelper.isRunning()) {
             int maxSpeed = portalHelper.isBuilding() ? 125 : 384; //ignitionStage.get() == 1 ? 128 : 256;
@@ -381,11 +381,11 @@ public class TileDislocatorReceptacle extends TileBCore implements IInteractTile
         fxHandler.update();
 
         boolean boundCrystals = isActive() && isBound() && linkedCrystal.get() != null;
-        if (level.isClientSide && boundCrystals && remoteCrystalTier.isDirty(false)) {
+        if (level.isClientSide() && boundCrystals && remoteCrystalTier.isDirty(false)) {
             fxHandler.reloadConnections();
         }
 
-        if (!level.isClientSide && boundCrystals) {
+        if (!level.isClientSide() && boundCrystals) {
             if (DEEventHandler.serverTicks % 10 == 0) {
                 BlockEntity remoteTile = getRemoteReceptacle();
                 ICrystalLink remote = getRemoteCrystal();
@@ -404,7 +404,7 @@ public class TileDislocatorReceptacle extends TileBCore implements IInteractTile
             if (linkedFlowRate.get() != 0 && DEEventHandler.serverTicks % 100 == 0) {
                 dataManager.forceSync(linkedFlowRate);
             }
-        } else if (!level.isClientSide) {
+        } else if (!level.isClientSide()) {
             linkedFlowRate.set(0);
         }
     }

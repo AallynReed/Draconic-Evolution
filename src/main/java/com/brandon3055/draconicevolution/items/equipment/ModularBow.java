@@ -175,7 +175,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
 
             infiniteAmmo = infinity || player.getAbilities().instabuild || (ammoStack.getItem() instanceof ArrowItem && ((ArrowItem) ammoStack.getItem()).isInfinite(ammoStack, stack, player));
 
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 ArrowItem arrowitem = (ArrowItem) (ammoStack.getItem() instanceof ArrowItem ? ammoStack.getItem() : Items.ARROW);
                 AbstractArrow arrowEntity = customArrow(arrowitem.createArrow(level, ammoStack, player, stack), ammoStack, stack);
                 arrowEntity.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, powerForTime * 3.0F, 1 - projData.accuracy());

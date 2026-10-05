@@ -69,7 +69,7 @@ public class DraconiumChestMenu extends DETileMenu<TileDraconiumChest> {
 
 
     protected void slotChangedCraftingGrid(int containerID, Level level, Player player, CraftingContainer craftingInventory, ResultContainerWrapper resultInventory) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             ServerPlayer serverplayerentity = (ServerPlayer) player;
             ItemStack itemstack = ItemStack.EMPTY;
             Optional<RecipeHolder<CraftingRecipe>> optional = level.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingInventory.asCraftInput(), level);

@@ -66,7 +66,7 @@ public class BoundDislocator extends Dislocator {
 
     @Override
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
-        if (player.level().isClientSide) {
+        if (player.level().isClientSide()) {
             return true;
         }
         TargetPos location = getTargetPos(stack, player.level());
@@ -97,7 +97,7 @@ public class BoundDislocator extends Dislocator {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (player.level().isClientSide) {
+        if (player.level().isClientSide()) {
             return new InteractionResultHolder<>(InteractionResult.PASS, stack);
         }
 

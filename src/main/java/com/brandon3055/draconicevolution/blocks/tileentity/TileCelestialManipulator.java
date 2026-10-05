@@ -85,7 +85,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
 
         if (weatherToggleRunning.get()) {
             timer++;
-            if (level.isClientSide) {
+            if (level.isClientSide()) {
                 updateWeatherEffects();
             } else {
                 if (timer >= 230) {
@@ -100,14 +100,14 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
             }
         } else if (timeWarpRunning.get()) {
             timer++;
-            if (level.isClientSide) {
+            if (level.isClientSide()) {
                 updateSunEffect();
             }
             if (timer > 100) {
                 if (opStorage.getEnergyStored() > 320) {
                     int extracted = opStorage.extractEnergy(16000, true);
                     int ticks = extracted / 320;
-                    if (level.isClientSide) {
+                    if (level.isClientSide()) {
                         ClientLevel cLevel = (ClientLevel) level;
                         cLevel.setDayTime(cLevel.getDayTime() + ticks);
                     } else {
@@ -118,7 +118,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
                 } else {
                     stopTimeWarp();
                 }
-                if (!level.isClientSide && level.getDayTime() >= targetTime) {
+                if (!level.isClientSide() && level.getDayTime() >= targetTime) {
                     stopTimeWarp();
                 }
             }
@@ -128,13 +128,13 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
             }
 
             timer--;
-            if (timer <= 0 && !level.isClientSide) {
+            if (timer <= 0 && !level.isClientSide()) {
                 timeWarpStopping.set(false);
             }
 
-            if (level.isClientSide && timer >= 0) {
+            if (level.isClientSide() && timer >= 0) {
                 updateSunEffect();
-            } else if (level.isClientSide) {
+            } else if (level.isClientSide()) {
                 if (effects != null) {
                     effects.clear();
                 }
@@ -145,13 +145,13 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
             }
         } else if (active.get()) {
             active.set(false);
-        } else if (level.isClientSide) {
+        } else if (level.isClientSide()) {
             standbyParticleEffect();
         }
     }
 
     public void toggleWeather(boolean rain, boolean storm) {
-        if (level.isClientSide || active.get()) {
+        if (level.isClientSide() || active.get()) {
             return;
         }
 

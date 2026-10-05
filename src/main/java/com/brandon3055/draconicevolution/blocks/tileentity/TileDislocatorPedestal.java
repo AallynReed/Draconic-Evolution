@@ -58,7 +58,7 @@ public class TileDislocatorPedestal extends TileBCore implements DislocatorEndPo
 
     @Override
     public InteractionResult useWithoutItem(BlockState state, Player player, BlockHitResult hit) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
         ItemStack stack = itemHandler.getStackInSlot(0);

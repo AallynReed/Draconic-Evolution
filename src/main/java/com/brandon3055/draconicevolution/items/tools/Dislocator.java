@@ -52,7 +52,7 @@ public class Dislocator extends Item implements IHudItem {
      * @param target The entity being teleported if not the user.
      */
     public Entity dislocateEntity(ItemStack stack, @Nonnull Entity user, @Nonnull Entity target, TargetPos targetPos) {
-        if (target.level().isClientSide) {
+        if (target.level().isClientSide()) {
             return target;
         }
 

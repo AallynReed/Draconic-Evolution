@@ -50,7 +50,7 @@ public abstract class TileReactorComponent extends TileBCore {
         super.tick();
         moveCheckComplete = false;
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             TileReactorCore core = tryGetCore();
             if (core != null) {
                 animRotationSpeed = core.shieldAnimationState * 15F;
@@ -139,14 +139,14 @@ public abstract class TileReactorComponent extends TileBCore {
     //region Player Interaction
 
     public void onPlaced() {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
         pokeCore();
     }
 
     public void onBroken() {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
 
@@ -157,7 +157,7 @@ public abstract class TileReactorComponent extends TileBCore {
     }
 
     public void onActivated(Player player) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
 
@@ -169,7 +169,7 @@ public abstract class TileReactorComponent extends TileBCore {
     }
 
     public void setRSMode(Player player, RSMode rsMode) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             TileReactorCore core = tryGetCore();
             if (core != null) {
                 core.sendPacketToServer(output -> output.writeString(rsMode.name()).writePos(getBlockPos()), 99);

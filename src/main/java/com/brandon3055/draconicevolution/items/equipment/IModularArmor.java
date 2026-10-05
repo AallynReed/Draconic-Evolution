@@ -90,7 +90,7 @@ public interface IModularArmor extends IModularItem, ElytraEnabledItem {
                     }
                 }
 
-                if (!entity.level().isClientSide && !creative) {
+                if (!entity.level().isClientSide() && !creative) {
                     storage.modifyEnergyStored(-energy);
                 }
             }

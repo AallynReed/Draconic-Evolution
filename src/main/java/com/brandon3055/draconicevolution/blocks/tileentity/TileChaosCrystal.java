@@ -66,17 +66,17 @@ public class TileChaosCrystal extends TileBCore {
         if (!getBlockState().is(DEContent.CHAOS_CRYSTAL.get())) return;
         tick++;
 
-        if (tick > 1 && !level.isClientSide && hasBeenMoved()) {
+        if (tick > 1 && !level.isClientSide() && hasBeenMoved()) {
             level.removeBlock(worldPosition, false);
         }
 
-        if (!level.isClientSide && soundTimer-- <= 0) {
+        if (!level.isClientSide() && soundTimer-- <= 0) {
             soundTimer = 3600 + level.getRandom().nextInt(1200);
 //            world.playSound(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, DESounds.chaosChamberAmbient, SoundCategory.AMBIENT, 1F, world.rand.nextFloat() * 0.4F + 0.8F, false);
             BCoreNetwork.sendSound(level, worldPosition, DESounds.CHAOS_CHAMBER_AMBIENT.get(), SoundSource.AMBIENT, 1.5F, level.getRandom().nextFloat() * 0.4F + 0.8F, false);
         }
 
-        if (!level.isClientSide && level instanceof ServerLevel && guardianDefeated.get() && level.getRandom().nextInt(50) == 0) {
+        if (!level.isClientSide() && level instanceof ServerLevel && guardianDefeated.get() && level.getRandom().nextInt(50) == 0) {
             int x = 5 - level.getRandom().nextInt(11);
             int z = 5 - level.getRandom().nextInt(11);
             LightningBolt bolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
@@ -89,7 +89,7 @@ public class TileChaosCrystal extends TileBCore {
     private boolean removing = false;
 
     public void detonate(Entity entity) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
 

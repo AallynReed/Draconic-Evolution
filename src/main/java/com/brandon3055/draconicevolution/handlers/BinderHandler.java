@@ -58,7 +58,7 @@ public class BinderHandler {
         //If the tile is linkable and the player is sneaking bind the tile to the tool.
         if (tile instanceof ICrystalLink && player.isShiftKeyDown()) {
             bind(binder, blockClicked, level);
-            if (level.isClientSide) {
+            if (level.isClientSide()) {
                 ChatHelper.sendIndexed(player, Component.translatable("gui.draconicevolution.energy_net.pos_saved_to_tool").withStyle(ChatFormatting.GREEN), TileCrystalBase.MSG_ID);
                 player.swing(hand);
             }

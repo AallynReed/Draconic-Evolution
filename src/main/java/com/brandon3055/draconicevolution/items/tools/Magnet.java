@@ -100,7 +100,7 @@ public class Magnet extends Item /*implements IBauble*/ {
                     flag = true;
                 }
 
-                if (!world.isClientSide) {
+                if (!world.isClientSide()) {
                     if (itemEntity.pickupDelay > 0) {
                         itemEntity.pickupDelay = 0;
                     }
@@ -132,7 +132,7 @@ public class Magnet extends Item /*implements IBauble*/ {
             List<ExperienceOrb> xp = world.getEntitiesOfClass(ExperienceOrb.class, new AABB(entity.getX(), entity.getY(), entity.getZ(), entity.getX(), entity.getY(), entity.getZ()).inflate(4, 4, 4));
 
             for (ExperienceOrb orb : xp) {
-                if (!world.isClientSide && orb.isAlive()) {
+                if (!world.isClientSide() && orb.isAlive()) {
                     PlayerXpEvent.PickupXp event = NeoForge.EVENT_BUS.post(new PlayerXpEvent.PickupXp(player, orb));
                     if (event.isCanceled()) {
                         continue;

@@ -38,7 +38,7 @@ public class ItemCore extends Item {
         BlockEntity tile = world.getBlockEntity(pos);
 
         if (tile instanceof SpawnerBlockEntity) {
-            if (!world.isClientSide) {
+            if (!world.isClientSide()) {
                 SpawnData data = ((SpawnerBlockEntity) tile).getSpawner().nextSpawnData;
                 if (data == null) {
                     return InteractionResult.FAIL;

@@ -29,7 +29,7 @@ public class TileReactorStabilizer extends TileReactorComponent {
     public void tick() {
         super.tick();
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
 

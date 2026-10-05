@@ -73,7 +73,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
 
     @Override
     public void tick() {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             updateEnergyFlow();
         }
 
@@ -123,7 +123,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
             fastList.removeAll(moveToSlow);
         }
 
-        if (!level.isClientSide && DEEventHandler.serverTicks % 10 == 0) {
+        if (!level.isClientSide() && DEEventHandler.serverTicks % 10 == 0) {
             receiverFlowRates.clear();
             for (int i = 0; i < linkedReceivers.size(); i++) {
                 receiverFlowRates.add(flowConversion(receiverTransfer(i)));
@@ -219,7 +219,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
             return super.binderUsed(player, linkTarget, sideClicked);
         }
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return true;
         }
 
@@ -416,7 +416,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     @Override
     public void detectAndSendContainerChanges(List<ContainerListener> listeners) {
         super.detectAndSendContainerChanges(listeners);
-        if (linkedReceivers.size() != receiverTransferRates.size() && !level.isClientSide) {
+        if (linkedReceivers.size() != receiverTransferRates.size() && !level.isClientSide()) {
             rebuildReceiverTransferList();
         }
 

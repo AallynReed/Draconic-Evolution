@@ -142,11 +142,11 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
     @Override
     public void tick() {
         super.tick();
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             fxHandler.tick();
         }
 
-        if (crafting.get() && !level.isClientSide) {
+        if (crafting.get() && !level.isClientSide()) {
             RecipeHolder<IFusionRecipe> recipe = getActiveRecipe();
             if (recipe != null) {
                 recipe.value().tickFusionState(this, this, level);
@@ -158,7 +158,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
 
     public boolean updateInjectors() {
         minTierCache = null;
-        if (isCrafting() || level.isClientSide) {
+        if (isCrafting() || level.isClientSide()) {
             return true;
         }
 
@@ -228,7 +228,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
             if (recipe == null || !recipe.value().matches(this, level)) {
                 cancelCraft();
             }
-        } else if (!level.isClientSide) {
+        } else if (!level.isClientSide()) {
             RecipeHolder<IFusionRecipe> recipe = level.getRecipeManager().getRecipeFor(DraconicAPI.FUSION_RECIPE_TYPE.get(), this, level).orElse(null);
             if (recipe != null) {
                 recipe.value().canStartCraft(this, level, e -> setFusionStatus(-1, e));

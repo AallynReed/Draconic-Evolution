@@ -85,7 +85,7 @@ public interface IModularMiningTool extends IModularTieredItem {
         if (aoeSafe) {
             for (BlockPos block : aoeBlocks) {
                 if (!player.level().isEmptyBlock(block) && player.level().getBlockEntity(block) != null) {
-                    if (player.level().isClientSide) player.sendSystemMessage(Component.translatable("item_prop.draconicevolution.aoe_safe.blocked"));
+                    if (player.level().isClientSide()) player.sendSystemMessage(Component.translatable("item_prop.draconicevolution.aoe_safe.blocked"));
                     else ((ServerPlayer) player).connection.send(new ClientboundBlockUpdatePacket(player.level(), block));
                     return true;
                 }
@@ -95,7 +95,7 @@ public interface IModularMiningTool extends IModularTieredItem {
         aoeBlocks.forEach(block -> breakAOEBlock(stack, player.level(), block, player, refStrength, inventoryDynamic, rand.nextInt(Math.max(5, (breakRadius * breakDepth) / 5)) == 0));
         List<ItemEntity> items = player.level().getEntitiesOfClass(ItemEntity.class, new AABB(aoe.key()));
         for (ItemEntity item : items) {
-            if (!player.level().isClientSide && item.isAlive()) {
+            if (!player.level().isClientSide() && item.isAlive()) {
                 InventoryUtils.insertItem(inventoryDynamic, item.getItem(), false);
                 item.discard();
             }

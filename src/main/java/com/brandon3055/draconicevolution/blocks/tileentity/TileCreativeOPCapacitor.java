@@ -99,7 +99,7 @@ public class TileCreativeOPCapacitor extends TileBCore implements IInteractTile 
     @Override
     public void tick() {
         super.tick();
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             for (Direction direction : Direction.values()) {
                 sendEnergyTo(level, worldPosition, powerRate.get(), direction);
             }
@@ -108,7 +108,7 @@ public class TileCreativeOPCapacitor extends TileBCore implements IInteractTile 
 
     @Override
     public InteractionResult useWithoutItem(BlockState state, Player player, BlockHitResult hit) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             if (player.isShiftKeyDown()) {
                 powerRate.divide(10);
             } else {

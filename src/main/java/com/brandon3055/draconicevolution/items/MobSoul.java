@@ -65,7 +65,7 @@ public class MobSoul extends Item {
             }
             entity.moveTo(sX, sY, sZ, player.getYRot(), 0F);
 
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 if (!stack.has(ItemData.SOUL_DATA) && entity instanceof Mob mob && level instanceof ServerLevel serverLevel) {
                     EventHooks.finalizeMobSpawn(mob, serverLevel, serverLevel.getCurrentDifficultyAt(new BlockPos(0, 0, 0)), MobSpawnType.SPAWN_EGG, null);
                 }

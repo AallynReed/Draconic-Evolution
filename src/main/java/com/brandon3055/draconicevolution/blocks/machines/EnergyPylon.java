@@ -47,7 +47,7 @@ public class EnergyPylon extends EntityBlockBCore {
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (level.getBlockEntity(pos) instanceof TileEnergyPylon tile) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 if (player.isShiftKeyDown()) {
                     tile.selectNextCore();
                 } else {

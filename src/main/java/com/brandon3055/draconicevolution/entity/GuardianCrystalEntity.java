@@ -173,7 +173,7 @@ public class GuardianCrystalEntity extends Entity {
         if (isInvulnerableTo(source)) {
             return false;
         } else {
-            if (!isRemoved() && !level().isClientSide) {
+            if (!isRemoved() && !level().isClientSide()) {
                 GuardianFightManager manager = getManager();
                 float shield = getShieldPower() / (float) DEConfig.guardianCrystalShield;
                 if (shield > 0) {

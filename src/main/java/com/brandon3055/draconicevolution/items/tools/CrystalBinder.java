@@ -33,7 +33,7 @@ public class CrystalBinder extends Item implements ICrystalBinder {
         BlockState rotated = state.rotate(world, pos, Rotation.CLOCKWISE_90);
         if (!rotated.equals(state)) {
             world.setBlockAndUpdate(pos, rotated);
-            return world.isClientSide ? InteractionResult.PASS : InteractionResult.SUCCESS;
+            return world.isClientSide() ? InteractionResult.PASS : InteractionResult.SUCCESS;
         }
 
         return InteractionResult.PASS;

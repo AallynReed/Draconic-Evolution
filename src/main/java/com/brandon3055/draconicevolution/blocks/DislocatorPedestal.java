@@ -33,7 +33,7 @@ public class DislocatorPedestal extends EntityBlockBCore {
         if (tile instanceof TileDislocatorPedestal) {
             float f = (float) Mth.floor((Mth.wrapDegrees(placer.getYRot() - 180.0F) + 11.25F) / 22.5F);
             ((TileDislocatorPedestal) tile).rotation.set((int) f);
-            if (!world.isClientSide) {
+            if (!world.isClientSide()) {
                 ((TileDislocatorPedestal) tile).getDataManager().forceSync();
             }
         }

@@ -79,7 +79,7 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
     @Override
     public void tick() {
         super.tick();
-        if (level.isClientSide || !isTileEnabled()) {
+        if (level.isClientSide() || !isTileEnabled()) {
             return;
         }
 
@@ -135,7 +135,7 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
 
     @Override
     public ItemInteractionResult useItemOn(ItemStack heldStack, BlockState state, Player player, InteractionHand hand, BlockHitResult hitIn) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return ItemInteractionResult.SUCCESS;
         }
 

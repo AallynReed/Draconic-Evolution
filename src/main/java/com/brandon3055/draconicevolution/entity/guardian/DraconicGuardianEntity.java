@@ -176,7 +176,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
     @Override
     public void tick() {
         super.tick();
-        if (!level().isClientSide && getShieldPower() < DEConfig.guardianShield) {
+        if (!level().isClientSide() && getShieldPower() < DEConfig.guardianShield) {
             GuardianFightManager manager = getFightManager();
             if (manager != null && manager.getNumAliveCrystals() > 0) {
                 setShieldPower(Math.min(DEConfig.guardianShield, getShieldPower() + (DEConfig.guardianShield / (20F * 10F))));
@@ -209,7 +209,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
     @Override
     public void aiStep() {
         speedMult = codechicken.lib.math.MathHelper.approachLinear(speedMult, phaseManager.getCurrentPhase().getGuardianSpeed(), 0.1);
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             this.setHealth(this.getHealth());
             if (!this.isSilent()) {
                 float f = Mth.cos(this.flapTime * ((float) Math.PI * 2F));
@@ -261,7 +261,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
 
                 this.ringBuffer[this.ringBufferIndex][0] = this.getYRot();
                 this.ringBuffer[this.ringBufferIndex][1] = this.getY();
-                if (this.level().isClientSide) {
+                if (this.level().isClientSide()) {
                     if (this.lerpSteps > 0) {
                         double d7 = this.getX() + (this.lerpX - this.getX()) / (double) this.lerpSteps;
                         double d0 = this.getY() + (this.lerpY - this.getY()) / (double) this.lerpSteps;
@@ -387,7 +387,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
                     this.setPartPosition(enderdragonpartentity, -(f3 * 1.5F + f20 * f23) * f16, adouble1[1] - adouble[1] - (double) ((f23 + 1.5F) * f2) + 1.5D, (f18 * 1.5F + f21 * f23) * f16);
                 }
 
-                if (!this.level().isClientSide) {
+                if (!this.level().isClientSide()) {
                     this.slowed = this.destroyBlocksInAABB(this.dragonPartHead.getBoundingBox()) | this.destroyBlocksInAABB(this.dragonPartNeck.getBoundingBox()) | this.destroyBlocksInAABB(this.dragonPartBody.getBoundingBox());
                     if (this.fightManager != null) {
                         this.fightManager.guardianUpdate(this);
@@ -430,7 +430,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
             }
         }
 
-        if (this.random.nextInt(10) == 0 && !level().isClientSide) {
+        if (this.random.nextInt(10) == 0 && !level().isClientSide()) {
             if (fightManager != null) {
                 closestGuardianCrystal = fightManager.getCrystals().stream().min(Comparator.comparingDouble(this::distanceToSqr)).orElse(null);
             } else {
@@ -576,7 +576,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        return level().isClientSide ? false : this.attackEntityPartFrom(this.dragonPartBody, source, amount);
+        return level().isClientSide() ? false : this.attackEntityPartFrom(this.dragonPartBody, source, amount);
     }
 
     protected boolean attackDragonFrom(DamageSource source, float amount) {
@@ -609,7 +609,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
         boolean flag = this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT);
         int xpAmount = 24000;
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (this.deathTicks > 150 && this.deathTicks % 5 == 0 && flag) {
                 this.dropExperience(Mth.floor((float) xpAmount * 0.08F));
             }
@@ -622,7 +622,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
         this.move(MoverType.SELF, new Vec3(0.0D, 0.1F, 0.0D));
         this.setYRot(this.getYRot() + 20.0F);
         this.yBodyRot = this.getYRot();
-        if (this.deathTicks == 200 && !this.level().isClientSide) {
+        if (this.deathTicks == 200 && !this.level().isClientSide()) {
             if (flag) {
                 this.dropExperience(Mth.floor((float) xpAmount * 0.2F));
             }
@@ -882,9 +882,9 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
 
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
-        if (PHASE.equals(key) && this.level().isClientSide) {
+        if (PHASE.equals(key) && this.level().isClientSide()) {
             this.phaseManager.setPhase(PhaseType.getById(getEntityData().get(PHASE)));
-        } else if (CRYSTAL_ID.equals(key) && level().isClientSide) {
+        } else if (CRYSTAL_ID.equals(key) && level().isClientSide()) {
             int id = getEntityData().get(CRYSTAL_ID);
             if (id == -1) {
                 closestGuardianCrystal = null;

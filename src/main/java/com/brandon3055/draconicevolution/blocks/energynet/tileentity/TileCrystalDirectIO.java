@@ -59,7 +59,7 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
     public void tick() {
         super.tick();
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
 

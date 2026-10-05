@@ -99,7 +99,7 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
     @Override
     public void tick() {
         super.tick();
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             rotationSpeed = (active.get() ? mode.get().animFanSpeed : 0F);
             rotation += rotationSpeed;
             updateSoundAndFX();

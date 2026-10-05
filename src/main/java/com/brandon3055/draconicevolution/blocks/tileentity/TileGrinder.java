@@ -134,7 +134,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
     public void tick() {
         super.tick();
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             if (animA < 1) animA += getAnimSpeed();
             else targetA = null;
             if (animB < 1) animB += getAnimSpeed();

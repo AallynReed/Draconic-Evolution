@@ -78,7 +78,7 @@ public class EnergyLinkModuleItem extends ModuleItem<EnergyLinkData> {
     public InteractionResult useOn(UseOnContext context) {
         Level level = context.getLevel();
         Player player = context.getPlayer();
-        if (level.isClientSide || player == null || !player.isShiftKeyDown()) return InteractionResult.SUCCESS;
+        if (level.isClientSide() || player == null || !player.isShiftKeyDown()) return InteractionResult.SUCCESS;
 
         BlockEntity blockEntity = level.getBlockEntity(context.getClickedPos());
         if (blockEntity instanceof TileStructureBlock structureBlock) blockEntity = (BlockEntity) structureBlock.getController();

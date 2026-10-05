@@ -32,7 +32,7 @@ public class ProcessChaosImplosion implements IProcess {
         this.yCoord = y;
         this.zCoord = z;
         this.power = 30F;
-        isDead = world.isClientSide;
+        isDead = world.isClientSide();
     }
 
     @Override

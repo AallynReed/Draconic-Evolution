@@ -30,7 +30,7 @@ public class ModuleHelper {
      * Handles the process of giving the supplied item stacks to the player accounting for junk filters and ender collection.
      */
     public static void handleItemCollection(Player player, ModuleHost host, IOPStorage storage, InventoryDynamic inventory) {
-        if (player.level().isClientSide) return;
+        if (player.level().isClientSide()) return;
 
         Predicate<ItemStack> junkTest = null;
         for (ModuleEntity<?> entity : host.getEntitiesByType(ModuleTypes.JUNK_FILTER).toList()) {

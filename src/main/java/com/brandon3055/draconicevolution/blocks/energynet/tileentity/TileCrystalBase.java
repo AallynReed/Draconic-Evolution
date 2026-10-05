@@ -94,14 +94,14 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
     @Override
     public void tick() {
         super.tick();
-        if (linkedCrystals.size() != transferRatesArrays.size() && !level.isClientSide) {
+        if (linkedCrystals.size() != transferRatesArrays.size() && !level.isClientSide()) {
             rebuildTransferList();
         }
 
         balanceLinkedDevices();
         fxHandler.update();
 
-        if (!level.isClientSide && DEEventHandler.serverTicks % 10 == 0) {
+        if (!level.isClientSide() && DEEventHandler.serverTicks % 10 == 0) {
             flowRates.clear();
             for (int i = 0; i < linkedCrystals.size(); i++) {
                 flowRates.add(calculateFlow(i));
@@ -113,7 +113,7 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
     }
 
     public void balanceLinkedDevices() {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
         for (BlockPos linkedPos : getLinks()) {
@@ -536,7 +536,7 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
 //    public Map<Integer, String> tileNamesMap = new HashMap<>();
 
     public void detectAndSendContainerChanges(List<ContainerListener> listeners) {
-        if (linkedCrystals.size() != transferRatesArrays.size() && !level.isClientSide) {
+        if (linkedCrystals.size() != transferRatesArrays.size() && !level.isClientSide()) {
             rebuildTransferList();
         }
 

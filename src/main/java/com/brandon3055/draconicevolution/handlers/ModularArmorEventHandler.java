@@ -183,7 +183,7 @@ public class ModularArmorEventHandler {
 
     private static void onEntityAttacked(LivingIncomingDamageEvent event) {
         LivingEntity entity = event.getEntity();
-        if (event.isCanceled() || event.getAmount() <= 0 || entity.level().isClientSide || event.getSource().is(DEDamage.KILL)) {
+        if (event.isCanceled() || event.getAmount() <= 0 || entity.level().isClientSide() || event.getSource().is(DEDamage.KILL)) {
             return;
         }
 
@@ -215,7 +215,7 @@ public class ModularArmorEventHandler {
 
     private static void onEntityDamaged(LivingDamageEvent.Pre event) {
         LivingEntity entity = event.getEntity();
-        if (event.getNewDamage() <= 0 || entity.level().isClientSide || event.getSource().is(DEDamage.KILL)) {
+        if (event.getNewDamage() <= 0 || entity.level().isClientSide() || event.getSource().is(DEDamage.KILL)) {
             return;
         }
 
@@ -250,7 +250,7 @@ public class ModularArmorEventHandler {
 
     private static void onEntityDeath(LivingDeathEvent event) {
         LivingEntity entity = event.getEntity();
-        if (event.isCanceled() || entity.level().isClientSide) {
+        if (event.isCanceled() || entity.level().isClientSide()) {
             return;
         }
 
@@ -347,7 +347,7 @@ public class ModularArmorEventHandler {
             if (armorAbilities.creativeFlight && armorAbilities.flightPower != null && !player.getAbilities().instabuild && !player.isSpectator()) {
                 canFly = armorAbilities.flightPower.get().getOPStored() >= EquipCfg.creativeFlightEnergy;
                 noPower = !canFly;
-                if (canFly && player.getAbilities().flying && !entity.level().isClientSide) {
+                if (canFly && player.getAbilities().flying && !entity.level().isClientSide()) {
                     armorAbilities.flightPower.get().modifyEnergyStored(-EquipCfg.creativeFlightEnergy);
                 }
             }
@@ -359,7 +359,7 @@ public class ModularArmorEventHandler {
                     playersWithFlight.put(player, false);
                 }
 
-                if (playersWithFlight.get(player) && !entity.level().isClientSide) {
+                if (playersWithFlight.get(player) && !entity.level().isClientSide()) {
                     playersWithFlight.put(player, false);
 
                     if (!player.getAbilities().instabuild && !player.isSpectator()) {
@@ -373,7 +373,7 @@ public class ModularArmorEventHandler {
                     }
                 }
 
-                if (player.level().isClientSide && playersWithFlight.get(player)) {
+                if (player.level().isClientSide() && playersWithFlight.get(player)) {
                     playersWithFlight.put(player, false);
                     if (!player.getAbilities().instabuild) {
                         player.getAbilities().mayfly = false;

@@ -149,18 +149,18 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
             updateComparators();
         }
 
-        if (!level.isClientSide && ioMode.get().canExtract()) {
+        if (!level.isClientSide() && ioMode.get().canExtract()) {
             long extracted = core.energy.extractOP(sendEnergyToAll(core.energy.getUncappedStored(), core.energy.getUncappedStored()), false);
             if (extracted > 0) {
                 particleRate.set((byte) Math.min(20, extracted < 500 ? 1 : extracted / 500));
             }
         }
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             spawnParticles();
         }
 
-        if (!level.isClientSide && (particleRate.get() > 1 || (particleRate.get() > 0 && level.getRandom().nextInt(2) == 0))) {
+        if (!level.isClientSide() && (particleRate.get() > 1 || (particleRate.get() > 0 && level.getRandom().nextInt(2) == 0))) {
             particleRate.subtract((byte) 2);
         }
     }
@@ -179,7 +179,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
 
     @Override
     public InteractionResult handleRemoteClick(Player player, BlockHitResult hit) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             ioMode.set(ioMode.get().reverse());
             level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyPylon.MODE, ioMode.get()));
         }
@@ -235,7 +235,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
     }
 
     public void selectNextCore() {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
         List<TileEnergyCore> cores = findActiveCores();
@@ -319,7 +319,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
 
 
     public void drawParticleBeam() {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             sendPacketToChunk(mcDataOutput -> {}, 0);
             return;
         }

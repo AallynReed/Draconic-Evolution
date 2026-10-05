@@ -105,7 +105,7 @@ public class Portal extends EntityBlockBCore implements CustomTabHandling {
 
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-        if (world.isClientSide) return;
+        if (world.isClientSide()) return;
 
         if (!canSurvive(state, world, pos)) {
             BlockEntity tile = world.getBlockEntity(pos);

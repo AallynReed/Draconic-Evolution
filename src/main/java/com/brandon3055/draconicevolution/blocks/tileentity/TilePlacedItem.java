@@ -198,7 +198,7 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
     }
 
     public static void popResource(Level world, BlockPos pos, ItemStack stack, boolean noPickupDelay) {
-        if (!world.isClientSide && !stack.isEmpty() && world.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS) && !world.restoringBlockSnapshots) {
+        if (!world.isClientSide() && !stack.isEmpty() && world.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS) && !world.restoringBlockSnapshots) {
             double d0 = (double) (world.getRandom().nextFloat() * 0.5F) + 0.25D;
             double d1 = (double) (world.getRandom().nextFloat() * 0.5F) + 0.25D;
             double d2 = (double) (world.getRandom().nextFloat() * 0.5F) + 0.25D;

@@ -114,7 +114,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     @Override
     public void tick() {
         super.tick();
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             if (activeBuilder != null) {
                 if (activeBuilder.isDead()) {
                     activeBuilder = null;
@@ -173,7 +173,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     // ### Form/Revert Multi-block
 
     public void toggleActivation() {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             if (active.get()) {
                 deactivateCore();
                 return;
@@ -234,7 +234,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     }
 
     public void deactivateCore() {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
         linkUUID.set(null);
@@ -284,7 +284,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
      */
     @Override
     public boolean validateStructure() {
-        if (level == null || level.isClientSide) return true;
+        if (level == null || level.isClientSide()) return true;
         coreValid.set(isCoreValidForTier(tier.get()));
         checkStabilizers();
         boolean structureValid = isStructureValid();

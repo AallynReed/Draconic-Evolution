@@ -98,7 +98,7 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
     public void tick() {
         super.tick();
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             updateAnimation();
             return;
         }

@@ -163,7 +163,7 @@ public class DraconicArrowEntity extends AbstractArrow {
     public void tick() {
         superTick();
 
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             if (this.inGround) {
                 if (this.inGroundTime % 5 == 0) {
                     this.makeParticle(1);
@@ -183,7 +183,7 @@ public class DraconicArrowEntity extends AbstractArrow {
             this.leftOwner = this.checkLeftOwner();
         }
         //Entity Tick
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             this.setSharedFlag(6, this.isCurrentlyGlowing());
         }
         this.baseTick();
@@ -226,7 +226,7 @@ public class DraconicArrowEntity extends AbstractArrow {
         if (this.inGround && !flag) {
             if (this.lastState != blockstate && this.shouldFall()) {
                 this.startFalling();
-            } else if (!level().isClientSide) {
+            } else if (!level().isClientSide()) {
                 this.tickDespawn();
             }
 
@@ -378,7 +378,7 @@ public class DraconicArrowEntity extends AbstractArrow {
             }
 
             if (entity instanceof LivingEntity livingentity) {
-                if (!level().isClientSide && this.getPierceLevel() <= 0 && penetration <= 0) {
+                if (!level().isClientSide() && this.getPierceLevel() <= 0 && penetration <= 0) {
                     livingentity.setArrowCount(livingentity.getArrowCount() + 1);
                 }
 
@@ -396,7 +396,7 @@ public class DraconicArrowEntity extends AbstractArrow {
                     this.piercedAndKilledEntities.add(livingentity);
                 }
 
-                if (!level().isClientSide && owner instanceof ServerPlayer serverPlayer) {
+                if (!level().isClientSide() && owner instanceof ServerPlayer serverPlayer) {
                     if (this.piercedAndKilledEntities != null && this.shotFromCrossbow()) {
                         CriteriaTriggers.KILLED_BY_CROSSBOW.trigger(serverPlayer, this.piercedAndKilledEntities);
                     } else if (!entity.isAlive() && this.shotFromCrossbow()) {
@@ -414,7 +414,7 @@ public class DraconicArrowEntity extends AbstractArrow {
             this.setDeltaMovement(this.getDeltaMovement().scale(0));
             this.setYRot(getYRot() + 180.0F);
             this.yRotO += 180.0F;
-            if (!level().isClientSide && this.getDeltaMovement().lengthSqr() < 1.0E-7D) {
+            if (!level().isClientSide() && this.getDeltaMovement().lengthSqr() < 1.0E-7D) {
                 if (this.pickup == AbstractArrow.Pickup.ALLOWED) {
                     this.spawnAtLocation(this.getPickupItem(), 0.1F);
                 }

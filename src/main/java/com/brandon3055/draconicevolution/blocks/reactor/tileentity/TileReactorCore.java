@@ -187,7 +187,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
         isFrameMoving = false;
         moveBlocksProvided = false;
 
-        if (level.isClientSide && effectHandler != null) {
+        if (level.isClientSide() && effectHandler != null) {
             effectHandler.updateEffects();
 
             if (HolidayHelper.isAprilFools()) {
@@ -222,7 +222,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
     //region ################# Core Logic ##################
 
     private void updateCoreLogic() {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             checkPlayerCollision();
             coreAnimation += shaderAnimationState.get();
             if (maxShieldCharge.get() == 0) {
@@ -462,7 +462,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
     }
 
     public boolean canCharge() {
-        if (!level.isClientSide && !validateStructure()) {
+        if (!level.isClientSide() && !validateStructure()) {
             return false;
         } else if (reactorState.get() == ReactorState.BEYOND_HOPE) {
             return false;
@@ -472,7 +472,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
     }
 
     public boolean canActivate() {
-        if (!level.isClientSide && !validateStructure()) {
+        if (!level.isClientSide() && !validateStructure()) {
             return false;
         } else if (reactorState.get() == ReactorState.BEYOND_HOPE) {
             return false;
@@ -517,7 +517,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
     public static final byte ID_FAIL_SAFE = 3;
 
     public void chargeReactor() {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             LogHelper.dev("Reactor: Start Charging");
             sendPacketToServer(output -> output.writeByte(ID_CHARGE), 0);
         } else if (!level.getServer().isSameThread()) {
@@ -529,7 +529,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
     }
 
     public void activateReactor() {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             LogHelper.dev("Reactor: Activate");
             sendPacketToServer(output -> output.writeByte(ID_ACTIVATE), 0);
         } else if (!level.getServer().isSameThread()) {
@@ -541,7 +541,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
     }
 
     public void shutdownReactor() {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             LogHelper.dev("Reactor: Shutdown");
             sendPacketToServer(output -> output.writeByte(ID_SHUTDOWN), 0);
         } else if (canStop()) {
@@ -551,7 +551,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
     }
 
     public void toggleFailSafe() {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             sendPacketToServer(output -> output.writeByte(ID_FAIL_SAFE), 0);
         } else {
             failSafeMode.set(!failSafeMode.get());
@@ -559,7 +559,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
     }
 
     public void onComponentClicked(Player player, TileReactorComponent component) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             player.openMenu(this, worldPosition);
             sendPacketToClient((ServerPlayer) player, output -> output.writePos(component.getBlockPos()), 1);
         }

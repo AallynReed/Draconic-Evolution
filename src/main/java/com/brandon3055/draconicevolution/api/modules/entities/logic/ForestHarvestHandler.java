@@ -70,7 +70,7 @@ public class ForestHarvestHandler implements IHarvestHandler {
 
     @Override
     public void tick(Level level, ServerPlayer player, ItemStack stack, IOPStorage storage, InventoryDynamic stackCollector) {
-        if (origin == null || complete || level.isClientSide) return;
+        if (origin == null || complete || level.isClientSide()) return;
 
         if (!sortedHarvestQue.isEmpty()) {
             for (int i = 0; i < speed && !sortedHarvestQue.isEmpty(); i++) {

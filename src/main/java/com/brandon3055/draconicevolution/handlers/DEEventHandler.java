@@ -126,7 +126,7 @@ public class DEEventHandler {
     }
 
     public static void rightClickItem(PlayerInteractEvent.RightClickItem event) {
-        if (event.getLevel().isClientSide || event.isCanceled() || !event.getEntity().isShiftKeyDown() || !(event.getItemStack().getItem() instanceof ICrystalBinder)) {
+        if (event.getLevel().isClientSide() || event.isCanceled() || !event.getEntity().isShiftKeyDown() || !(event.getItemStack().getItem() instanceof ICrystalBinder)) {
             return;
         }
 

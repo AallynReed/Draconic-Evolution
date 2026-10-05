@@ -214,7 +214,7 @@ public class ModularHoe extends HoeItem implements IModularTieredItem, IDraconic
             boolean up2OK = level.isEmptyBlock(aoePos.above().above()) || level.getBlockState(aoePos.above().above()).is(BlockTags.REPLACEABLE);
 
             if (!level.isEmptyBlock(aoePos.above()) && canRemoveAbove && up2OK) {
-                if (!level.isClientSide && canDropAbove) {
+                if (!level.isClientSide() && canDropAbove) {
                     level.addFreshEntity(new ItemEntity(level, player.getX(), player.getY(), player.getZ(), new ItemStack(Blocks.DIRT)));
                 }
                 level.removeBlock(aoePos.above(), false);
@@ -223,7 +223,7 @@ public class ModularHoe extends HoeItem implements IModularTieredItem, IDraconic
         }
 
         Set<ItemStack> drops = BlockToStackHelper.collectAndEndCapture();
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             for (ItemStack drop : drops) {
                 ItemUtils.dropItem(drop, level, Vector3.fromEntityCenter(player));
             }
@@ -246,7 +246,7 @@ public class ModularHoe extends HoeItem implements IModularTieredItem, IDraconic
         if (predicate.test(context)) {
             Player player = context.getPlayer();
             level.playSound(player, blockpos, SoundEvents.HOE_TILL, SoundSource.BLOCKS, 1.0F, 1.0F);
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 consumer.accept(context);
                 if (player != null) {
                     context.getItemInHand().hurtAndBreak(1, player, LivingEntity.getSlotForHand(context.getHand()));

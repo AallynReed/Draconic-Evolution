@@ -51,7 +51,7 @@ public class GuardianProjectileEntity extends AbstractHurtingProjectile {
         super.onHit(result);
         Entity shooter = this.getOwner();
         if (result.getType() != HitResult.Type.ENTITY || !((EntityHitResult) result).getEntity().is(shooter)) {
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 detonate();
             }
         }

@@ -69,7 +69,7 @@ public class TilePotentiometer extends TileBCore implements IRedstoneEmitter, II
             }
         }
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             ChatHelper.sendIndexed(player, Component.literal(String.valueOf(power.get())), MSG_ID);
         }
         else {

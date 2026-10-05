@@ -46,7 +46,7 @@ public interface IHarvestHandler {
     void stop(Level level, ServerPlayer player);
 
     default void doHarvest(ItemStack stack, Player player, Level level, BlockPos pos, IOPStorage storage, InventoryDynamic stackCollector) {
-        if (level.isClientSide || (storage.getOPStored() < EquipCfg.energyHarvest && !player.getAbilities().instabuild)) return;
+        if (level.isClientSide() || (storage.getOPStored() < EquipCfg.energyHarvest && !player.getAbilities().instabuild)) return;
 
         BlockState state = level.getBlockState(pos);
         FluidState fluidState = level.getFluidState(pos);

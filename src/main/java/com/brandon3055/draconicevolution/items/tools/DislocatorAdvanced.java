@@ -123,10 +123,10 @@ public class DislocatorAdvanced extends Dislocator {
 
         boolean blink = getBlinkMode(stack);
         if (player.isShiftKeyDown() || (location == null && !blink)) {
-            if (level.isClientSide) {
+            if (level.isClientSide()) {
                 openGui(stack, player);
             }
-        } else if (!level.isClientSide) {
+        } else if (!level.isClientSide()) {
             if (blink) {
                 handleBlink((ServerPlayer) player, stack, false);
             } else {
