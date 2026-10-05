@@ -6,6 +6,7 @@ import com.brandon3055.draconicevolution.client.ClientProxy;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.command.DECommands;
 import com.brandon3055.draconicevolution.handlers.*;
+import com.brandon3055.draconicevolution.handlers.RecipeSyncHandler;
 import com.brandon3055.draconicevolution.init.*;
 import com.brandon3055.draconicevolution.integration.computers.ComputerCraftCompatEventHandler;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
@@ -44,6 +45,7 @@ public class DraconicEvolution {
         ModularArmorEventHandler.init();
         DraconicNetwork.init(modBus);
         DEEventHandler.init(modBus);
+        RecipeSyncHandler.init();
 
         Utils.loadOptionalMod("computercraft", () -> () -> modBus.register(new ComputerCraftCompatEventHandler()));
 

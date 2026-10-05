@@ -193,7 +193,7 @@ public class DraconicNetwork {
 
     public static void sendFusionRecipeMove(RegistryAccess registryAccess, RecipeHolder<IFusionRecipe> recipe, boolean maxTransfer) {
         PacketCustom packet = new PacketCustom(CHANNEL_NAME, S_JEI_FUSION_TRANSFER, registryAccess);
-        packet.writeResourceLocation(recipe.id());
+        packet.writeResourceLocation(recipe.id().identifier());
         packet.writeBoolean(maxTransfer);
         packet.sendToServer();
     }

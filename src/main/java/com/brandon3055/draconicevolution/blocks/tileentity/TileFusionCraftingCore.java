@@ -22,6 +22,7 @@ import com.brandon3055.draconicevolution.api.crafting.IFusionStateMachine;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.render.tile.fxhandlers.ITileFXHandler;
 import com.brandon3055.draconicevolution.handlers.DESounds;
+import com.brandon3055.draconicevolution.handlers.RecipeSyncHandler;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.FusionCraftingCoreMenu;
 import com.google.common.collect.Streams;
@@ -30,8 +31,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -99,7 +102,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
         }
 
         updateInjectors();
-        RecipeHolder<IFusionRecipe> holder = level.getRecipeManager().getRecipeFor(DraconicAPI.FUSION_RECIPE_TYPE.get(), this, level).orElse(null);
+        RecipeHolder<IFusionRecipe> holder = RecipeSyncHandler.recipes(level).getRecipesFor(DraconicAPI.FUSION_RECIPE_TYPE.get(), this, level).findFirst().orElse(null);
         IFusionRecipe recipe = holder == null ? null : holder.value();
         setActiveRecipe(holder);
         if (recipe == null || !recipe.canStartCraft(this, level, null)) {
@@ -229,7 +232,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
                 cancelCraft();
             }
         } else if (!level.isClientSide()) {
-            RecipeHolder<IFusionRecipe> recipe = level.getRecipeManager().getRecipeFor(DraconicAPI.FUSION_RECIPE_TYPE.get(), this, level).orElse(null);
+            RecipeHolder<IFusionRecipe> recipe = RecipeSyncHandler.recipes(level).getRecipesFor(DraconicAPI.FUSION_RECIPE_TYPE.get(), this, level).findFirst().orElse(null);
             if (recipe != null) {
                 recipe.value().canStartCraft(this, level, e -> setFusionStatus(-1, e));
             } else {
@@ -384,7 +387,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
     public RecipeHolder<IFusionRecipe> getActiveRecipe() {
         if (recipeCache == null) {
             if (activeRecipe.get() != null) {
-                RecipeHolder<?> recipe = level.getRecipeManager().byKey(activeRecipe.get()).orElse(null);
+                RecipeHolder<?> recipe = RecipeSyncHandler.recipes(level).byKey(ResourceKey.create(Registries.RECIPE, activeRecipe.get()));
                 if (recipe != null && recipe.value() instanceof IFusionRecipe fusionRecipe) {
                     recipeCache = (RecipeHolder<IFusionRecipe>) recipe;
                 }
@@ -395,7 +398,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
 
     public void setActiveRecipe(@Nullable RecipeHolder<IFusionRecipe> recipe) {
         recipeCache = recipe;
-        activeRecipe.set(recipe == null ? null : recipe.id());
+        activeRecipe.set(recipe == null ? null : recipe.id().identifier());
     }
 
     public int getComparatorOutput() {
@@ -404,7 +407,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
         } else if (crafting.get()) {
             return 1 + getFusionState().ordinal();
         } else {
-            RecipeHolder<IFusionRecipe> recipe = level.getRecipeManager().getRecipeFor(DraconicAPI.FUSION_RECIPE_TYPE.get(), this, level).orElse(null);
+            RecipeHolder<IFusionRecipe> recipe = RecipeSyncHandler.recipes(level).getRecipesFor(DraconicAPI.FUSION_RECIPE_TYPE.get(), this, level).findFirst().orElse(null);
             if (recipe != null && recipe.value().canStartCraft(this, level, null)) {
                 return 1;
             }

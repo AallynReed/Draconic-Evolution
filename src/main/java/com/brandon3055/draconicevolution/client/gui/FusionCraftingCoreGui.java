@@ -16,6 +16,7 @@ import com.brandon3055.draconicevolution.api.crafting.IFusionInjector;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
 import com.brandon3055.draconicevolution.client.DEGuiTextures;
+import com.brandon3055.draconicevolution.handlers.RecipeSyncHandler;
 import com.brandon3055.draconicevolution.inventory.FusionCraftingCoreMenu;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -106,7 +107,7 @@ public class FusionCraftingCoreGui extends ContainerGuiProvider<FusionCraftingCo
         Constraints.bind(new IngredRenderer(craftArea, tile), craftArea);
 
         gui.onTick(() -> {
-            currentRecipe = tile.getLevel().getRecipeManager().getRecipeFor(DraconicAPI.FUSION_RECIPE_TYPE.get(), tile, tile.getLevel()).orElse(null);
+            currentRecipe = RecipeSyncHandler.recipes(tile.getLevel()).getRecipesFor(DraconicAPI.FUSION_RECIPE_TYPE.get(), tile, tile.getLevel()).findFirst().orElse(null);
             if (currentRecipe == null) {
                 stackIcon.setStack(ItemStack.EMPTY);
             } else {

@@ -9,6 +9,7 @@ import com.brandon3055.draconicevolution.client.gui.DraconiumChestGui;
 import com.brandon3055.draconicevolution.client.gui.EnergyCoreGui;
 import com.brandon3055.draconicevolution.client.gui.FusionCraftingCoreGui;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.ConfigurableItemGui;
+import com.brandon3055.draconicevolution.handlers.RecipeSyncHandler;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.DraconiumChestMenu;
 import com.google.common.collect.Lists;
@@ -108,7 +109,7 @@ public class DEJEIPlugin implements IModPlugin {
         ClientLevel world = Minecraft.getInstance().level;
         if (world == null) return;
 
-        registration.addRecipes(FUSION_RECIPE_TYPE, FastStream.of(world.getRecipeManager().getAllRecipesFor(DraconicAPI.FUSION_RECIPE_TYPE.get())).toList());
+        registration.addRecipes(FUSION_RECIPE_TYPE, FastStream.of(RecipeSyncHandler.recipes(world).byType(DraconicAPI.FUSION_RECIPE_TYPE.get())).toList());
     }
 
     @Override
