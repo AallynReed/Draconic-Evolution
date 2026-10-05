@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.client;
 
 import com.brandon3055.brandonscore.client.particle.IntParticleData;
+import com.brandon3055.draconicevolution.client.render.effect.FXParticleGroup;
 import com.brandon3055.draconicevolution.client.render.particle.*;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.client.Camera;
@@ -18,6 +19,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.client.event.RegisterParticleGroupsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -63,6 +65,11 @@ public class DEParticles {
         event.registerSpriteSet(GUARDIAN_CLOUD.get(), GuardianCloudParticle.Factory::new);
         event.registerSpriteSet(GUARDIAN_BEAM.get(), GuardianBeamParticle.Factory::new);
         event.registerSpriteSet(SPARK.get(), SparkParticle.Factory::new);
+    }
+
+    @OnlyIn (Dist.CLIENT)
+    public static void registerGroups(RegisterParticleGroupsEvent event) {
+        event.register(FXParticleGroup.GROUP, FXParticleGroup::new);
     }
 
 

@@ -5,17 +5,13 @@ import codechicken.lib.vec.Vector3;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalWirelessIO;
 import com.brandon3055.draconicevolution.client.AtlasTextureHelper;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -71,7 +67,7 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
             }
         }
 
-        int ps = Minecraft.getInstance().options.particles().get().getId();
+        int ps = Minecraft.getInstance().options.particles().get().ordinal();
         if (age % 2 == 0 && powerLevel > random.nextFloat() && (ps == 0 || (ps == 1 && random.nextInt(3) == 0) || (ps == 2 && random.nextInt(10) == 0))) {
             double travel = 50 + random.nextInt(50);
             travel *= (1.4F - powerLevel);
@@ -94,7 +90,7 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
         float scale = 0.08F;
         boolean output = !tile.inputMode.get();
 
-        Vec3 view = renderInfo.getPosition();
+        Vec3 view = renderInfo.position();
         Vector3 source = new Vector3(x - view.x, y - view.y, z - view.z);
         Vector3 target = Vector3.fromBlockPos(linkTarget).subtract(view.x, view.y, view.z);
 
@@ -118,30 +114,8 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return tile.getTier() == 0 ? BASIC_HANDLER : tile.getTier() == 1 ? WYVERN_HANDLER : DRACONIC_HANDLER;
-    }
-
-    private static final ParticleRenderType BASIC_HANDLER = new FXHandler();
-    private static final ParticleRenderType WYVERN_HANDLER = new FXHandler();
-    private static final ParticleRenderType DRACONIC_HANDLER = new FXHandler();
-
-    public static class FXHandler implements ParticleRenderType {
-        @Override
-        public BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
-            RenderSystem.depthMask(false);
-            RenderSystem.enableBlend();
-            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-            RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
-            RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
-            return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
-        }
-
-//        @Override
-//        public void end(Tesselator tessellator) {
-//            tessellator.end();
-//            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-//        }
+    public RenderType renderType() {
+        return FXParticleGroup.additive(TextureAtlas.LOCATION_PARTICLES);
     }
 
     public static class PTracker {

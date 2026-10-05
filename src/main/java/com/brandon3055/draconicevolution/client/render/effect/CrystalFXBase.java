@@ -5,6 +5,7 @@ import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -12,13 +13,17 @@ import org.joml.Vector3f;
 /**
  * Created by brandon3055 on 29/11/2016.
  */
-public abstract class CrystalFXBase<T extends BlockEntity & IENetEffectTile> extends Particle {
+public abstract class CrystalFXBase<T extends BlockEntity & IENetEffectTile> extends Particle implements FXParticleGroup.FXParticle {
 
     protected final T tile;
     protected int ticksTillDeath = 0;
     protected float fxState;
     public boolean renderEnabled = true;
     private int ttl = 10;
+    protected float rCol = 1.0F;
+    protected float gCol = 1.0F;
+    protected float bCol = 1.0F;
+    protected float alpha = 1.0F;
 
     public CrystalFXBase(ClientLevel worldIn, T tile) {
         super(worldIn, tile.getBlockPos().getX() + 0.5, tile.getBlockPos().getY() + 0.5, tile.getBlockPos().getZ() + 0.5);
@@ -45,6 +50,11 @@ public abstract class CrystalFXBase<T extends BlockEntity & IENetEffectTile> ext
     @Override
     public void tick() {
         ttl = 10;
+    }
+
+    @Override
+    public ParticleRenderType getGroup() {
+        return FXParticleGroup.GROUP;
     }
 
     protected void setPosition(Vec3D pos) {

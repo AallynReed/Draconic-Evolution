@@ -9,14 +9,10 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.energy.ICrystalLink;
 import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -79,7 +75,7 @@ public class CrystalFXBeam<T extends BlockEntity & IENetEffectTile> extends Crys
             scale = 0.1F;
         }
 
-        Vec3 viewVec = renderInfo.getPosition();
+        Vec3 viewVec = renderInfo.position();
         Vector3 source = new Vector3(x - viewVec.x, y - viewVec.y, z - viewVec.z);
         Vector3 target = linkTarget.toVector3().subtract(viewVec.x, viewVec.y, viewVec.z);
         Vector3 dirVec = source.copy().subtract(target).normalize();
@@ -165,38 +161,15 @@ public class CrystalFXBeam<T extends BlockEntity & IENetEffectTile> extends Crys
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return tile.getTier() == 0 ? BASIC_HANDLER : tile.getTier() == 1 ? WYVERN_HANDLER : DRACONIC_HANDLER;
+    public RenderType renderType() {
+        if (ClientEventHandler.playerHoldingWrench) {
+            return FXParticleGroup.additive(HIGHLIGHT_TEXTURE);
+        }
+        return FXParticleGroup.additive(tile.getTier() == 0 ? BASIC_TEXTURE : tile.getTier() == 1 ? WYVERN_TEXTURE : DRACONIC_TEXTURE);
     }
 
-    private static final ParticleRenderType BASIC_HANDLER = new FXHandler(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_basic.png"));
-    private static final ParticleRenderType WYVERN_HANDLER = new FXHandler(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_wyvern.png"));
-    private static final ParticleRenderType DRACONIC_HANDLER = new FXHandler(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_draconic.png"));
-
-    public static class FXHandler implements ParticleRenderType {
-        private static final Identifier highlightTexture = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_highlight.png");
-        private Identifier texture;
-        private float green;
-
-        public FXHandler(Identifier texture) {
-            this.texture = texture;
-            this.green = texture.getPath().contains("energy_beam_wyvern") ? 0.3F : 1F;
-        }
-
-        @Override
-        public BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
-            RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
-            RenderSystem.disableCull();
-            RenderSystem.depthMask(false);
-            RenderSystem.enableBlend();
-            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-            if (ClientEventHandler.playerHoldingWrench) {
-                RenderSystem.setShaderTexture(0, highlightTexture);
-            } else {
-                RenderSystem.setShaderTexture(0, texture);
-            }
-            return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
-        }
-
-    }
+    private static final Identifier BASIC_TEXTURE = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_basic.png");
+    private static final Identifier WYVERN_TEXTURE = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_wyvern.png");
+    private static final Identifier DRACONIC_TEXTURE = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_draconic.png");
+    private static final Identifier HIGHLIGHT_TEXTURE = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_highlight.png");
 }

@@ -2,17 +2,12 @@ package com.brandon3055.draconicevolution.client.render.effect;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 /**
@@ -47,7 +42,7 @@ public class CrystalFXIO extends CrystalFXBase<TileCrystalBase> {
             return;
         }
 
-        Vec3 viewVec = renderInfo.getPosition();
+        Vec3 viewVec = renderInfo.position();
         float viewX = (float) (this.x - viewVec.x());
         float viewY = (float) (this.y - viewVec.y());
         float viewZ = (float) (this.z - viewVec.z());
@@ -59,30 +54,11 @@ public class CrystalFXIO extends CrystalFXBase<TileCrystalBase> {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return tile.getTier() == 0 ? BASIC_HANDLER : tile.getTier() == 1 ? WYVERN_HANDLER : DRACONIC_HANDLER;
+    public RenderType renderType() {
+        return FXParticleGroup.additive(tile.getTier() == 0 ? BASIC_TEXTURE : tile.getTier() == 1 ? WYVERN_TEXTURE : DRACONIC_TEXTURE);
     }
 
-    private static final ParticleRenderType BASIC_HANDLER = new FXHandler(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_basic.png"));
-    private static final ParticleRenderType WYVERN_HANDLER = new FXHandler(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_wyvern.png"));
-    private static final ParticleRenderType DRACONIC_HANDLER = new FXHandler(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_draconic.png"));
-
-    public static class FXHandler implements ParticleRenderType {
-
-        private final Identifier texture;
-
-        public FXHandler(Identifier texture) {
-            this.texture = texture;
-        }
-
-        @Override
-        public @Nullable BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
-            RenderSystem.depthMask(false);
-            RenderSystem.enableBlend();
-            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-            RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
-            RenderSystem.setShaderTexture(0, texture);
-            return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
-        }
-    }
+    private static final Identifier BASIC_TEXTURE = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_basic.png");
+    private static final Identifier WYVERN_TEXTURE = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_wyvern.png");
+    private static final Identifier DRACONIC_TEXTURE = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_draconic.png");
 }

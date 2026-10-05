@@ -4,16 +4,12 @@ import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.client.AtlasTextureHelper;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
@@ -59,11 +55,11 @@ public class CrystalFXRing extends CrystalFXBase<TileCrystalBase> {
 
         //region variables
 
-        Vec3 view = camera.getPosition();
+        Vec3 view = camera.position();
         float viewX = (float) (this.x - view.x());
         float viewY = (float) (this.y - view.y());
         float viewZ = (float) (this.z - view.z());
-        double mipLevel = Math.max(0, Math.min(1, (camera.getBlockPosition().distToCenterSqr(x, y, z) - 20) / 600D));
+        double mipLevel = Math.max(0, Math.min(1, (camera.blockPosition().distToCenterSqr(x, y, z) - 20) / 600D));
 
         //endregion
 
@@ -148,16 +144,7 @@ public class CrystalFXRing extends CrystalFXBase<TileCrystalBase> {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return RENDER_TYPE;
+    public RenderType renderType() {
+        return FXParticleGroup.additive(TextureAtlas.LOCATION_PARTICLES);
     }
-
-    public static final ParticleRenderType RENDER_TYPE = (tesselator, textureManager) -> {
-        RenderSystem.depthMask(false);
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-        RenderSystem.setShader(GameRenderer::getParticleShader);
-        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
-        return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
-    };
 }

@@ -8,14 +8,10 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalWirelessIO;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.AABB;
@@ -59,7 +55,7 @@ public class CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
     @Override
     public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
         float scale = 0.1F + (timeout * 0.005F);
-        Vec3 viewVec = renderInfo.getPosition();
+        Vec3 viewVec = renderInfo.position();
         Vector3 source = new Vector3(x - viewVec.x, y - viewVec.y, z - viewVec.z);
         Vector3 target = linkTarget.toVector3().subtract(viewVec.x, viewVec.y, viewVec.z);
         Vector3 dirVec = source.copy().subtract(target).normalize();
@@ -137,28 +133,9 @@ public class CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return HANDLER;
+    public RenderType renderType() {
+        return FXParticleGroup.additive(HIGHLIGHT_TEXTURE);
     }
 
-    private static final ParticleRenderType HANDLER = new FXHandler();
-
-    public static class FXHandler implements ParticleRenderType {
-        private static final Identifier highlightTexture = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_highlight.png");
-
-        public FXHandler() {
-        }
-
-        @Override
-        public BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
-            RenderSystem.disableCull();
-            RenderSystem.depthMask(false);
-            RenderSystem.enableBlend();
-            //TODO, Is this blend func going to cause issues?
-            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-            RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
-            RenderSystem.setShaderTexture(0, highlightTexture);
-            return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
-        }
-    }
+    private static final Identifier HIGHLIGHT_TEXTURE = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_highlight.png");
 }

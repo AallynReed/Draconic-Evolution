@@ -8,23 +8,20 @@ import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by brandon3055 on 29/4/21
  */
-public class StaffBeamEffect extends Particle {
+public class StaffBeamEffect extends Particle implements FXParticleGroup.FXParticle {
     private LivingEntity shooter;
     private Vector3 origin = null;
     private Vector3 targetPos;
@@ -37,8 +34,13 @@ public class StaffBeamEffect extends Particle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return renderType;
+    public ParticleRenderType getGroup() {
+        return FXParticleGroup.GROUP;
+    }
+
+    @Override
+    public RenderType renderType() {
+        return FXParticleGroup.additive(TEXTURE);
     }
 
     @Override
@@ -51,7 +53,7 @@ public class StaffBeamEffect extends Particle {
     @Override
     public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
 //        if (origin == null) {
-            boolean firstPerson = shooter == renderInfo.getEntity() && !renderInfo.isDetached();
+            boolean firstPerson = shooter == renderInfo.entity() && !renderInfo.isDetached();
             Vector3 shooterPos = MathUtils.interpolateVec3(new Vector3(shooter.xOld, shooter.yOld, shooter.zOld), new Vector3(shooter.position()), partialTicks);
             if (firstPerson) {
                 origin = shooterPos.add(0, shooter.getEyeHeight() - 0.1125, 0);
@@ -76,7 +78,7 @@ public class StaffBeamEffect extends Particle {
         Vector3 targetPos = this.targetPos.copy();//MathUtils.interpolateVec3(this.origin, this.targetPos, MathUtils.clampMap(progress, 0, 0.1, 0, 1));
 
 
-        Vec3 viewVec = renderInfo.getPosition();
+        Vec3 viewVec = renderInfo.position();
         Vector3 source = origin.subtract(viewVec);
         Vector3 target = targetPos.subtract(viewVec);
 //        Vector3 source = new Vector3(x - viewVec.x, y - viewVec.y, z - viewVec.z);
@@ -119,24 +121,12 @@ public class StaffBeamEffect extends Particle {
 
     private void bufferQuad(VertexConsumer buffer, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, float anim, float dist) {
 //        BCProfiler.RENDER.start("buffer_quad");
-        buffer.addVertex((float) p1.x, (float) p1.y, (float) p1.z).setUv(0.5F, anim);
-        buffer.addVertex((float) p2.x, (float) p2.y, (float) p2.z).setUv(0.5F, dist + anim);
-        buffer.addVertex((float) p4.x, (float) p4.y, (float) p4.z).setUv(1.0F, dist + anim);
-        buffer.addVertex((float) p3.x, (float) p3.y, (float) p3.z).setUv(1.0F, anim);
+        buffer.addVertex((float) p1.x, (float) p1.y, (float) p1.z).setColor(1F, 1F, 1F, 1F).setUv(0.5F, anim).setUv2(240, 240);
+        buffer.addVertex((float) p2.x, (float) p2.y, (float) p2.z).setColor(1F, 1F, 1F, 1F).setUv(0.5F, dist + anim).setUv2(240, 240);
+        buffer.addVertex((float) p4.x, (float) p4.y, (float) p4.z).setColor(1F, 1F, 1F, 1F).setUv(1.0F, dist + anim).setUv2(240, 240);
+        buffer.addVertex((float) p3.x, (float) p3.y, (float) p3.z).setColor(1F, 1F, 1F, 1F).setUv(1.0F, anim).setUv2(240, 240);
 //        BCProfiler.RENDER.stop();
     }
 
-    private static ParticleRenderType renderType = new ParticleRenderType() {
-        private static Identifier texture = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_draconic.png");
-
-        @Override
-        public @Nullable BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
-            textureManager.bindForSetup(texture);
-            RenderSystem.disableCull();
-            RenderSystem.depthMask(false);
-            RenderSystem.enableBlend();
-            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-            return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        }
-    };
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_draconic.png");
 }
