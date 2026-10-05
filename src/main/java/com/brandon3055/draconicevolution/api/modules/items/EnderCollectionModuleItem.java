@@ -3,17 +3,22 @@ package com.brandon3055.draconicevolution.api.modules.items;
 import codechicken.enderstorage.api.Frequency;
 import codechicken.enderstorage.config.EnderStorageConfig;
 import codechicken.enderstorage.tile.TileEnderChest;
+import codechicken.lib.colour.EnumColour;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.data.NoData;
 import com.brandon3055.draconicevolution.api.modules.items.ModuleItem;
 import com.brandon3055.draconicevolution.init.ItemData;
 import com.brandon3055.draconicevolution.integration.ModHelper;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.StrictJsonParser;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -35,6 +40,10 @@ import java.util.function.Consumer;
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
 public class EnderCollectionModuleItem extends ModuleItem<NoData> {
+
+    public EnderCollectionModuleItem(Properties properties, Supplier<Module<?>> moduleSupplier) {
+        super(properties, moduleSupplier);
+    }
 
     public EnderCollectionModuleItem(Supplier<Module<?>> moduleSupplier) {
         super(moduleSupplier);
@@ -76,8 +85,18 @@ public class EnderCollectionModuleItem extends ModuleItem<NoData> {
         tagCompound.putInt("middle", frequency.middle().getWoolMeta());
         tagCompound.putInt("right", frequency.right().getWoolMeta());
         frequency.owner().ifPresent(uuid -> tagCompound.store("owner", UUIDUtil.CODEC, uuid));
-        frequency.ownerName().ifPresent(component -> tagCompound.putString("owner_name", Component.Serializer.toJson(component, provider)));
+        frequency.ownerName().ifPresent(component -> tagCompound.putString("owner_name", ComponentSerialization.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), component).getOrThrow().toString()));
         return tagCompound;
+    }
+
+    public static Frequency readFrequency(CompoundTag tagCompound) {
+        return new Frequency(
+                EnumColour.fromWoolMeta(tagCompound.getIntOr("left", 0)),
+                EnumColour.fromWoolMeta(tagCompound.getIntOr("middle", 0)),
+                EnumColour.fromWoolMeta(tagCompound.getIntOr("right", 0)),
+                tagCompound.read("owner", UUIDUtil.CODEC),
+                tagCompound.contains("owner_name") ? ComponentSerialization.CODEC.parse(RegistryAccess.EMPTY.createSerializationContext(JsonOps.INSTANCE), StrictJsonParser.parse(tagCompound.getStringOr("owner_name", ""))).result() : Optional.empty()
+        );
     }
 
     @Override
@@ -117,7 +136,7 @@ public class EnderCollectionModuleItem extends ModuleItem<NoData> {
         CompoundTag tag = tagIn.getCompoundOrEmpty("frequency");
         if (tag.isEmpty()) return;
 
-        Frequency frequency = new Frequency(tag);
+        Frequency frequency = readFrequency(tag);
         if (frequency.hasOwner()) {
             Component name = frequency.ownerName().get();
             if (name instanceof MutableComponent mutable) {

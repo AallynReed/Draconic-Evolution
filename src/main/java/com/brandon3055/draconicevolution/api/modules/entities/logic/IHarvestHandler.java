@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.common.CommonHooks;
-import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 
 /**
  * Created by brandon3055 on 31/01/2023
@@ -52,7 +52,7 @@ public interface IHarvestHandler {
         FluidState fluidState = level.getFluidState(pos);
         Block block = state.getBlock();
 
-        BlockEvent.BreakEvent event = CommonHooks.fireBlockBreak(level, ((ServerPlayer) player).gameMode.getGameModeForPlayer(), (ServerPlayer) player, pos, state);
+        BreakBlockEvent event = CommonHooks.fireBlockBreak(level, ((ServerPlayer) player).gameMode.getGameModeForPlayer(), (ServerPlayer) player, pos, state);
         if (event.isCanceled()) {
             ServerPlayer mpPlayer = (ServerPlayer) player;
             mpPlayer.connection.send(new ClientboundBlockUpdatePacket(level, pos));
@@ -60,7 +60,7 @@ public interface IHarvestHandler {
         }
 
         if (player.getAbilities().instabuild) {
-            if (block.onDestroyedByPlayer(state, level, pos, player, false, fluidState)) {
+            if (block.onDestroyedByPlayer(state, level, pos, player, stack.copy(), false, fluidState)) {
                 block.destroy(level, pos, state);
             }
 

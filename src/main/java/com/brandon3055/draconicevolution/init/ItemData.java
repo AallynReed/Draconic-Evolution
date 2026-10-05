@@ -17,6 +17,7 @@ import com.brandon3055.draconicevolution.items.equipment.IModularTieredItem.Attr
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced.DislocatorTarget;
 import com.brandon3055.draconicevolution.lib.DumData;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentType;
@@ -65,8 +66,8 @@ public class ItemData {
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<GlobalPos>>                  BINDER_POS                  = DATA.register("binder_pos",                   () -> DataComponentType.<GlobalPos>builder().persistent(GlobalPos.CODEC).networkSynchronized(GlobalPos.STREAM_CODEC).build());
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<DumData<ModuleHost>>>        HOST_CAP_HOLDER             = DATA.register("module_host_cap_instance",     () -> DataComponentType.<DumData<ModuleHost>>builder().persistent(Codec.unit(DumData::new)).build());
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<DumData<ModularOPStorage>>>  ENERGY_CAP_HOLDER           = DATA.register("energy_cap_instance",          () -> DataComponentType.<DumData<ModularOPStorage>>builder().persistent(Codec.unit(DumData::new)).build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<DumData<ModuleHost>>>        HOST_CAP_HOLDER             = DATA.register("module_host_cap_instance",     () -> DataComponentType.<DumData<ModuleHost>>builder().persistent(MapCodec.unitCodec(DumData::new)).build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<DumData<ModularOPStorage>>>  ENERGY_CAP_HOLDER           = DATA.register("energy_cap_instance",          () -> DataComponentType.<DumData<ModularOPStorage>>builder().persistent(MapCodec.unitCodec(DumData::new)).build());
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<DestroySpeedData>>           DESTROY_SPEED_DATA          = DATA.register("destroy_speed_data",           () -> DataComponentType.<DestroySpeedData>builder().persistent(DestroySpeedData.CODEC).build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<AttributeData>>              ATTRIBUTE_DATA              = DATA.register("attribute_data",               () -> DataComponentType.<AttributeData>builder().persistent(AttributeData.CODEC).build());

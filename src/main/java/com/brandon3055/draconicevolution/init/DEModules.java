@@ -148,8 +148,8 @@ public class DEModules {
 
     public static final DeferredHolder<Module<?>, Module<?>> WYVERN_ENDER_COLLECTION                    = MODULES.register("wyvern_ender_collection",               () -> new ModuleImpl<>(ENDER_COLLECTION,                WYVERN,                 noData()));
     public static final DeferredHolder<Module<?>, Module<?>> DRACONIC_ENDER_COLLECTION                  = MODULES.register("draconic_ender_collection",             () -> new ModuleImpl<>(ENDER_COLLECTION,                DRACONIC,               noData(), 2, 2));
-    public static final DeferredHolder<Item, ModuleItem<?>> ITEM_WYVERN_ENDER_COLLECTION                = ITEMS.register("item_wyvern_ender_collection",            id -> new EnderCollectionModuleItem(new Item.Properties().stacksTo(1).setId(ResourceKey.create(Registries.ITEM, id)), WYVERN_ENDER_COLLECTION));
-    public static final DeferredHolder<Item, ModuleItem<?>> ITEM_DRACONIC_ENDER_COLLECTION              = ITEMS.register("item_draconic_ender_collection",          id -> new EnderCollectionModuleItem(new Item.Properties().stacksTo(1).setId(ResourceKey.create(Registries.ITEM, id)), DRACONIC_ENDER_COLLECTION));
+    public static final DeferredHolder<Item, ModuleItem<?>> ITEM_WYVERN_ENDER_COLLECTION                = ITEMS.register("item_wyvern_ender_collection",            id -> new EnderCollectionModuleItem(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, id)), WYVERN_ENDER_COLLECTION));
+    public static final DeferredHolder<Item, ModuleItem<?>> ITEM_DRACONIC_ENDER_COLLECTION              = ITEMS.register("item_draconic_ender_collection",          id -> new EnderCollectionModuleItem(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, id)), DRACONIC_ENDER_COLLECTION));
 
     //Arrow base velocity is 60 m/s
     public static final DeferredHolder<Module<?>, Module<?>> WYVERN_PROJ_VELOCITY                       = MODULES.register("wyvern_proj_velocity",                  () -> new ProjectileVelocityModule(PROJ_MODIFIER,       WYVERN,                 projVelocityData(0.15F, 1.0F)).setMaxInstall(8));   // (1 + (0.15 * 8) * 60) = 132 m/s max
