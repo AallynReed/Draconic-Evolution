@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:ingots/netherite"
-    },
-    "A": {
-      "tag": "c:ingots/draconium_awakened"
-    },
-    "B": {
-      "item": "draconicevolution:item_wyvern_shield_recovery"
-    },
-    "C": {
-      "item": "draconicevolution:draconium_core"
-    },
-    "D": {
-      "item": "draconicevolution:wyvern_core"
-    }
+    "#": "#c:ingots/netherite",
+    "A": "#c:ingots/draconium_awakened",
+    "B": "draconicevolution:item_wyvern_shield_recovery",
+    "C": "draconicevolution:draconium_core",
+    "D": "draconicevolution:wyvern_core"
   },
   "pattern": [
     "#C#",
@@ -24,7 +14,6 @@
     "#D#"
   ],
   "result": {
-    "count": 1,
     "id": "draconicevolution:item_draconic_shield_recovery"
   }
 }

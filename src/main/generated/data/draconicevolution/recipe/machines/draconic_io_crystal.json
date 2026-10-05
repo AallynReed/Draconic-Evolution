@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "draconicevolution:draconic_relay_crystal"
-    }
+    "draconicevolution:draconic_relay_crystal"
   ],
   "result": {
     "count": 2,

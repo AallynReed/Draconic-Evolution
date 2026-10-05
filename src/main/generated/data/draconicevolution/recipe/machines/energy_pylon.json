@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:ingots/draconium"
-    },
-    "B": {
-      "item": "minecraft:ender_eye"
-    },
-    "C": {
-      "tag": "c:gems/emerald"
-    },
-    "D": {
-      "item": "draconicevolution:draconium_core"
-    },
-    "E": {
-      "tag": "c:gems/diamond"
-    }
+    "A": "#c:ingots/draconium",
+    "B": "minecraft:ender_eye",
+    "C": "#c:gems/emerald",
+    "D": "draconicevolution:draconium_core",
+    "E": "#c:gems/diamond"
   },
   "pattern": [
     "ABA",

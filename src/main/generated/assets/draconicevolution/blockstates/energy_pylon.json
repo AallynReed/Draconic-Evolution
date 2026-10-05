@@ -11,22 +11,20 @@
     "facing=east,mode=input": {
       "model": "draconicevolution:block/energy_pylon_input",
       "x": 90,
-      "y": 450
+      "y": 90
     },
     "facing=east,mode=output": {
       "model": "draconicevolution:block/energy_pylon_output",
       "x": 90,
-      "y": 450
+      "y": 90
     },
     "facing=north,mode=input": {
       "model": "draconicevolution:block/energy_pylon_input",
-      "x": 90,
-      "y": 360
+      "x": 90
     },
     "facing=north,mode=output": {
       "model": "draconicevolution:block/energy_pylon_output",
-      "x": 90,
-      "y": 360
+      "x": 90
     },
     "facing=south,mode=input": {
       "model": "draconicevolution:block/energy_pylon_input",

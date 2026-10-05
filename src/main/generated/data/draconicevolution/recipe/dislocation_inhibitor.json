@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:ingots/iron"
-    },
-    "B": {
-      "item": "minecraft:iron_bars"
-    },
-    "C": {
-      "item": "draconicevolution:magnet"
-    }
+    "A": "#c:ingots/iron",
+    "B": "minecraft:iron_bars",
+    "C": "draconicevolution:magnet"
   },
   "pattern": [
     "AAA",
@@ -18,7 +12,6 @@
     "AAA"
   ],
   "result": {
-    "count": 1,
     "id": "draconicevolution:dislocation_inhibitor"
   }
 }

@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:ingots/draconium"
-    },
-    "A": {
-      "item": "draconicevolution:draconium_core"
-    },
-    "B": {
-      "item": "draconicevolution:module_core"
-    },
-    "C": {
-      "item": "minecraft:bow"
-    },
-    "P": {
-      "item": "minecraft:clock"
-    }
+    "#": "#c:ingots/draconium",
+    "A": "draconicevolution:draconium_core",
+    "B": "draconicevolution:module_core",
+    "C": "minecraft:bow",
+    "P": "minecraft:clock"
   },
   "pattern": [
     "#P#",
@@ -24,7 +14,6 @@
     "#C#"
   ],
   "result": {
-    "count": 1,
     "id": "draconicevolution:item_wyvern_auto_fire"
   }
 }

@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:storage_blocks/redstone"
-    },
-    "B": {
-      "item": "minecraft:blaze_rod"
-    },
-    "C": {
-      "item": "draconicevolution:draconium_core"
-    }
+    "A": "#c:storage_blocks/redstone",
+    "B": "minecraft:blaze_rod",
+    "C": "draconicevolution:draconium_core"
   },
   "pattern": [
     "ABA",
@@ -18,7 +12,6 @@
     "ABA"
   ],
   "result": {
-    "count": 1,
     "id": "draconicevolution:particle_generator"
   }
 }

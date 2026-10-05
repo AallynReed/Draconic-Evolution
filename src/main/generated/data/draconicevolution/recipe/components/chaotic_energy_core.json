@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "draconicevolution:medium_chaos_frag"
-    },
-    "B": {
-      "item": "draconicevolution:draconic_energy_core"
-    },
-    "C": {
-      "item": "draconicevolution:awakened_core"
-    }
+    "A": "draconicevolution:medium_chaos_frag",
+    "B": "draconicevolution:draconic_energy_core",
+    "C": "draconicevolution:awakened_core"
   },
   "pattern": [
     "ABA",
@@ -18,7 +12,6 @@
     "ABA"
   ],
   "result": {
-    "count": 1,
     "id": "draconicevolution:chaotic_energy_core"
   }
 }

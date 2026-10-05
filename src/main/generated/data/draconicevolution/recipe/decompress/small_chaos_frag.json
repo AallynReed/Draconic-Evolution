@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "draconicevolution:medium_chaos_frag"
-    }
+    "draconicevolution:medium_chaos_frag"
   ],
   "result": {
     "count": 9,

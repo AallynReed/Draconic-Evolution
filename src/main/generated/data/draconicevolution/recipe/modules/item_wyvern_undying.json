@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:ingots/draconium"
-    },
-    "A": {
-      "item": "draconicevolution:draconium_core"
-    },
-    "B": {
-      "item": "draconicevolution:module_core"
-    },
-    "C": {
-      "item": "minecraft:totem_of_undying"
-    },
-    "D": {
-      "item": "draconicevolution:item_wyvern_shield_capacity"
-    }
+    "#": "#c:ingots/draconium",
+    "A": "draconicevolution:draconium_core",
+    "B": "draconicevolution:module_core",
+    "C": "minecraft:totem_of_undying",
+    "D": "draconicevolution:item_wyvern_shield_capacity"
   },
   "pattern": [
     "#C#",
@@ -24,7 +14,6 @@
     "#D#"
   ],
   "result": {
-    "count": 1,
     "id": "draconicevolution:item_wyvern_undying"
   }
 }

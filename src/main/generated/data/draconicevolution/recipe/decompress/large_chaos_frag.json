@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "draconicevolution:chaos_shard"
-    }
+    "draconicevolution:chaos_shard"
   ],
   "result": {
     "count": 9,

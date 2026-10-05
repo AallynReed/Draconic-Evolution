@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:ingots/iron"
-    },
-    "B": {
-      "item": "draconicevolution:potentiometer"
-    },
-    "C": {
-      "tag": "c:storage_blocks/redstone"
-    },
-    "D": {
-      "item": "draconicevolution:draconium_core"
-    },
-    "E": {
-      "item": "minecraft:comparator"
-    }
+    "A": "#c:ingots/iron",
+    "B": "draconicevolution:potentiometer",
+    "C": "#c:storage_blocks/redstone",
+    "D": "draconicevolution:draconium_core",
+    "E": "minecraft:comparator"
   },
   "pattern": [
     "ABA",
@@ -24,7 +14,6 @@
     "AEA"
   ],
   "result": {
-    "count": 1,
     "id": "draconicevolution:flux_gate"
   }
 }

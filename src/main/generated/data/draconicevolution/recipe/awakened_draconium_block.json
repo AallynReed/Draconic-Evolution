@@ -1,52 +1,38 @@
 {
   "type": "draconicevolution:fusion_crafting",
   "catalyst": {
-    "type": "draconicevolution:stack",
+    "neoforge:ingredient_type": "draconicevolution:stack",
     "count": 4,
     "items": "draconicevolution:draconium_block"
   },
   "ingredients": [
     {
       "consume": true,
-      "ingredient": {
-        "item": "draconicevolution:draconium_core"
-      }
+      "ingredient": "draconicevolution:draconium_core"
     },
     {
       "consume": true,
-      "ingredient": {
-        "item": "draconicevolution:draconium_core"
-      }
+      "ingredient": "draconicevolution:draconium_core"
     },
     {
       "consume": true,
-      "ingredient": {
-        "item": "draconicevolution:draconium_core"
-      }
+      "ingredient": "draconicevolution:draconium_core"
     },
     {
       "consume": true,
-      "ingredient": {
-        "item": "draconicevolution:dragon_heart"
-      }
+      "ingredient": "draconicevolution:dragon_heart"
     },
     {
       "consume": true,
-      "ingredient": {
-        "item": "draconicevolution:draconium_core"
-      }
+      "ingredient": "draconicevolution:draconium_core"
     },
     {
       "consume": true,
-      "ingredient": {
-        "item": "draconicevolution:draconium_core"
-      }
+      "ingredient": "draconicevolution:draconium_core"
     },
     {
       "consume": true,
-      "ingredient": {
-        "item": "draconicevolution:draconium_core"
-      }
+      "ingredient": "draconicevolution:draconium_core"
     }
   ],
   "result": {

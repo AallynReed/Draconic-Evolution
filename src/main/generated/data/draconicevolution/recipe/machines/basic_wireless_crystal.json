@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:ender_pearl"
-    },
-    "B": {
-      "item": "draconicevolution:particle_generator"
-    },
-    "C": {
-      "item": "minecraft:ender_eye"
-    },
-    "D": {
-      "item": "draconicevolution:basic_relay_crystal"
-    }
+    "A": "minecraft:ender_pearl",
+    "B": "draconicevolution:particle_generator",
+    "C": "minecraft:ender_eye",
+    "D": "draconicevolution:basic_relay_crystal"
   },
   "pattern": [
     "ABA",
@@ -21,7 +13,6 @@
     "ABA"
   ],
   "result": {
-    "count": 1,
     "id": "draconicevolution:basic_wireless_crystal"
   }
 }

@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "draconicevolution:small_chaos_frag"
-    }
+    "#": "draconicevolution:small_chaos_frag"
   },
   "pattern": [
     "###",
@@ -12,7 +10,6 @@
     "###"
   ],
   "result": {
-    "count": 1,
     "id": "draconicevolution:medium_chaos_frag"
   }
 }

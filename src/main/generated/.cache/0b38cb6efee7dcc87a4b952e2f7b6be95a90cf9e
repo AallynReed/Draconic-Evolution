@@ -1,4 +1,6 @@
-// 1.21.1	2025-09-29T14:45:17.689156081	Tags for minecraft:item mod id draconicevolution
+// 26.1.2	2026-10-05T22:51:21.7065616	Tags for minecraft:item mod id draconicevolution
+9bd81dd15a58efd081cb5ee7904c92d52a927123 data/curios/tags/item/body.json
+474ff2e4ba17742c58126f86fb08cb02f7713af4 data/curios/tags/item/curio.json
 7a2a766d2f40919d17e6ebc12bd6f0a1205da117 data/c/tags/item/dusts.json
 26a02ca040deced33c1f86c215e347e169ce3499 data/c/tags/item/dusts/draconium.json
 9864e525e028426969eb33f4b4a445b8ad2a3b89 data/c/tags/item/dusts/draconium_awakened.json
@@ -13,8 +15,6 @@ e1ab416e7e78411c08a640ffc4bc9535023d0566 data/c/tags/item/ores/draconium.json
 9f3877878dfc9dffb76615fc11ddc532e08bcb3b data/c/tags/item/storage_blocks.json
 59987491edcad8feef7cf904cb84da279dae8781 data/c/tags/item/storage_blocks/draconium.json
 e0559dc39b8d8d852d5d416df07a5247ca59fe4d data/c/tags/item/storage_blocks/draconium_awakened.json
-9bd81dd15a58efd081cb5ee7904c92d52a927123 data/curios/tags/item/body.json
-474ff2e4ba17742c58126f86fb08cb02f7713af4 data/curios/tags/item/curio.json
 3f5e3521f3d587cb2d27bc5d66d7d2ca9ed0d1af data/draconicevolution/tags/item/modules.json
 14cd639249180994a1ae25b294a1a3eb2816eb3b data/minecraft/tags/item/axes.json
 c698c3ae40c7adc3ca7a4defdaaf030b12cb01cd data/minecraft/tags/item/enchantable/bow.json

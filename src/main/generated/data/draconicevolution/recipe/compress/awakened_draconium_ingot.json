@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:nuggets/draconium_awakened"
-    }
+    "#": "#c:nuggets/draconium_awakened"
   },
   "pattern": [
     "###",
@@ -12,7 +10,6 @@
     "###"
   ],
   "result": {
-    "count": 1,
     "id": "draconicevolution:awakened_draconium_ingot"
   }
 }

@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:ingots/draconium"
-    },
-    "A": {
-      "item": "draconicevolution:draconium_core"
-    },
-    "B": {
-      "item": "draconicevolution:module_core"
-    },
-    "C": {
-      "item": "minecraft:golden_boots"
-    },
-    "D": {
-      "item": "minecraft:piston"
-    }
+    "#": "#c:ingots/draconium",
+    "A": "draconicevolution:draconium_core",
+    "B": "draconicevolution:module_core",
+    "C": "minecraft:golden_boots",
+    "D": "minecraft:piston"
   },
   "pattern": [
     "#C#",
@@ -24,7 +14,6 @@
     "D#D"
   ],
   "result": {
-    "count": 1,
     "id": "draconicevolution:item_wyvern_hill_step"
   }
 }

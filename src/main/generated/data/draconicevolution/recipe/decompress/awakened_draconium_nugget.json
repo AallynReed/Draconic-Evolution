@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "tag": "c:ingots/draconium_awakened"
-    }
+    "#c:ingots/draconium_awakened"
   ],
   "result": {
     "count": 9,

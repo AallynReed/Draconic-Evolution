@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:ingots/draconium"
-    },
-    "B": {
-      "item": "draconicevolution:energy_core_stabilizer"
-    },
-    "C": {
-      "item": "draconicevolution:draconium_core"
-    },
-    "D": {
-      "item": "minecraft:enchanting_table"
-    }
+    "A": "#c:ingots/draconium",
+    "B": "draconicevolution:energy_core_stabilizer",
+    "C": "draconicevolution:draconium_core",
+    "D": "minecraft:enchanting_table"
   },
   "pattern": [
     "ABA",
@@ -21,7 +13,6 @@
     "ACA"
   ],
   "result": {
-    "count": 1,
     "id": "draconicevolution:energy_transfuser"
   }
 }

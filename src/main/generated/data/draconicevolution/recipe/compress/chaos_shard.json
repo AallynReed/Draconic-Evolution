@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "draconicevolution:large_chaos_frag"
-    }
+    "#": "draconicevolution:large_chaos_frag"
   },
   "pattern": [
     "###",
@@ -12,7 +10,6 @@
     "###"
   ],
   "result": {
-    "count": 1,
     "id": "draconicevolution:chaos_shard"
   }
 }

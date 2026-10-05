@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:gems/diamond"
-    },
-    "B": {
-      "item": "draconicevolution:draconium_core"
-    },
-    "C": {
-      "tag": "c:stones"
-    },
-    "D": {
-      "tag": "c:storage_blocks/iron"
-    }
+    "A": "#c:gems/diamond",
+    "B": "draconicevolution:draconium_core",
+    "C": "#c:stones",
+    "D": "#c:storage_blocks/iron"
   },
   "pattern": [
     "ABA",
@@ -21,7 +13,6 @@
     "CCC"
   ],
   "result": {
-    "count": 1,
     "id": "draconicevolution:basic_crafting_injector"
   }
 }

@@ -14,7 +14,7 @@
     {
       "apply": {
         "model": "draconicevolution:block/portal/portal_wall_z",
-        "x": -90
+        "x": 270
       },
       "when": {
         "axis": "x",
@@ -81,7 +81,7 @@
     {
       "apply": {
         "model": "draconicevolution:block/portal/portal_wall_y",
-        "y": -90
+        "y": 270
       },
       "when": {
         "axis": "y",
@@ -111,7 +111,7 @@
     {
       "apply": {
         "model": "draconicevolution:block/portal/portal_wall_y",
-        "x": -90
+        "x": 270
       },
       "when": {
         "axis": "z",

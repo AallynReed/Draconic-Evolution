@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:ingots/draconium"
-    },
-    "A": {
-      "item": "draconicevolution:item_draconium_aoe"
-    },
-    "B": {
-      "item": "draconicevolution:wyvern_core"
-    },
-    "I": {
-      "item": "minecraft:netherite_scrap"
-    }
+    "#": "#c:ingots/draconium",
+    "A": "draconicevolution:item_draconium_aoe",
+    "B": "draconicevolution:wyvern_core",
+    "I": "minecraft:netherite_scrap"
   },
   "pattern": [
     "#I#",
@@ -21,7 +13,6 @@
     "#I#"
   ],
   "result": {
-    "count": 1,
     "id": "draconicevolution:item_wyvern_aoe"
   }
 }

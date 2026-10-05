@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "draconicevolution:wyvern_energy_core"
-    },
-    "B": {
-      "item": "draconicevolution:basic_relay_crystal"
-    },
-    "C": {
-      "item": "draconicevolution:draconium_core"
-    }
+    "A": "draconicevolution:wyvern_energy_core",
+    "B": "draconicevolution:basic_relay_crystal",
+    "C": "draconicevolution:draconium_core"
   },
   "pattern": [
     "ABA",

@@ -2,21 +2,12 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "draconicevolution:dislocator"
-    },
-    {
-      "item": "draconicevolution:draconium_core"
-    },
-    {
-      "item": "draconicevolution:dislocator"
-    },
-    {
-      "item": "minecraft:ghast_tear"
-    }
+    "draconicevolution:dislocator",
+    "draconicevolution:draconium_core",
+    "draconicevolution:dislocator",
+    "minecraft:ghast_tear"
   ],
   "result": {
-    "count": 1,
     "id": "draconicevolution:p2p_dislocator_unbound"
   }
 }

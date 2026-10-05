@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "minecraft:planks"
-    },
-    "B": {
-      "tag": "c:dusts/redstone"
-    },
-    "C": {
-      "tag": "c:dusts/draconium"
-    },
-    "D": {
-      "item": "minecraft:stone_slab"
-    }
+    "A": "#minecraft:planks",
+    "B": "#c:dusts/redstone",
+    "C": "#c:dusts/draconium",
+    "D": "minecraft:stone_slab"
   },
   "pattern": [
     " A ",
@@ -21,7 +13,6 @@
     "DDD"
   ],
   "result": {
-    "count": 1,
     "id": "draconicevolution:potentiometer"
   }
 }

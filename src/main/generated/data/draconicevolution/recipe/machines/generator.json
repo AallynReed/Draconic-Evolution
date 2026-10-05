@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:bricks/nether"
-    },
-    "B": {
-      "tag": "c:ingots/iron"
-    },
-    "C": {
-      "item": "minecraft:furnace"
-    },
-    "D": {
-      "item": "draconicevolution:draconium_core"
-    }
+    "A": "#c:bricks/nether",
+    "B": "#c:ingots/iron",
+    "C": "minecraft:furnace",
+    "D": "draconicevolution:draconium_core"
   },
   "pattern": [
     "ABA",
@@ -21,7 +13,6 @@
     "ADA"
   ],
   "result": {
-    "count": 1,
     "id": "draconicevolution:generator"
   }
 }

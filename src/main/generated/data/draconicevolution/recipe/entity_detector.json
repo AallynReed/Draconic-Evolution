@@ -2,24 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:gems/lapis"
-    },
-    "B": {
-      "item": "minecraft:ender_eye"
-    },
-    "C": {
-      "tag": "c:dusts/redstone"
-    },
-    "D": {
-      "tag": "c:ingots/draconium"
-    },
-    "E": {
-      "tag": "c:ingots/iron"
-    },
-    "F": {
-      "item": "draconicevolution:draconium_core"
-    }
+    "A": "#c:gems/lapis",
+    "B": "minecraft:ender_eye",
+    "C": "#c:dusts/redstone",
+    "D": "#c:ingots/draconium",
+    "E": "#c:ingots/iron",
+    "F": "draconicevolution:draconium_core"
   },
   "pattern": [
     "ABA",
@@ -27,7 +15,6 @@
     "EFE"
   ],
   "result": {
-    "count": 1,
     "id": "draconicevolution:entity_detector"
   }
 }

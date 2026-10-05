@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:ingots/draconium"
-    },
-    "B": {
-      "item": "draconicevolution:wyvern_energy_core"
-    },
-    "C": {
-      "item": "draconicevolution:wyvern_core"
-    }
+    "A": "#c:ingots/draconium",
+    "B": "draconicevolution:wyvern_energy_core",
+    "C": "draconicevolution:wyvern_core"
   },
   "pattern": [
     "AAA",
@@ -18,7 +12,6 @@
     "AAA"
   ],
   "result": {
-    "count": 1,
     "id": "draconicevolution:energy_core"
   }
 }
