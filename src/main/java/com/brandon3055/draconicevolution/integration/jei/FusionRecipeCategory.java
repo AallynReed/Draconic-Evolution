@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.integration.jei;
 
-import codechicken.lib.gui.modular.lib.GuiRender;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -16,7 +15,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -57,10 +56,14 @@ public class FusionRecipeCategory implements IRecipeCategory<RecipeHolder<IFusio
         return localizedName;
     }
 
-    @Nonnull
     @Override
-    public IDrawable getBackground() {
-        return background;
+    public int getWidth() {
+        return xSize;
+    }
+
+    @Override
+    public int getHeight() {
+        return ySize;
     }
 
     @Nonnull
@@ -70,23 +73,23 @@ public class FusionRecipeCategory implements IRecipeCategory<RecipeHolder<IFusio
     }
 
     @Override
-    public void draw(RecipeHolder<IFusionRecipe> recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
-        GuiRender render = GuiRender.convert(graphics);
+    public void draw(RecipeHolder<IFusionRecipe> recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor render, double mouseX, double mouseY) {
+        background.draw(render);
         TechLevel tier = recipe.value().getRecipeTier();
         int colour = tier.index == 0 ? 5263615 : (tier.index == 1 ? 8388863 : (tier.index == 2 ? 16737792 : 5263440));
-        render.drawCenteredString(Component.translatable("gui.draconicevolution.fusion_craft.tier." + recipe.value().getRecipeTier().name().toLowerCase(Locale.ENGLISH)), this.xSize / 2D, 5, colour, false);
-        render.drawCenteredString(Component.translatable("gui.draconicevolution.fusion_craft.energy_cost"), this.xSize / 2D, this.ySize - 20, 4474111, false);
-        render.drawCenteredString(Utils.addCommas(recipe.value().getEnergyCost()) + " OP", this.xSize / 2D, this.ySize - 10, 4500223, false);
+        render.cc$drawCenteredString(Minecraft.getInstance().font, Component.translatable("gui.draconicevolution.fusion_craft.tier." + recipe.value().getRecipeTier().name().toLowerCase(Locale.ENGLISH)), this.xSize / 2D, 5, colour, false);
+        render.cc$drawCenteredString(Minecraft.getInstance().font, Component.translatable("gui.draconicevolution.fusion_craft.energy_cost"), this.xSize / 2D, this.ySize - 20, 4474111, false);
+        render.cc$drawCenteredString(Minecraft.getInstance().font, Utils.addCommas(recipe.value().getEnergyCost()) + " OP", this.xSize / 2D, this.ySize - 10, 4500223, false);
 
-        render.borderRect((xSize / 2D) - 10, 22, 20, 66, 1, 0x40FFFFFF, 0xFF00FFFF);
+        render.cc$borderRect((xSize / 2D) - 10, 22, 20, 66, 1, 0x40FFFFFF, 0xFF00FFFF);
         if (recipe.value().getIngredients().size() > 16) {
-            render.borderRect(3, 2, 18, 107, 1, 0x40FFFFFF, 0xFFAA00FF);
-            render.borderRect(23, 2, 18, 107, 1, 0x40FFFFFF, 0xFFAA00FF);
-            render.borderRect(xSize - 21, 2, 18, 107, 1, 0x40FFFFFF, 0xFFAA00FF);
-            render.borderRect(xSize - 41, 2, 18, 107, 1, 0x40FFFFFF, 0xFFAA00FF);
+            render.cc$borderRect(3, 2, 18, 107, 1, 0x40FFFFFF, 0xFFAA00FF);
+            render.cc$borderRect(23, 2, 18, 107, 1, 0x40FFFFFF, 0xFFAA00FF);
+            render.cc$borderRect(xSize - 21, 2, 18, 107, 1, 0x40FFFFFF, 0xFFAA00FF);
+            render.cc$borderRect(xSize - 41, 2, 18, 107, 1, 0x40FFFFFF, 0xFFAA00FF);
         } else {
-            render.borderRect(12, 2, 20, 107, 1, 0x40FFFFFF, 0xFFAA00FF);
-            render.borderRect(xSize - 32, 2, 20, 107, 1, 0x40FFFFFF, 0xFFAA00FF);
+            render.cc$borderRect(12, 2, 20, 107, 1, 0x40FFFFFF, 0xFFAA00FF);
+            render.cc$borderRect(xSize - 32, 2, 20, 107, 1, 0x40FFFFFF, 0xFFAA00FF);
         }
     }
 

@@ -24,6 +24,7 @@ import mezz.jei.api.helpers.IStackHelper;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
+import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.covers1624.quack.collection.FastStream;
@@ -127,7 +128,7 @@ public class DEJEIPlugin implements IModPlugin {
             }
 
             @Override
-            public RecipeType<RecipeHolder<CraftingRecipe>> getRecipeType() {
+            public IRecipeType<RecipeHolder<CraftingRecipe>> getRecipeType() {
                 return RecipeTypes.CRAFTING;
             }
 
@@ -160,7 +161,7 @@ public class DEJEIPlugin implements IModPlugin {
             }
 
             @Override
-            public RecipeType<RecipeHolder<SmeltingRecipe>> getRecipeType() {
+            public IRecipeType<RecipeHolder<SmeltingRecipe>> getRecipeType() {
                 return RecipeTypes.SMELTING;
             }
 

@@ -239,7 +239,7 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Fusion
         }
 
         int catCount = recipe.getCatalyst().getCustomIngredient() instanceof StackIngredient stackIngredient ? stackIngredient.getCount() : 1;
-        int maxStack = recipe.getCatalyst().getItems().length > 0 ? recipe.getCatalyst().getItems()[0].getMaxStackSize() : 1;
+        int maxStack = recipe.getCatalyst().items().findFirst().map(item -> item.value().getDefaultMaxStackSize()).orElse(1);
         fullSets = Math.min(fullSets, maxStack / catCount);
 
         List<IFusionInjector> injectors = fusionInv.getInjectors()
