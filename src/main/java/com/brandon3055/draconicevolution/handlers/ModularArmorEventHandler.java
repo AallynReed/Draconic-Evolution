@@ -35,7 +35,7 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.living.*;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import org.jetbrains.annotations.Nullable;
 
@@ -491,7 +491,7 @@ public class ModularArmorEventHandler {
         }
     }
 
-    private static void blockBreakEvent(BlockEvent.BreakEvent event) {
+    private static void blockBreakEvent(BreakBlockEvent event) {
         ItemStack stack = event.getPlayer().getMainHandItem();
         if (event.isCanceled() || !(stack.getItem() instanceof IModularMiningTool miningTool)) {
             return;
