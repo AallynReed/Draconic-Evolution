@@ -6,9 +6,9 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TilePlacedItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -21,13 +21,13 @@ import java.util.List;
 /**
  * Created by brandon3055 on 25/07/2016.
  */
-public class RenderTilePlacedItem implements BlockEntityRenderer<TilePlacedItem> {
+public class RenderTilePlacedItem implements DETileRenderer<TilePlacedItem> {
 
     public RenderTilePlacedItem(BlockEntityRendererProvider.Context context) {
     }
 
     @Override
-    public void render(TilePlacedItem tile, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
+    public void render(TilePlacedItem tile, float partialTicks, PoseStack mStack, SubmitNodeCollector collector, int packedLight, int packedOverlay, CameraRenderState camera) {
         Minecraft mc = Minecraft.getInstance();
 
         List<ItemStack> stackList = tile.getStacksInOrder();
@@ -57,7 +57,7 @@ public class RenderTilePlacedItem implements BlockEntityRenderer<TilePlacedItem>
                 mStack.mulPose(Axis.XP.rotationDegrees(90));
                 mStack.scale(scale, scale, scale);
             }
-            mc.getItemRenderer().renderStatic(stack, ItemDisplayContext.FIXED, packedLight, packedOverlay, mStack, getter, tile.getLevel(), posLong + i);
+            DETileRenderer.renderItem(stack, ItemDisplayContext.FIXED, packedLight, packedOverlay, mStack, collector, tile.getLevel(), posLong + i);
             mStack.popPose();
             mStack.translate(0, 0.00005F, 0); //Adds a slight offset to avoid z-fighting when items overlap
         }

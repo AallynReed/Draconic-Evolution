@@ -5,14 +5,14 @@ import com.brandon3055.draconicevolution.client.render.effect.EffectTrackerCeles
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.EnchantingTableBlockEntity;
 import net.minecraft.world.phys.AABB;
 
-public class RenderTileCelestialManipulator implements BlockEntityRenderer<TileCelestialManipulator> {
+public class RenderTileCelestialManipulator implements DETileRenderer<TileCelestialManipulator> {
 
     public RenderTileCelestialManipulator(BlockEntityRendererProvider.Context context) {
     }
@@ -31,12 +31,12 @@ public class RenderTileCelestialManipulator implements BlockEntityRenderer<TileC
     }
 
     @Override
-    public void render(TileCelestialManipulator te, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+    public void render(TileCelestialManipulator te, float partialTicks, PoseStack poseStack, SubmitNodeCollector collector, int packedLight, int packedOverlay, CameraRenderState camera) {
 
     }
 
     @Override
-    public boolean shouldRenderOffScreen(TileCelestialManipulator te) {
+    public boolean shouldRenderOffScreen() {
         return true;
     }
 

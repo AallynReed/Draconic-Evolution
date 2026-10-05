@@ -2,9 +2,7 @@ package com.brandon3055.draconicevolution.client.render.tile;
 
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
-import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.lighting.LightModel;
-import codechicken.lib.texture.TextureUtils;
 import codechicken.lib.vec.*;
 import codechicken.lib.vec.uv.IconTransformation;
 import codechicken.lib.vec.uv.UV;
@@ -12,14 +10,17 @@ import codechicken.lib.vec.uv.UVTransformation;
 import com.brandon3055.draconicevolution.blocks.Potentiometer;
 import com.brandon3055.draconicevolution.blocks.tileentity.TilePotentiometer;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.sprite.SpriteId;
+import net.minecraft.resources.Identifier;
 
-public class RenderTilePotentiometer implements BlockEntityRenderer<TilePotentiometer> {
+public class RenderTilePotentiometer implements DETileRenderer<TilePotentiometer> {
 
     private static CCModel model;
 
@@ -68,14 +69,9 @@ public class RenderTilePotentiometer implements BlockEntityRenderer<TilePotentio
     }
 
     @Override
-    public void render(TilePotentiometer te, float partialTicks, PoseStack matrixStackIn, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
-        TextureAtlasSprite stoneTex = TextureUtils.getBlockTexture("oak_planks");
+    public void render(TilePotentiometer te, float partialTicks, PoseStack matrixStackIn, SubmitNodeCollector collector, int combinedLightIn, int combinedOverlayIn, CameraRenderState camera) {
+        TextureAtlasSprite stoneTex = Minecraft.getInstance().getAtlasManager().get(new SpriteId(TextureAtlas.LOCATION_BLOCKS, Identifier.withDefaultNamespace("block/oak_planks")));
         UVTransformation iconTransform = new IconTransformation(stoneTex);
-        CCRenderState state = CCRenderState.instance();
-        state.reset();
-        state.bind(RenderType.solid(), buffer);
-        state.brightness = combinedLightIn;
-        state.overlay = combinedOverlayIn;
         double pxl = 1D / 16D;
 
         Matrix4 mat = new Matrix4(matrixStackIn);
@@ -83,6 +79,10 @@ public class RenderTilePotentiometer implements BlockEntityRenderer<TilePotentio
         mat.apply(new Translation(6 * pxl, pxl, 6 * pxl));
         mat.apply(new Rotation(te.power.get() * 22.5D * -MathHelper.torad, 0, 1, 0).at(new Vector3(pxl * 2, 0, pxl * 2)));
 
-        model.render(state, LightModel.standardLightModel, iconTransform, mat);
+        collector.cc$submitCCRS(mat, RenderTypes.solidMovingBlock(), (m, state) -> {
+            state.brightness = combinedLightIn;
+            state.overlay = combinedOverlayIn;
+            model.render(state, LightModel.standardLightModel, iconTransform, m);
+        });
     }
 }

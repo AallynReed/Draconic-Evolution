@@ -6,23 +6,22 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingInj
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.joml.Quaternionf;
 
-public class RenderTileCraftingInjector implements BlockEntityRenderer<TileFusionCraftingInjector> {
+public class RenderTileCraftingInjector implements DETileRenderer<TileFusionCraftingInjector> {
 
     public RenderTileCraftingInjector(BlockEntityRendererProvider.Context context) {
     }
 
     @Override
-    public void render(TileFusionCraftingInjector te, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packetLight, int packetOverlay) {
+    public void render(TileFusionCraftingInjector te, float partialTicks, PoseStack mStack, SubmitNodeCollector collector, int packetLight, int packetOverlay, CameraRenderState camera) {
         if (te.getCore() != null && te.getCore().isCrafting() && te.getCore().getFusionState().ordinal() > 1) {
             return;
         }
@@ -45,7 +44,7 @@ public class RenderTileCraftingInjector implements BlockEntityRenderer<TileFusio
             mStack.mulPose(Axis.YP.rotationDegrees((ClientEventHandler.elapsedTicks + partialTicks) * -0.8F));
 
             ItemStack stack = te.itemHandler.getStackInSlot(0);
-            Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.FIXED, packetLight, packetOverlay, mStack, getter, te.getLevel(), te.posSeed());
+            DETileRenderer.renderItem(stack, ItemDisplayContext.FIXED, packetLight, packetOverlay, mStack, collector, te.getLevel(), te.posSeed());
         }
     }
 }

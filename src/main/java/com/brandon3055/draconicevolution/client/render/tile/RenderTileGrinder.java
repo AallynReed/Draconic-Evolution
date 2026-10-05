@@ -4,6 +4,7 @@ import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.RenderUtils;
+import codechicken.lib.render.buffer.DelegatingVertexConsumer;
 import codechicken.lib.render.buffer.TransformingVertexConsumer;
 import codechicken.lib.render.model.OBJParser;
 import codechicken.lib.vec.*;
@@ -11,16 +12,15 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.machines.Grinder;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
@@ -29,30 +29,16 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Map;
-import java.util.OptionalDouble;
 
 /**
  * Created by brandon3055 on 3/11/19.
  */
-public class RenderTileGrinder implements BlockEntityRenderer<TileGrinder> {
+public class RenderTileGrinder implements DETileRenderer<TileGrinder> {
     private static final double[] ROTATION_MAP = new double[]{0, 180, 90, -90};
-    private static final RenderType swordType = RenderType.entitySolid(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/grinder.png"));
-    private static final RenderType fanType = RenderType.entitySolid(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/parts/machine_fan.png"));
-    private static final RenderType aoeOutlineType = RenderType.create("aoe", DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.LINES, 256, RenderType.CompositeState.builder()
-            .setShaderState(RenderStateShard.RENDERTYPE_LINES_SHADER)
-            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-            .setCullState(RenderStateShard.NO_CULL)
-            .setWriteMaskState(RenderStateShard.COLOR_WRITE)
-            .setLineState(new RenderStateShard.LineStateShard(OptionalDouble.of(4.0)))
-            .createCompositeState(false)
-    );
-    private static RenderType aoeSolidType = RenderType.create("aoe_solid", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
-            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getPositionColorShader))
-            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-            .setCullState(RenderStateShard.NO_CULL)
-            .setWriteMaskState(RenderStateShard.COLOR_WRITE)
-            .createCompositeState(false)
-    );
+    private static final RenderType swordType = RenderTypes.entitySolid(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/grinder.png"));
+    private static final RenderType fanType = RenderTypes.entitySolid(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/parts/machine_fan.png"));
+    private static final RenderType aoeOutlineType = RenderType.create("aoe", RenderSetup.builder(RenderPipelines.LINES_TRANSLUCENT).bufferSize(256).createRenderSetup());
+    private static RenderType aoeSolidType = RenderType.create("aoe_solid", RenderSetup.builder(RenderPipelines.DEBUG_QUADS).bufferSize(256).createRenderSetup());
 
 
     private final CCModel swordModel;
@@ -72,43 +58,53 @@ public class RenderTileGrinder implements BlockEntityRenderer<TileGrinder> {
     }
 
     @Override
-    public void render(TileGrinder tile, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
+    public void render(TileGrinder tile, float partialTicks, PoseStack mStack, SubmitNodeCollector collector, int packedLight, int packedOverlay, CameraRenderState camera) {
         BlockState state = tile.getLevel().getBlockState(tile.getBlockPos());
         if (!state.is(DEContent.GRINDER.get())) return;
         Direction facing = state.getValue(Grinder.FACING);
 
         Matrix4 mat = new Matrix4(mStack);
-        CCRenderState ccrs = CCRenderState.instance();
-        ccrs.reset();
-        ccrs.brightness = packedLight;
-        ccrs.overlay = packedOverlay;
 
         //Note to self: this is the hacky approach. Ideally this should be converted to matrix operations.
         //But it is performant so i am leaving it like this to remind myself that this is possible.
-        ccrs.bind(swordType, getter);
-        ccrs.r = new TransformingVertexConsumer(ccrs.r, mat);
         Vector3 tilePos = Vector3.fromTileCenter(tile);
         Vector3 vecA = tile.targetA == null ? null : getEntityMovingVec(tile.targetA, partialTicks);
         Vector3 vecB = tile.targetB == null ? null : getEntityMovingVec(tile.targetB, partialTicks);
-        renderSword(ccrs, facing, 0.34, tilePos, vecA, Math.min(tile.animA + (partialTicks * tile.getAnimSpeed()), 1), partialTicks);
-        renderSword(ccrs, facing, -0.34, tilePos, vecB, Math.min(tile.animB + (partialTicks * tile.getAnimSpeed()), 1), partialTicks);
+        collector.cc$submitCCRS(mat, swordType, (m, ccrs) -> {
+            ccrs.brightness = packedLight;
+            ccrs.overlay = packedOverlay;
+            ccrs.r = new TransformingVertexConsumer(ccrs.r, m);
+            renderSword(ccrs, facing, 0.34, tilePos, vecA, Math.min(tile.animA + (partialTicks * tile.getAnimSpeed()), 1), partialTicks);
+            renderSword(ccrs, facing, -0.34, tilePos, vecB, Math.min(tile.animB + (partialTicks * tile.getAnimSpeed()), 1), partialTicks);
+        });
 
-        ccrs.bind(fanType, getter);
         Matrix4 fanMat = mat.copy();
         fanMat.translate(Vector3.CENTER);
         fanMat.apply(new Rotation(facing.toYRot() * -MathHelper.torad, 0, 1, 0));
         fanMat.apply(new Scale(-0.0625));
         fanMat.apply(new Rotation((tile.fanRotation + (tile.fanSpeed * partialTicks)), 0, 0, 1));
-        fanModel.render(ccrs, fanMat);
+        collector.cc$submitCCRS(fanMat, fanType, (m, ccrs) -> {
+            ccrs.brightness = packedLight;
+            ccrs.overlay = packedOverlay;
+            fanModel.render(ccrs, m);
+        });
 
         if (tile.aoeDisplay > 0.51) {
             tile.validateKillZone(true);
-            VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(aoeOutlineType), mat);
             Cuboid6 box = new Cuboid6(tile.killZone.move(Vector3.fromTile(tile).multiply(-1).pos()).deflate(0.01).deflate(tile.aoe.get() - tile.aoeDisplay));
-            RenderUtils.bufferCuboidOutline(builder, box, 0F, 0F, 0F, 1F);
-            builder = new TransformingVertexConsumer(getter.getBuffer(aoeSolidType), mat);
-            RenderUtils.bufferCuboidSolid(builder, box, 0F, 1F, 1F, 0.2F);
-            com.brandon3055.brandonscore.client.render.RenderUtils.endBatch(getter);
+            collector.cc$submitCustomGeometry(mat, aoeOutlineType, (m, type, buffer) -> {
+                VertexConsumer builder = new TransformingVertexConsumer(new DelegatingVertexConsumer(buffer) {
+                    @Override
+                    public VertexConsumer addVertex(float x, float y, float z) {
+                        return super.addVertex(x, y, z).setLineWidth(4.0F);
+                    }
+                }, m);
+                RenderUtils.bufferCuboidOutline(builder, box, 0F, 0F, 0F, 1F);
+            });
+            collector.cc$submitCustomGeometry(mat, aoeSolidType, (m, type, buffer) -> {
+                VertexConsumer builder = new TransformingVertexConsumer(buffer, m);
+                RenderUtils.bufferCuboidSolid(builder, box, 0F, 1F, 1F, 0.2F);
+            });
         }
     }
 
@@ -142,6 +138,6 @@ public class RenderTileGrinder implements BlockEntityRenderer<TileGrinder> {
 
     @Override
     public AABB getRenderBoundingBox(TileGrinder blockEntity) {
-        return BlockEntityRenderer.super.getRenderBoundingBox(blockEntity).inflate(8);
+        return DETileRenderer.super.getRenderBoundingBox(blockEntity).inflate(8);
     }
 }

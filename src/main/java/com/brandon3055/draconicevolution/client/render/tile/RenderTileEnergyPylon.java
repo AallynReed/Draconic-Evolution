@@ -3,7 +3,6 @@ package com.brandon3055.draconicevolution.client.render.tile;
 import codechicken.lib.colour.Colour;
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
-import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.model.OBJParser;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Scale;
@@ -12,14 +11,18 @@ import com.brandon3055.brandonscore.client.shader.BCShaders;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyPylon;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
+import com.mojang.blaze3d.pipeline.DepthStencilState;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.platform.CompareOp;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.AABB;
 
@@ -28,16 +31,18 @@ import java.util.Map;
 /**
  * Created by brandon3055 on 20/05/2016.
  */
-public class RenderTileEnergyPylon implements BlockEntityRenderer<TileEnergyPylon> {
+public class RenderTileEnergyPylon implements DETileRenderer<TileEnergyPylon> {
 
-    private static RenderType modelType = RenderType.entitySolid(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/pylon_sphere_texture.png"));
+    private static RenderType modelType = RenderTypes.entitySolid(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/pylon_sphere_texture.png"));
 
-    private static RenderType shellType = RenderType.create("pylon_sphere", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
-            .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/pylon_sphere_texture.png"), false, false))
-            .setShaderState(new RenderStateShard.ShaderStateShard(() -> BCShaders.posColourTexAlpha0))
-            .setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)
-            .setWriteMaskState(RenderStateShard.COLOR_WRITE)
-            .createCompositeState(false)
+    private static RenderType shellType = RenderType.create("pylon_sphere", RenderSetup.builder(RenderPipeline.builder(BCShaders.POS_COLOUR_TEX_ALPHA0)
+                    .withLocation(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "pipeline/pylon_sphere"))
+                    .withColorTargetState(new ColorTargetState(BlendFunction.LIGHTNING))
+                    .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))
+                    .build())
+            .withTexture("Sampler0", Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/pylon_sphere_texture.png"))
+            .bufferSize(256)
+            .createRenderSetup()
     );
     private final CCModel model;
 
@@ -49,51 +54,49 @@ public class RenderTileEnergyPylon implements BlockEntityRenderer<TileEnergyPylo
     }
 
     @Override
-    public void render(TileEnergyPylon te, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
+    public void render(TileEnergyPylon te, float partialTicks, PoseStack mStack, SubmitNodeCollector collector, int packedLight, int packedOverlay, CameraRenderState camera) {
         if (!te.structureValid.get()) return;
 
         Matrix4 mat = new Matrix4(mStack);
-        CCRenderState ccrs = CCRenderState.instance();
-        ccrs.reset();
-        ccrs.brightness = 240;
-        ccrs.overlay = packedOverlay;
 
-        ccrs.baseColour = 0x005efaFF;
+        int modelColour = 0x005efaFF;
         if (te.colour.notNull()) {
-            ccrs.baseColour = te.colour.get().rgba();
+            modelColour = te.colour.get().rgba();
         }
 
-        shellType = RenderType.create("pylon_sphere", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
-                .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/pylon_sphere_texture.png"), false, false))
-                .setShaderState(new RenderStateShard.ShaderStateShard(() -> BCShaders.posColourTexAlpha0))
-                .setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)
-                .setWriteMaskState(RenderStateShard.COLOR_WRITE)
-                .createCompositeState(false)
-        );
-
-        ccrs.bind(modelType, getter);
-        mat.translate(te.direction.get().getNormal());
+        mat.translate(te.direction.get().getUnitVec3i());
         mat.translate(0.5, 0.5, 0.5);
         mat.rotate(((ClientEventHandler.elapsedTicks + partialTicks) * 2F) * MathHelper.torad, new Vector3(0, 1, 0.5).normalize());
-        model.render(ccrs, mat);
+        int finalModelColour = modelColour;
+        collector.cc$submitCCRS(mat, modelType, (m, ccrs) -> {
+            ccrs.brightness = 240;
+            ccrs.overlay = packedOverlay;
+            ccrs.baseColour = finalModelColour;
+            model.render(ccrs, m);
+        });
 
         float f = MathHelper.clip(((ClientEventHandler.elapsedTicks + partialTicks) % 35F) / 30F, 0, 1);
         if (te.ioMode.get().canExtract()) {
             f = 1F - f;
         }
 
-        ccrs.baseColour = Colour.packRGBA(1F - f, 0xF5 / 255F, 0xfa / 255F, 1F - f);
+        int shellColour = Colour.packRGBA(1F - f, 0xF5 / 255F, 0xfa / 255F, 1F - f);
         if (te.colour.notNull()) {
-            ccrs.baseColour = Colour.packRGBA(te.colour.get().rF() * (1F - f), te.colour.get().gF(), te.colour.get().bF(), 1F - (f * f));
+            shellColour = Colour.packRGBA(te.colour.get().rF() * (1F - f), te.colour.get().gF(), te.colour.get().bF(), 1F - (f * f));
         }
 
-        ccrs.bind(shellType, getter);
         mat.scale(1 + f);
-        model.render(ccrs, mat);
+        int finalShellColour = shellColour;
+        collector.cc$submitCCRS(mat, shellType, (m, ccrs) -> {
+            ccrs.brightness = 240;
+            ccrs.overlay = packedOverlay;
+            ccrs.baseColour = finalShellColour;
+            model.render(ccrs, m);
+        });
     }
 
     @Override
     public AABB getRenderBoundingBox(TileEnergyPylon blockEntity) {
-        return BlockEntityRenderer.super.getRenderBoundingBox(blockEntity).inflate(1);
+        return DETileRenderer.super.getRenderBoundingBox(blockEntity).inflate(1);
     }
 }

@@ -13,18 +13,19 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Created by brandon3055 on 4/06/2017.
  */
-public class DraconiumChestTileRenderer implements BlockEntityRenderer<TileDraconiumChest> {
-    private static final RenderType renderType = RenderType.entityCutout(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/draconium_chest.png"));
+public class DraconiumChestTileRenderer implements DETileRenderer<TileDraconiumChest> {
+    private static final RenderType renderType = RenderTypes.entityCutout(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/draconium_chest.png"));
     private final ModelPart lid;
     private final ModelPart bottom;
     private final ModelPart lock;
@@ -56,23 +57,26 @@ public class DraconiumChestTileRenderer implements BlockEntityRenderer<TileDraco
     }
 
     @Override
-    public void render(TileDraconiumChest tile, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
+    public void render(TileDraconiumChest tile, float partialTicks, PoseStack mStack, SubmitNodeCollector collector, int packedLight, int packedOverlay, CameraRenderState camera) {
         BlockState blockstate = tile.getBlockState();
         float rotation = blockstate.getValue(DraconiumChest.FACING).toYRot();
         float lidAngle = MathHelper.interpolate(tile.prevLidAngle, tile.lidAngle, partialTicks);
         lidAngle = 1.0F - lidAngle;
         lidAngle = 1.0F - lidAngle * lidAngle * lidAngle;
         lidAngle *= 3.141593F * -0.5F;
-        renderChest(mStack, getter, rotation, lidAngle, packedLight, packedOverlay, tile.colour.get());
+        renderChest(mStack, collector, rotation, lidAngle, packedLight, packedOverlay, tile.colour.get());
     }
 
-    public void renderChest(PoseStack mStack, MultiBufferSource getter, float rotation, float lidAngle, int packedLight, int packedOverlay, int colour) {
+    public void renderChest(PoseStack mStack, SubmitNodeCollector collector, float rotation, float lidAngle, int packedLight, int packedOverlay, int colour) {
         mStack.pushPose();
         mStack.translate(0.5D, 0.5D, 0.5D);
         mStack.mulPose(Axis.YP.rotationDegrees(-rotation));
         mStack.translate(-0.5D, -0.5D, -0.5D);
-        VertexConsumer buffer = getter.getBuffer(renderType);
-        this.render(mStack, buffer, this.lid, this.lock, this.bottom, lidAngle, packedLight, packedOverlay, colour);
+        collector.submitCustomGeometry(mStack, renderType, (pose, buffer) -> {
+            PoseStack poseStack = new PoseStack();
+            poseStack.last().set(pose);
+            this.render(poseStack, buffer, this.lid, this.lock, this.bottom, lidAngle, packedLight, packedOverlay, colour);
+        });
         mStack.popPose();
     }
 

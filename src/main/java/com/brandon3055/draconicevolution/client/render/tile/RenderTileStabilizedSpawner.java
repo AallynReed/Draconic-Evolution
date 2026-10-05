@@ -6,9 +6,11 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -17,7 +19,7 @@ import net.minecraft.world.item.ItemStack;
 /**
  * Created by brandon3055 on 20/05/2016.
  */
-public class RenderTileStabilizedSpawner implements BlockEntityRenderer<TileStabilizedSpawner> {
+public class RenderTileStabilizedSpawner implements DETileRenderer<TileStabilizedSpawner> {
 
     private static final ItemStack[] CORE_RENDER_ITEMS = new ItemStack[]{new ItemStack(DEContent.CORE_DRACONIUM.get()), new ItemStack(DEContent.CORE_WYVERN.get()), new ItemStack(DEContent.CORE_AWAKENED.get()), new ItemStack(DEContent.CORE_CHAOTIC.get())};
 
@@ -25,7 +27,7 @@ public class RenderTileStabilizedSpawner implements BlockEntityRenderer<TileStab
     }
 
     @Override
-    public void render(TileStabilizedSpawner tile, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
+    public void render(TileStabilizedSpawner tile, float partialTicks, PoseStack mStack, SubmitNodeCollector collector, int packedLight, int packedOverlay, CameraRenderState camera) {
         StabilizedSpawnerLogic spawnerLogic = tile.spawnerLogic;
 
         mStack.pushPose();
@@ -39,11 +41,14 @@ public class RenderTileStabilizedSpawner implements BlockEntityRenderer<TileStab
             }
 
             mStack.translate(0.0D, 0.4F, 0.0D);
-            mStack.mulPose(Axis.YP.rotationDegrees((float) Mth.lerp(partialTicks, spawnerLogic.getoSpin(), spawnerLogic.getSpin()) * 10.0F));
+            mStack.mulPose(Axis.YP.rotationDegrees((float) Mth.lerp(partialTicks, spawnerLogic.getOSpin(), spawnerLogic.getSpin()) * 10.0F));
             mStack.translate(0.0D, -0.2F, 0.0D);
             mStack.mulPose(Axis.XP.rotationDegrees(-30.0F));
             mStack.scale(f, f, f);
-            Minecraft.getInstance().getEntityRenderDispatcher().render(entity, 0.0D, 0.0D, 0.0D, 0.0F, partialTicks, mStack, getter, packedLight);
+            EntityRenderDispatcher dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+            EntityRenderState entityState = dispatcher.extractEntity(entity, partialTicks);
+            entityState.lightCoords = packedLight;
+            dispatcher.submit(entityState, camera, 0.0D, 0.0D, 0.0D, mStack, collector);
         }
         mStack.popPose();
 
@@ -52,6 +57,6 @@ public class RenderTileStabilizedSpawner implements BlockEntityRenderer<TileStab
         mStack.mulPose(Axis.XP.rotationDegrees(90.0F));
 
         ItemStack stack = CORE_RENDER_ITEMS[tile.spawnerTier.get().ordinal()];
-        Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.FIXED, packedLight, packedOverlay, mStack, getter, tile.getLevel(), tile.posSeed());
+        DETileRenderer.renderItem(stack, ItemDisplayContext.FIXED, packedLight, packedOverlay, mStack, collector, tile.getLevel(), tile.posSeed());
     }
 }

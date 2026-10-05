@@ -1,22 +1,22 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
 import codechicken.lib.math.MathHelper;
-import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDislocatorPedestal;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.QuadInstance;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -26,12 +26,13 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.joml.Quaternionf;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by brandon3055 on 27/09/2016.
  */
-public class RenderTileDislocatorPedestal implements BlockEntityRenderer<TileDislocatorPedestal> {
+public class RenderTileDislocatorPedestal implements DETileRenderer<TileDislocatorPedestal> {
 
     public static List<BakedQuad> modelQuads = null;
 
@@ -39,9 +40,11 @@ public class RenderTileDislocatorPedestal implements BlockEntityRenderer<TileDis
     }
 
     @Override
-    public void render(TileDislocatorPedestal tile, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedoverlay) {
+    public void render(TileDislocatorPedestal tile, float partialTicks, PoseStack mStack, SubmitNodeCollector collector, int packedLight, int packedoverlay, CameraRenderState camera) {
         if (modelQuads == null) {
-            modelQuads = Minecraft.getInstance().getBlockRenderer().getBlockModel(DEContent.DISLOCATOR_PEDESTAL.get().defaultBlockState()).getQuads(DEContent.DISLOCATOR_PEDESTAL.get().defaultBlockState(), null, tile.getLevel().getRandom());
+            List<BlockStateModelPart> parts = new ArrayList<>();
+            Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(DEContent.DISLOCATOR_PEDESTAL.get().defaultBlockState()).collectParts(tile.getLevel().getRandom(), parts);
+            modelQuads = parts.stream().flatMap(part -> part.getQuads(null).stream()).toList();
         }
 
         mStack.pushPose();
@@ -49,12 +52,15 @@ public class RenderTileDislocatorPedestal implements BlockEntityRenderer<TileDis
         mStack.mulPose(Axis.YP.rotationDegrees(-tile.rotation.get() * 22.5F));
         mStack.translate(-0.5, -0.5, -0.5);
 
-        VertexConsumer builder = getter.getBuffer(RenderType.solid());
-        int i = 0;
-        for (int j = modelQuads.size(); i < j; ++i) {
-            BakedQuad bakedquad = modelQuads.get(i);
-            builder.putBulkData(mStack.last(), bakedquad, 1F, 1F, 1F, 1F, packedLight, packedLight, true);
-        }
+        collector.submitCustomGeometry(mStack, RenderTypes.solidMovingBlock(), (pose, builder) -> {
+            QuadInstance instance = new QuadInstance();
+            instance.setLightCoords(packedLight);
+            int i = 0;
+            for (int j = modelQuads.size(); i < j; ++i) {
+                BakedQuad bakedquad = modelQuads.get(i);
+                builder.putBakedQuad(pose, bakedquad, instance);
+            }
+        });
 
         Minecraft mc = Minecraft.getInstance();
         ItemStack stack = tile.itemHandler.getStackInSlot(0);
@@ -63,17 +69,16 @@ public class RenderTileDislocatorPedestal implements BlockEntityRenderer<TileDis
             mStack.translate(0.5, 0.79, 0.52);
             mStack.scale(0.5F, 0.5F, 0.5F);
             mStack.mulPose(Axis.XP.rotationDegrees(-67.5F));
-            mc.getItemRenderer().renderStatic(stack, ItemDisplayContext.FIXED, packedLight, packedoverlay, mStack, getter, tile.getLevel(), tile.posSeed());
+            DETileRenderer.renderItem(stack, ItemDisplayContext.FIXED, packedLight, packedoverlay, mStack, collector, tile.getLevel(), tile.posSeed());
             mStack.popPose();
         }
-        RenderUtils.endBatch(getter);
         mStack.popPose();
         if (!stack.isEmpty()) {
-            drawName(tile, stack, mStack, getter, partialTicks);
+            drawName(tile, stack, mStack, collector, partialTicks);
         }
     }
 
-    private void drawName(TileDislocatorPedestal tile, ItemStack item, PoseStack mStack, MultiBufferSource getter, float partialTicks) {
+    private void drawName(TileDislocatorPedestal tile, ItemStack item, PoseStack mStack, SubmitNodeCollector collector, float partialTicks) {
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
 
@@ -113,7 +118,7 @@ public class RenderTileDislocatorPedestal implements BlockEntityRenderer<TileDis
 
         int textWidth = mc.font.width(name);
         mStack.translate(0, 0, -0.0125);
-        mc.font.drawInBatch(name, -(textWidth / 2F), 0, 0xffffff, true, mStack.last().pose(), getter, Font.DisplayMode.NORMAL, 0, 15728880);
+        collector.submitText(mStack, -(textWidth / 2F), 0, Component.literal(name).getVisualOrderText(), true, Font.DisplayMode.NORMAL, 15728880, 0xFFFFFFFF, 0, 0);
         mStack.popPose();
     }
 }

@@ -6,13 +6,15 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FontDescription;
 import net.minecraft.network.chat.Style;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Quaternionf;
@@ -20,9 +22,9 @@ import org.joml.Quaternionf;
 /**
  * Created by brandon3055 on 12/12/2020.
  */
-public class RenderTileEnergyTransfuser implements BlockEntityRenderer<TileEnergyTransfuser> {
+public class RenderTileEnergyTransfuser implements DETileRenderer<TileEnergyTransfuser> {
 
-    private static final Style GALACTIC_STYLE = Style.EMPTY.withFont(Minecraft.ALT_FONT);
+    private static final Style GALACTIC_STYLE = Style.EMPTY.withFont(new FontDescription.Resource(Minecraft.ALT_FONT));
     public static final Component[] TEXT = {
             Component.literal("N").withStyle(GALACTIC_STYLE),
             Component.literal("E").withStyle(GALACTIC_STYLE),
@@ -35,7 +37,7 @@ public class RenderTileEnergyTransfuser implements BlockEntityRenderer<TileEnerg
     }
 
     @Override
-    public void render(TileEnergyTransfuser tile, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
+    public void render(TileEnergyTransfuser tile, float partialTicks, PoseStack mStack, SubmitNodeCollector collector, int packedLight, int packedOverlay, CameraRenderState camera) {
         Minecraft mc = Minecraft.getInstance();
 
         mStack.translate(0.5, 0.5, 0.5);
@@ -50,7 +52,7 @@ public class RenderTileEnergyTransfuser implements BlockEntityRenderer<TileEnerg
             double xOffset = dir == Direction.NORTH ? 2 : dir == Direction.SOUTH ? 1 : 2.5;
             mStack.translate(0.0625 * -xOffset, 0.0625 * -3.5, 0.0625 * 1.375);
             mStack.scale(0.0625F, 0.0625F, 0.0625F);
-            mc.font.drawInBatch(TEXT[i].getVisualOrderText(), 0, 0, tile.ioModes[i].get().getColour(), false, mStack.last().pose(), getter, Font.DisplayMode.NORMAL, 240, 240);
+            collector.submitText(mStack, 0, 0, TEXT[i].getVisualOrderText(), false, Font.DisplayMode.NORMAL, 240, ARGB.opaque(tile.ioModes[i].get().getColour()), 240, 0);
             mStack.popPose();
 
             ItemStack stack = tile.itemsCombined.getStackInSlot(i);
@@ -58,7 +60,7 @@ public class RenderTileEnergyTransfuser implements BlockEntityRenderer<TileEnerg
                 mStack.mulPose(new Quaternionf().rotationYXZ(90 * (float) MathHelper.torad, 90 * (float) MathHelper.torad, 180 * (float) MathHelper.torad));
                 mStack.translate(0, 0, 0.0625 * (1.5 / 2));
                 mStack.scale(0.5F, 0.5F, 0.5F);
-                Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.FIXED, packedLight, OverlayTexture.NO_OVERLAY, mStack, getter, tile.getLevel(), tile.posSeed());
+                DETileRenderer.renderItem(stack, ItemDisplayContext.FIXED, packedLight, OverlayTexture.NO_OVERLAY, mStack, collector, tile.getLevel(), tile.posSeed());
             }
 
             mStack.popPose();

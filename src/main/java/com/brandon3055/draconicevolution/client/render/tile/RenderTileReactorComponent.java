@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
 import codechicken.lib.render.CCModel;
-import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.model.OBJParser;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
@@ -10,16 +9,18 @@ import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCo
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorInjector;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorStabilizer;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import net.covers1624.quack.collection.FastStream;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 
@@ -31,23 +32,33 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 /**
  * Created by brandon3055 on 20/01/2017.
  */
-public class RenderTileReactorComponent implements BlockEntityRenderer<TileReactorComponent> {
+public class RenderTileReactorComponent implements DETileRenderer<TileReactorComponent> {
 
-    private static final RenderType STAB_FRAME_TYPE = RenderType.entitySolid(Identifier.fromNamespaceAndPath(MODID, "textures/block/reactor/reactor_stabilizer.png"));
-    private static final RenderType INJECTOR_FRAME_TYPE = RenderType.entitySolid(Identifier.fromNamespaceAndPath(MODID, "textures/block/reactor/reactor_injector.png"));
+    private static final RenderType STAB_FRAME_TYPE = RenderTypes.entitySolid(Identifier.fromNamespaceAndPath(MODID, "textures/block/reactor/reactor_stabilizer.png"));
+    private static final RenderType INJECTOR_FRAME_TYPE = RenderTypes.entitySolid(Identifier.fromNamespaceAndPath(MODID, "textures/block/reactor/reactor_injector.png"));
 
-    private static final RenderType STAB_GLOW_TYPE = RenderType.create(MODID + ":stab_glow", DefaultVertexFormat.ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-            .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/block/reactor/reactor_stabilizer.png"), false, false))
-            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeEntitySolidShader)) //TODO Does this shader work?
-            .setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)
-            .createCompositeState(false)
+    private static final RenderPipeline GLOW_PIPELINE = RenderPipeline.builder(RenderPipelines.ENTITY_SNIPPET)
+            .withLocation(Identifier.fromNamespaceAndPath(MODID, "pipeline/reactor_component_glow"))
+            .withSampler("Sampler1")
+            .withColorTargetState(new ColorTargetState(BlendFunction.LIGHTNING))
+            .build();
+
+    private static final RenderType STAB_GLOW_TYPE = RenderType.create(MODID + ":stab_glow", RenderSetup.builder(GLOW_PIPELINE)
+            .withTexture("Sampler0", Identifier.fromNamespaceAndPath(MODID, "textures/block/reactor/reactor_stabilizer.png"))
+            .useLightmap()
+            .useOverlay()
+            .bufferSize(256)
+            .sortOnUpload()
+            .createRenderSetup()
     );
 
-    private static final RenderType INJECTOR_GLOW_TYPE = RenderType.create(MODID + ":injector_glow", DefaultVertexFormat.ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-            .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/block/reactor/reactor_injector.png"), false, false))
-            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeEntitySolidShader)) //TODO Does this shader work?
-            .setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)
-            .createCompositeState(false)
+    private static final RenderType INJECTOR_GLOW_TYPE = RenderType.create(MODID + ":injector_glow", RenderSetup.builder(GLOW_PIPELINE)
+            .withTexture("Sampler0", Identifier.fromNamespaceAndPath(MODID, "textures/block/reactor/reactor_injector.png"))
+            .useLightmap()
+            .useOverlay()
+            .bufferSize(256)
+            .sortOnUpload()
+            .createRenderSetup()
     );
 
     private static CCModel modelInjectorBase;
@@ -126,14 +137,9 @@ public class RenderTileReactorComponent implements BlockEntityRenderer<TileReact
     }
 
     @Override
-    public void render(TileReactorComponent te, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
+    public void render(TileReactorComponent te, float partialTicks, PoseStack mStack, SubmitNodeCollector collector, int packedLight, int packedOverlay, CameraRenderState camera) {
         Matrix4 mat = new Matrix4(mStack);
         mat.translate(0.5, 0, 0.5);
-
-        CCRenderState ccrs = CCRenderState.instance();
-        ccrs.reset();
-        ccrs.brightness = packedLight;
-        ccrs.overlay = packedOverlay;
 
         switch (te.facing.get()) {
             case SOUTH -> mat.rotate(180 * torad, Vector3.Y_POS);
@@ -145,15 +151,13 @@ public class RenderTileReactorComponent implements BlockEntityRenderer<TileReact
 
         if (te instanceof TileReactorStabilizer) {
             float coreRotation = te.animRotation + (partialTicks * te.animRotationSpeed);//Remember Partial Ticks here
-            renderStabilizer(ccrs, mat, getter, coreRotation, te.animRotationSpeed / 15F, packedLight, packedOverlay);
+            renderStabilizer(mat, collector, coreRotation, te.animRotationSpeed / 15F, packedLight, packedOverlay);
         } else if (te instanceof TileReactorInjector) {
-            renderInjector(ccrs, mat, getter, te.animRotationSpeed / 15F, packedLight, packedOverlay);
+            renderInjector(mat, collector, te.animRotationSpeed / 15F, packedLight, packedOverlay);
         }
-
-        ccrs.reset();
     }
 
-    public static void renderStabilizer(CCRenderState ccrs, Matrix4 mat, MultiBufferSource getter, float coreRotation, float brightness, int packedLight, int packedOverlay) {
+    public static void renderStabilizer(Matrix4 mat, SubmitNodeCollector collector, float coreRotation, float brightness, int packedLight, int packedOverlay) {
         float ringRotation = coreRotation * -0.5F;//Remember Partial Ticks here
 
         Matrix4 innerRotorMat = mat.copy();
@@ -161,97 +165,124 @@ public class RenderTileReactorComponent implements BlockEntityRenderer<TileReact
         Matrix4 outerRotorMat = mat.copy();
         outerRotorMat.apply(new Rotation(coreRotation * torad * -2, Vector3.Z_POS).at(new Vector3(0, 0.5, 0)));
 
-        ccrs.bind(STAB_FRAME_TYPE, getter);
-        modelStabFrame.render(ccrs, mat);
-        modelStabInnerRotorArm.render(ccrs, innerRotorMat);
-        modelStabOuterRotorArm.render(ccrs, outerRotorMat);
-
-        for (int i = 0; i < 4; i++) {
+        collector.cc$submitCCRS(mat, STAB_FRAME_TYPE, (m, ccrs) -> {
             ccrs.brightness = packedLight;
-            Matrix4 ringMat = mat.copy();
-            ringMat.apply(new Rotation(((90 * i) + ringRotation) * torad, Vector3.Z_POS).at(new Vector3(0, 0.5, 0)));
-            modelStabRing.render(ccrs, ringMat);
-
-            ccrs.brightness = (int) (brightness * 240);
-            Matrix4 emitterMat = ringMat.copy();
-            emitterMat.apply(new Rotation(45 * torad, Vector3.X_NEG).at(new Vector3(0, 15 / 16F, -((8 + 1.5) / 16F))));
-            modelStabRingEmitter.render(ccrs, emitterMat);
-        }
-
-        ccrs.brightness = (int) (brightness * 240);
-        modelStabInnerRotor.render(ccrs, innerRotorMat);
-        modelStabOuterRotor.render(ccrs, outerRotorMat);
-
-        if (brightness >= 1) {
-            ccrs.bind(STAB_GLOW_TYPE, getter);
-            modelStabInnerRotor.render(ccrs, innerRotorMat);
-            modelStabOuterRotor.render(ccrs, outerRotorMat);
-
-            for (int i = 0; i < 4; i++) {
-                Matrix4 emitterMat = mat.copy();
-                emitterMat.apply(new Rotation(((90 * i) + ringRotation) * torad, Vector3.Z_POS).at(new Vector3(0, 0.5, 0)));
-                emitterMat.apply(new Rotation(45 * torad, Vector3.X_NEG).at(new Vector3(0, 15 / 16F, -((8 + 1.5) / 16F))));
-                modelStabRingEmitter.render(ccrs, emitterMat);
-            }
-        }
-    }
-
-    public static void renderInjector(CCRenderState ccrs, Matrix4 mat, MultiBufferSource getter, float brightness, int packedLight, int packedOverlay) {
-        ccrs.bind(INJECTOR_FRAME_TYPE, getter);
-        modelInjectorBase.render(ccrs, mat);
-
-        ccrs.brightness = (int) (brightness * 240);
-        modelInjectorEmitters.render(ccrs, mat);
-
-        if (brightness >= 1) {
-            ccrs.bind(INJECTOR_GLOW_TYPE, getter);
-            modelInjectorEmitters.render(ccrs, mat);
-        }
-    }
-
-    public static void renderComponent(Item item, CCRenderState ccrs, Matrix4 mat, MultiBufferSource getter, int packedLight, int packedOverlay) {
-        if (item == DEContent.REACTOR_PRT_STAB_FRAME.get()) {
-            ccrs.bind(STAB_FRAME_TYPE, getter);
-            mat.translate(0.5, 0, 0.5);
+            ccrs.overlay = packedOverlay;
             modelStabFrame.render(ccrs, mat);
-
-        } else if (item == DEContent.REACTOR_PRT_IN_ROTOR.get()) {
-            ccrs.bind(STAB_FRAME_TYPE, getter);
-            mat.translate(0.3, 0, 0.5);
-            mat.scale(1.5F, 1.5F, 1.5F);
-            modelInnerRotorPart.render(ccrs, mat);
-
-        } else if (item == DEContent.REACTOR_PRT_OUT_ROTOR.get()) {
-            ccrs.bind(STAB_FRAME_TYPE, getter);
-            mat.translate(0.3, 0, 0.5);
-            mat.scale(1.5F, 1.5F, 1.5F);
-            modelOuterRotorPart.render(ccrs, mat);
-
-        } else if (item == DEContent.REACTOR_PRT_ROTOR_FULL.get()) {
-            ccrs.bind(STAB_FRAME_TYPE, getter);
-            mat.translate(0.5, -0.2, 0.5);
-            mat.scale(1.5F, 1.5F, 1.5F);
-
-            modelStabInnerRotor.render(ccrs, mat);
-            modelStabInnerRotorArm.render(ccrs, mat);
-            mat.apply(new Rotation(60 * torad, Vector3.Z_NEG).at(new Vector3(0, 0.5, 0)));
-            modelStabOuterRotor.render(ccrs, mat);
-            modelStabOuterRotorArm.render(ccrs, mat);
-
-        } else if (item == DEContent.REACTOR_PRT_FOCUS_RING.get()) {
-            ccrs.bind(STAB_FRAME_TYPE, getter);
-            mat.translate(0.5, -0.2, 1.25);
-            mat.scale(1.5F, 1.5F, 1.5F);
+            modelStabInnerRotorArm.render(ccrs, innerRotorMat);
+            modelStabOuterRotorArm.render(ccrs, outerRotorMat);
 
             for (int i = 0; i < 4; i++) {
+                ccrs.brightness = packedLight;
                 Matrix4 ringMat = mat.copy();
-                ringMat.apply(new Rotation((90 * i) * torad, Vector3.Z_POS).at(new Vector3(0, 0.5, 0)));
+                ringMat.apply(new Rotation(((90 * i) + ringRotation) * torad, Vector3.Z_POS).at(new Vector3(0, 0.5, 0)));
                 modelStabRing.render(ccrs, ringMat);
 
+                ccrs.brightness = (int) (brightness * 240);
                 Matrix4 emitterMat = ringMat.copy();
                 emitterMat.apply(new Rotation(45 * torad, Vector3.X_NEG).at(new Vector3(0, 15 / 16F, -((8 + 1.5) / 16F))));
                 modelStabRingEmitter.render(ccrs, emitterMat);
             }
+
+            ccrs.brightness = (int) (brightness * 240);
+            modelStabInnerRotor.render(ccrs, innerRotorMat);
+            modelStabOuterRotor.render(ccrs, outerRotorMat);
+        });
+
+        if (brightness >= 1) {
+            collector.cc$submitCCRS(mat, STAB_GLOW_TYPE, (m, ccrs) -> {
+                ccrs.brightness = (int) (brightness * 240);
+                ccrs.overlay = packedOverlay;
+                modelStabInnerRotor.render(ccrs, innerRotorMat);
+                modelStabOuterRotor.render(ccrs, outerRotorMat);
+
+                for (int i = 0; i < 4; i++) {
+                    Matrix4 emitterMat = mat.copy();
+                    emitterMat.apply(new Rotation(((90 * i) + ringRotation) * torad, Vector3.Z_POS).at(new Vector3(0, 0.5, 0)));
+                    emitterMat.apply(new Rotation(45 * torad, Vector3.X_NEG).at(new Vector3(0, 15 / 16F, -((8 + 1.5) / 16F))));
+                    modelStabRingEmitter.render(ccrs, emitterMat);
+                }
+            });
+        }
+    }
+
+    public static void renderInjector(Matrix4 mat, SubmitNodeCollector collector, float brightness, int packedLight, int packedOverlay) {
+        collector.cc$submitCCRS(mat, INJECTOR_FRAME_TYPE, (m, ccrs) -> {
+            ccrs.brightness = packedLight;
+            ccrs.overlay = packedOverlay;
+            modelInjectorBase.render(ccrs, mat);
+
+            ccrs.brightness = (int) (brightness * 240);
+            modelInjectorEmitters.render(ccrs, mat);
+        });
+
+        if (brightness >= 1) {
+            collector.cc$submitCCRS(mat, INJECTOR_GLOW_TYPE, (m, ccrs) -> {
+                ccrs.brightness = (int) (brightness * 240);
+                ccrs.overlay = packedOverlay;
+                modelInjectorEmitters.render(ccrs, mat);
+            });
+        }
+    }
+
+    public static void renderComponent(Item item, Matrix4 mat, SubmitNodeCollector collector, int packedLight, int packedOverlay) {
+        if (item == DEContent.REACTOR_PRT_STAB_FRAME.get()) {
+            mat.translate(0.5, 0, 0.5);
+            collector.cc$submitCCRS(mat, STAB_FRAME_TYPE, (m, ccrs) -> {
+                ccrs.brightness = packedLight;
+                ccrs.overlay = packedOverlay;
+                modelStabFrame.render(ccrs, m);
+            });
+
+        } else if (item == DEContent.REACTOR_PRT_IN_ROTOR.get()) {
+            mat.translate(0.3, 0, 0.5);
+            mat.scale(1.5F, 1.5F, 1.5F);
+            collector.cc$submitCCRS(mat, STAB_FRAME_TYPE, (m, ccrs) -> {
+                ccrs.brightness = packedLight;
+                ccrs.overlay = packedOverlay;
+                modelInnerRotorPart.render(ccrs, m);
+            });
+
+        } else if (item == DEContent.REACTOR_PRT_OUT_ROTOR.get()) {
+            mat.translate(0.3, 0, 0.5);
+            mat.scale(1.5F, 1.5F, 1.5F);
+            collector.cc$submitCCRS(mat, STAB_FRAME_TYPE, (m, ccrs) -> {
+                ccrs.brightness = packedLight;
+                ccrs.overlay = packedOverlay;
+                modelOuterRotorPart.render(ccrs, m);
+            });
+
+        } else if (item == DEContent.REACTOR_PRT_ROTOR_FULL.get()) {
+            mat.translate(0.5, -0.2, 0.5);
+            mat.scale(1.5F, 1.5F, 1.5F);
+            collector.cc$submitCCRS(mat, STAB_FRAME_TYPE, (m, ccrs) -> {
+                ccrs.brightness = packedLight;
+                ccrs.overlay = packedOverlay;
+
+                modelStabInnerRotor.render(ccrs, m);
+                modelStabInnerRotorArm.render(ccrs, m);
+                m.apply(new Rotation(60 * torad, Vector3.Z_NEG).at(new Vector3(0, 0.5, 0)));
+                modelStabOuterRotor.render(ccrs, m);
+                modelStabOuterRotorArm.render(ccrs, m);
+            });
+
+        } else if (item == DEContent.REACTOR_PRT_FOCUS_RING.get()) {
+            mat.translate(0.5, -0.2, 1.25);
+            mat.scale(1.5F, 1.5F, 1.5F);
+            collector.cc$submitCCRS(mat, STAB_FRAME_TYPE, (m, ccrs) -> {
+                ccrs.brightness = packedLight;
+                ccrs.overlay = packedOverlay;
+
+                for (int i = 0; i < 4; i++) {
+                    Matrix4 ringMat = m.copy();
+                    ringMat.apply(new Rotation((90 * i) * torad, Vector3.Z_POS).at(new Vector3(0, 0.5, 0)));
+                    modelStabRing.render(ccrs, ringMat);
+
+                    Matrix4 emitterMat = ringMat.copy();
+                    emitterMat.apply(new Rotation(45 * torad, Vector3.X_NEG).at(new Vector3(0, 15 / 16F, -((8 + 1.5) / 16F))));
+                    modelStabRingEmitter.render(ccrs, emitterMat);
+                }
+            });
         }
     }
 }

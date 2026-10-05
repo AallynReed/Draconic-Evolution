@@ -4,15 +4,15 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileEntityDetector;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.AABB;
 
-public class RenderTileEntityDetector implements BlockEntityRenderer<TileEntityDetector> {
+public class RenderTileEntityDetector implements DETileRenderer<TileEntityDetector> {
 
     private ItemStack eye = ItemStack.EMPTY;
     private ItemStack skull = ItemStack.EMPTY;
@@ -20,7 +20,7 @@ public class RenderTileEntityDetector implements BlockEntityRenderer<TileEntityD
     public RenderTileEntityDetector(BlockEntityRendererProvider.Context context) {}
 
     @Override
-    public void render(TileEntityDetector te, float partialTicks, PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedoverlay) {
+    public void render(TileEntityDetector te, float partialTicks, PoseStack poseStack, SubmitNodeCollector collector, int packedLight, int packedoverlay, CameraRenderState camera) {
         Minecraft mc = Minecraft.getInstance();
         boolean advanced = te.isAdvanced();
         float scale = advanced ? 0.5F : 0.35F;
@@ -32,7 +32,7 @@ public class RenderTileEntityDetector implements BlockEntityRenderer<TileEntityD
         poseStack.scale(scale, scale, scale);
         poseStack.mulPose(Axis.YP.rotationDegrees(yaw));
         poseStack.mulPose(Axis.XP.rotationDegrees(pitch));
-        mc.getItemRenderer().renderStatic(getRenderStack(advanced), ItemDisplayContext.FIXED, packedLight, packedLight, poseStack, buffers, te.getLevel(), te.posSeed());
+        DETileRenderer.renderItem(getRenderStack(advanced), ItemDisplayContext.FIXED, packedLight, packedLight, poseStack, collector, te.getLevel(), te.posSeed());
         poseStack.popPose();
     }
 
@@ -52,6 +52,6 @@ public class RenderTileEntityDetector implements BlockEntityRenderer<TileEntityD
 
     @Override
     public AABB getRenderBoundingBox(TileEntityDetector blockEntity) {
-        return BlockEntityRenderer.super.getRenderBoundingBox(blockEntity).expandTowards(0, 1, 0);
+        return DETileRenderer.super.getRenderBoundingBox(blockEntity).expandTowards(0, 1, 0);
     }
 }
