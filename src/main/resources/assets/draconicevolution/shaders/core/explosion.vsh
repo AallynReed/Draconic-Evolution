@@ -1,10 +1,10 @@
 #version 150
 
+#moj_import <dynamictransforms.glsl>
+#moj_import <projection.glsl>
+
 in vec3 Position;
 in vec2 UV0;
-
-uniform mat4 ProjMat;
-uniform mat4 ModelViewMat;
 
 out vec2 texCoord0;
 

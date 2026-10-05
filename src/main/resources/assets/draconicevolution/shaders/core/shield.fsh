@@ -1,11 +1,7 @@
 #version 150
 
 #moj_import <brandonscore:math.glsl>
-
-uniform float Time;
-uniform float Activation;
-uniform vec4 BaseColour;
-uniform int BarMode;
+#moj_import <draconicevolution:shield_uniforms.glsl>
 
 in vec2 texCoord0;
 

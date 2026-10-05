@@ -1,13 +1,13 @@
 #version 150
 
+#moj_import <globals.glsl>
 #moj_import <brandonscore:math.glsl>
 
 in vec4 vertexColor;
+flat in vec2 ScreenPos;
+flat in float Intensity;
 
 //uniform vec4 ColorModulator;
-uniform vec2 ScreenPos;
-uniform vec2 ScreenSize;
-uniform float Intensity;
 
 out vec4 fragColor;
 

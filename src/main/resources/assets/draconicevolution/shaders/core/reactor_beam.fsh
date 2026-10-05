@@ -1,12 +1,7 @@
 #version 150
 
 #moj_import <brandonscore:math.glsl>
-
-uniform float Time;
-uniform float Power;
-uniform float Fade;
-uniform float Startup;
-uniform int Type; //0 input, 1 output, 2 injector
+#moj_import <draconicevolution:reactor_beam_uniforms.glsl>
 
 in vec4 Color;
 in vec2 texCoord0;
@@ -82,12 +77,6 @@ void main() {
         c *= Startup;
     }
 
-
-
-
-
-
-
 //    vec3 coord = vec3(texCoord0, 0);
 //    float iCap = max(0, min(1, intensity));
 //    float yModifier = max(0, max(1 - (coord.y * 5), (coord.y - 0.8) * 5));
@@ -98,7 +87,7 @@ void main() {
 //    for(int i = 1; i <= 7; i++)
 //    {
 //        float power = pow(2, float(i));
-//        brightness += (1.5 / power) * max(snoise(coord + vec3(0, 0, time * 0.01), power * density), -1 + (offline * 1.5));
+//        brightness += (1.5 / power) * max(snoise(coord + vec3(0, 0, Time * 0.01), power * density), -1 + (offline * 1.5));
 //    }
 //
 //    vec4 colour = vec4(brightness, pow(brightness, 2.0) * 0.4 * iCap, pow(brightness ,3.0) * 0.15 * iCap, 1.0);

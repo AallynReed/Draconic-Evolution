@@ -1,14 +1,10 @@
 #version 150
 
 #moj_import <brandonscore:math.glsl>
+#moj_import <draconicevolution:energy_core_uniforms.glsl>
 //#moj_import <brandonscore:chaos.glsl>
 
 //uniform sampler2D Sampler0;
-uniform float Time;
-uniform float Activation;
-uniform vec3 EffectColour;
-uniform vec3 FrameColour;
-uniform vec3 InnerTriColour;
 
 in vec4 Color;
 in vec3 fPos;
@@ -101,7 +97,6 @@ vec3 shieldEffect(float shapePos) {
     //        discard;
     //    }
 
-
     //    return vec4(0, 0, 0, 0);
 }
 
@@ -129,7 +124,6 @@ vec3 rotatingTriEffect(float shapeInv) {
     }
 }
 
-
 //Triangle top left
 //Tex 0,0 is bottom right
 void main() {
@@ -151,7 +145,6 @@ void main() {
     }
 }
 
-
 //vec4 debugBands(float val, float res) {
 //    vec4 colA = val > 1 ? vec4(val - 1.0, 0, 0, 1) : val < 0 ? vec4(0, 0, 0 + (val * -1), 1) : vec4(0, val, 0, 1);
 //    vec4 colB = val > 1 ? vec4(0.5, 0, 0, 1) : val < 0 ? vec4(0, 0, 0.5, 1) : vec4(0.5, 0.5, 0, 1);
@@ -162,22 +155,4 @@ void main() {
 //        return colB;
 //    }
 //}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

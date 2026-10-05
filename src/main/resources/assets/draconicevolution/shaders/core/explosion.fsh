@@ -1,11 +1,7 @@
 #version 150
 
 #moj_import <brandonscore:math.glsl>
-
-uniform float Time;
-uniform float Scale;
-uniform float Alpha;
-uniform int Type;
+#moj_import <draconicevolution:explosion_uniforms.glsl>
 
 in vec2 texCoord0;
 

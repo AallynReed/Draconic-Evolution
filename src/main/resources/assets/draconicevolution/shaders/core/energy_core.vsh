@@ -1,11 +1,11 @@
 #version 150
 
+#moj_import <dynamictransforms.glsl>
+#moj_import <projection.glsl>
+
 in vec3 Position;
 in vec2 UV2;
 in vec2 UV0;
-
-uniform mat4 ProjMat;
-uniform mat4 ModelViewMat;
 
 out vec3 fPos;
 out vec2 FaceMod;

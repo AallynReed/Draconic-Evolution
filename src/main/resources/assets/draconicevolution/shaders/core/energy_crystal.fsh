@@ -1,10 +1,8 @@
 #version 150
 
 #moj_import <brandonscore:math.glsl>
+#moj_import <draconicevolution:energy_crystal_uniforms.glsl>
 
-uniform float Time;
-uniform vec3 Colour;
-uniform float Mipmap;
 //uniform vec2 Angle;
 
 in vec2 texCoord0;

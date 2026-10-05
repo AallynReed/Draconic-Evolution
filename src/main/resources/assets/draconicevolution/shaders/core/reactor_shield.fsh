@@ -1,9 +1,7 @@
 #version 150
 
 #moj_import <brandonscore:math.glsl>
-
-uniform float time;
-uniform float intensity;
+#moj_import <draconicevolution:reactor_uniforms.glsl>
 
 in vec2 texCoord0;
 
@@ -16,8 +14,8 @@ void main() {
     float yModifier = max(0, max(1 - (coord.y * 10), (coord.y - 0.9) * 10));
     float brightness = 1.2 + (yModifier * -2) + 1 - min(1, power * 3);  //(1.4 + (yModifier * 1.2 * iCap)) * max(-0.4, intensity);
 
-    coord.x += time / 10;
-    coord.y += time / 5;
+    coord.x += Time / 10;
+    coord.y += Time / 5;
     coord.x -= coord.y / 6;
     coord.y *= 0.2;
 
@@ -25,7 +23,7 @@ void main() {
     for(int i = 1; i <= 7; i++)
     {
         float power = pow(2, float(i));
-        brightness += (1.5 / power) * max(snoise(coord + vec3(0, 0, time * 0.006), power * density), -1);//0.006 controls animation speed
+        brightness += (1.5 / power) * max(snoise(coord + vec3(0, 0, Time * 0.006), power * density), -1);//0.006 controls animation speed
     }
 
     float po = max(brightness, 0.8);
