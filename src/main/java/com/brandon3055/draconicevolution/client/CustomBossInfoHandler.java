@@ -134,7 +134,6 @@ public class CustomBossInfoHandler {
 
                 if (DEConfig.guardianShaders) {
                     DEShaders.shieldColour.glUniform4f(1F, 0F, 0F, 1.5F);
-                    DEShaders.shieldBarMode.glUniform1i(1);
                     DEShaders.shieldActivation.glUniform1f(1F);
                     VertexConsumer shaderBuilder = getter.getBuffer(DraconicGuardianRenderer.SHIELD_TYPE);
                     poseStack.pushPose();
