@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.init;
 
 import com.brandon3055.brandonscore.api.TechLevel;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 
 /**
@@ -23,10 +24,10 @@ public class TechProperties extends Item.Properties {
         return this;
     }
 
-    public TechProperties copy() {
-        TechProperties copy = new TechProperties(techLevel);
-        copy.components.addAll(components.build());
-        return copy;
+    @Override
+    public TechProperties setId(ResourceKey<Item> id) {
+        super.setId(id);
+        return this;
     }
 
     @Deprecated
