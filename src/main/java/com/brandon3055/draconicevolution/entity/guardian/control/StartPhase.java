@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
@@ -28,7 +29,7 @@ import java.util.List;
  */
 public class StartPhase extends Phase {
     private static final Logger LOGGER = DraconicEvolution.LOGGER;
-    public static final TargetingConditions AGRO_TARGETS = TargetingConditions.forCombat().ignoreLineOfSight().range(300).selector(e -> e instanceof Player);
+    public static final TargetingConditions AGRO_TARGETS = TargetingConditions.forCombat().ignoreLineOfSight().range(300).selector((e, level) -> e instanceof Player);
     private Path currentPath;
     private Vec3 targetLocation;
     private boolean clockwise;
@@ -146,7 +147,7 @@ public class StartPhase extends Phase {
         List<Player> targetOptions = guardian.level().players()
                 .stream()
                 .filter(e -> e.distanceToSqr(focus) <= 200 * 200)
-                .filter(e -> AGRO_TARGETS.test(guardian, e))
+                .filter(e -> AGRO_TARGETS.test((ServerLevel) guardian.level(), guardian, e))
                 .map(e -> (Player) e)
                 .toList();
 
@@ -262,7 +263,7 @@ public class StartPhase extends Phase {
         if (manager != null) {
             return manager.getTrackedPlayers().size();
         }
-        return guardian.level().getNearbyPlayers(AGRO_TARGETS, guardian, guardian.getBoundingBox().inflate(244)).size();
+        return ((ServerLevel) guardian.level()).getNearbyPlayers(AGRO_TARGETS, guardian, guardian.getBoundingBox().inflate(244)).size();
     }
 
     public StartPhase prevAttackFailed() {

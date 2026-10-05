@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.DEDamage;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.client.Minecraft;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -129,7 +130,7 @@ public class LaserBeamPhase extends ChargeUpPhase {
         List<Player> targetOptions = guardian.level().players()
                 .stream()
                 .filter(e -> e.distanceToSqr(focus) <= 200 * 200)
-                .filter(e -> StartPhase.AGRO_TARGETS.test(guardian, e))
+                .filter(e -> StartPhase.AGRO_TARGETS.test((ServerLevel) guardian.level(), guardian, e))
                 .collect(Collectors.toList());
 
         if (targetOptions.isEmpty()) {

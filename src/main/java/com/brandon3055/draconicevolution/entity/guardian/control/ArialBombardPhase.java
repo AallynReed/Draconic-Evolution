@@ -6,6 +6,7 @@ import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianProjectileEntity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -38,7 +39,7 @@ public class ArialBombardPhase extends ChargeUpPhase {
             List<Player> targetOptions = guardian.level().players()
                     .stream()
                     .filter(e -> e.distanceToSqr(focus) <= 200 * 200)
-                    .filter(e -> StartPhase.AGRO_TARGETS.test(guardian, e))
+                    .filter(e -> StartPhase.AGRO_TARGETS.test((ServerLevel) guardian.level(), guardian, e))
                     .collect(Collectors.toList());
             if (targetOptions.isEmpty()) {
                 return;
