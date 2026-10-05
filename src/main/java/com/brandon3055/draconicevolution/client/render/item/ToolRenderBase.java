@@ -118,14 +118,14 @@ public abstract class ToolRenderBase implements IItemRenderer {
     //These parts will always be rendered solid using the model texture.
     protected ToolPart basePart(CCModel model) {
         String levelName = techLevel.name().toLowerCase(Locale.ROOT);
-        RenderType baseType = RenderType.create(MODID + ":base", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, true, false, RenderType.CompositeState.builder()
+        RenderType baseType = RenderType.create(MODID + ":base", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, true, false, RenderType.CompositeState.builder()
                 .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.TOOL_BASE_SHADER::getShaderInstance))
                 .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/" + levelName + "_" + tool + ".png"), false, false))
                 .setLightmapState(RenderStateShard.LIGHTMAP)
                 .setOverlayState(RenderStateShard.OVERLAY)
                 .createCompositeState(true));
 
-        RenderType guiType = RenderType.create(MODID + ":base_gui", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
+        RenderType guiType = RenderType.create(MODID + ":base_gui", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
                 .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.TOOL_BASE_SHADER::getShaderInstance))
                 .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/" + levelName + "_" + tool + ".png"), false, false))
                 .setLightmapState(RenderStateShard.LIGHTMAP)
@@ -140,7 +140,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
     protected ToolPart materialPart(CCModel model) {
         if (techLevel != TechLevel.CHAOTIC) return basePart(model);
 
-        RenderType chaoticType = RenderType.create(MODID + ":tool_chaos", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
+        RenderType chaoticType = RenderType.create(MODID + ":tool_chaos", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
                 .setShaderState(new RenderStateShard.ShaderStateShard(BCShaders.CHAOS_ENTITY_SHADER::getShaderInstance))
                 .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/chaos_shader.png"), true, false))
                 .setLightmapState(RenderStateShard.LIGHTMAP)
@@ -152,7 +152,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
 
     protected ToolPart gemPart(CCModel model) {
         String levelName = techLevel.name().toLowerCase(Locale.ROOT);
-        RenderType gemType = RenderType.create(MODID + ":tool_gem", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
+        RenderType gemType = RenderType.create(MODID + ":tool_gem", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
                 .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.TOOL_GEM_SHADER::getShaderInstance))
                 .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
                 .setLightmapState(RenderStateShard.LIGHTMAP)
@@ -166,7 +166,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
     //These are the shaded model "inlays" on the handles of most tools
     protected ToolPart tracePart(CCModel model) {
         String levelName = techLevel.name().toLowerCase(Locale.ROOT);
-        RenderType gemType = RenderType.create(MODID + ":tool_trace", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
+        RenderType gemType = RenderType.create(MODID + ":tool_trace", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
                 .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.TOOL_TRACE_SHADER::getShaderInstance))
                 .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
                 .setLightmapState(RenderStateShard.LIGHTMAP)
@@ -179,7 +179,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
 
     protected ToolPart bladePart(CCModel model) {
         String levelName = techLevel.name().toLowerCase(Locale.ROOT);
-        RenderType gemType = RenderType.create(MODID + ":tool_blade", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
+        RenderType gemType = RenderType.create(MODID + ":tool_blade", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
                 .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.TOOL_BLADE_SHADER::getShaderInstance))
                 .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
                 .setLightmapState(RenderStateShard.LIGHTMAP)

@@ -74,7 +74,7 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
         }
 
         String levelName = techLevel.name().toLowerCase(Locale.ROOT);
-        RenderType baseType = RenderType.create(MODID + ":base", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, true, false, RenderType.CompositeState.builder()
+        RenderType baseType = RenderType.create(MODID + ":base", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, true, false, RenderType.CompositeState.builder()
                 .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.TOOL_BASE_SHADER::getShaderInstance))
                 .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/" + levelName + "_chestpeice.png"), false, false))
                 .setLightmapState(RenderStateShard.LIGHTMAP)
@@ -82,7 +82,7 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
                 .createCompositeState(true)
         );
 
-        RenderType chaoticType = RenderType.create(MODID + ":tool_chaos", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
+        RenderType chaoticType = RenderType.create(MODID + ":tool_chaos", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
                 .setShaderState(new RenderStateShard.ShaderStateShard(BCShaders.CHAOS_ENTITY_SHADER::getShaderInstance))
                 .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/chaos_shader.png"), true, false))
                 .setLightmapState(RenderStateShard.LIGHTMAP)
@@ -90,7 +90,7 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
                 .createCompositeState(false)
         );
 
-        RenderType gemType = RenderType.create(MODID + ":tool_gem", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
+        RenderType gemType = RenderType.create(MODID + ":tool_gem", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
                 .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.TOOL_GEM_SHADER::getShaderInstance))
                 .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
                 .setLightmapState(RenderStateShard.LIGHTMAP)
@@ -98,7 +98,7 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
                 .createCompositeState(false)
         );
 
-        RenderType coreGemType = RenderType.create(MODID + ":core_gem", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
+        RenderType coreGemType = RenderType.create(MODID + ":core_gem", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
                 .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.CHESTPIECE_GEM_SHADER::getShaderInstance))
                 .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
                 .setLightmapState(RenderStateShard.LIGHTMAP)
@@ -106,7 +106,7 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
                 .createCompositeState(false)
         );
 
-        RenderType shieldType = RenderType.create(MODID + ":armor_shield", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
+        RenderType shieldType = RenderType.create(MODID + ":armor_shield", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
                 .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.CHESTPIECE_SHIELD_SHADER::getShaderInstance))
                 .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
                 .setOutputState(RenderStateShard.ITEM_ENTITY_TARGET)

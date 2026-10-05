@@ -34,7 +34,7 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
  */
 public class RenderItemChaosShard implements IItemRenderer {
 
-    private static final RenderType CHAOS_CRYSTAL_INNER = RenderType.create(MODID + ":chaos_crystal_inner", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
+    private static final RenderType CHAOS_CRYSTAL_INNER = RenderType.create(MODID + ":chaos_crystal_inner", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
             .setShaderState(new RenderStateShard.ShaderStateShard(BCShaders.CHAOS_ENTITY_SHADER::getShaderInstance))
             .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/item/equipment/chaos_shader.png"), true, false))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
@@ -42,7 +42,7 @@ public class RenderItemChaosShard implements IItemRenderer {
             .setLightmapState(RenderStateShard.LIGHTMAP)
             .setOverlayState(RenderStateShard.OVERLAY)
             .createCompositeState(false));
-    private static final RenderType CHAOS_CRYSTAL = RenderType.create(MODID + ":chaos_crystal", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
+    private static final RenderType CHAOS_CRYSTAL = RenderType.create(MODID + ":chaos_crystal", DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
             .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeCutoutShader)) //TODO figure out render type stuff.
             .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/block/chaos_crystal.png"), false, false))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)

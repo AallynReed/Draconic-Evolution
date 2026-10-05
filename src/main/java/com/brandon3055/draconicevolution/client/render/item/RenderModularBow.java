@@ -50,7 +50,7 @@ public class RenderModularBow extends ToolRenderBase {
             {0.7F, 0.4F, 0.2F, 1F},
             {0.55F, 0.2F, 0.1F, 0.2F},
     };
-    private static final RenderType bowStringType = RenderType.create("shaderStringType", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
+    private static final RenderType bowStringType = RenderType.create("shaderStringType", DefaultVertexFormat.ENTITY, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
             .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.BOW_STRING_SHADER::getShaderInstance))
             .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/item/equipment/bow_string.png"), true, false))
             .setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)

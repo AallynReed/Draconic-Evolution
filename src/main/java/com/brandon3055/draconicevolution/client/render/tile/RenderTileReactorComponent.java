@@ -36,14 +36,14 @@ public class RenderTileReactorComponent implements BlockEntityRenderer<TileReact
     private static final RenderType STAB_FRAME_TYPE = RenderType.entitySolid(Identifier.fromNamespaceAndPath(MODID, "textures/block/reactor/reactor_stabilizer.png"));
     private static final RenderType INJECTOR_FRAME_TYPE = RenderType.entitySolid(Identifier.fromNamespaceAndPath(MODID, "textures/block/reactor/reactor_injector.png"));
 
-    private static final RenderType STAB_GLOW_TYPE = RenderType.create(MODID + ":stab_glow", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
+    private static final RenderType STAB_GLOW_TYPE = RenderType.create(MODID + ":stab_glow", DefaultVertexFormat.ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
             .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/block/reactor/reactor_stabilizer.png"), false, false))
             .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeEntitySolidShader)) //TODO Does this shader work?
             .setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)
             .createCompositeState(false)
     );
 
-    private static final RenderType INJECTOR_GLOW_TYPE = RenderType.create(MODID + ":injector_glow", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
+    private static final RenderType INJECTOR_GLOW_TYPE = RenderType.create(MODID + ":injector_glow", DefaultVertexFormat.ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
             .setTextureState(new RenderStateShard.TextureStateShard(Identifier.fromNamespaceAndPath(MODID, "textures/block/reactor/reactor_injector.png"), false, false))
             .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeEntitySolidShader)) //TODO Does this shader work?
             .setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)

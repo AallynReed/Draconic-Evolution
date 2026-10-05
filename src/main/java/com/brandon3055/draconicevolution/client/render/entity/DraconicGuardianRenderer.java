@@ -43,7 +43,7 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
     private static final RenderType dragonDeathType = RenderType.entityDecal(GUARDIAN_TEXTURE);
     private static final RenderType eyesType = RenderType.eyes(EYES_TEXTURE);
     private static final RenderType beamType = RenderType.entitySmoothCutout(ENDERCRYSTAL_BEAM_TEXTURES);
-    private static RenderType BEAM_TYPE2 = RenderType.create("beam_type_2", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
+    private static RenderType BEAM_TYPE2 = RenderType.create("beam_type_2", DefaultVertexFormat.ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
             .setShaderState(RenderType.RENDERTYPE_ENTITY_SMOOTH_CUTOUT_SHADER)
             .setTextureState(new RenderStateShard.TextureStateShard(ENDERCRYSTAL_BEAM_TEXTURES, false, false))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
