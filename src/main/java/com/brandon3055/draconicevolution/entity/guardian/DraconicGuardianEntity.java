@@ -12,10 +12,9 @@ import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DEDamage;
 import com.google.common.collect.Lists;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -50,7 +49,9 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.pathfinder.BinaryHeap;
 import net.minecraft.world.level.pathfinder.Node;
 import net.minecraft.world.level.pathfinder.Path;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.portal.TeleportTransition;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -113,7 +114,6 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
         this.dragonParts = new DraconicGuardianPartEntity[]{this.dragonPartHead, this.dragonPartNeck, this.dragonPartBody, this.dragonPartTail1, this.dragonPartTail2, this.dragonPartTail3, this.dragonPartRightWing, this.dragonPartLeftWing};
         this.setHealth(this.getMaxHealth());
         this.noPhysics = true;
-        this.noCulling = true;
         this.phaseManager = new PhaseManager(this);
         this.setId(ENTITY_COUNTER.getAndAdd(this.dragonParts.length + 1) + 1);
     }
@@ -262,17 +262,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
                 this.ringBuffer[this.ringBufferIndex][0] = this.getYRot();
                 this.ringBuffer[this.ringBufferIndex][1] = this.getY();
                 if (this.level().isClientSide()) {
-                    if (this.lerpSteps > 0) {
-                        double d7 = this.getX() + (this.lerpX - this.getX()) / (double) this.lerpSteps;
-                        double d0 = this.getY() + (this.lerpY - this.getY()) / (double) this.lerpSteps;
-                        double d1 = this.getZ() + (this.lerpZ - this.getZ()) / (double) this.lerpSteps;
-                        double d2 = Mth.wrapDegrees(this.lerpYRot - (double) this.getYRot());
-                        this.setYRot((float) ((double) this.getYRot() + d2 / (double) this.lerpSteps));
-                        this.setXRot((float) ((double) this.getXRot() + (this.lerpXRot - (double) this.getXRot()) / (double) this.lerpSteps));
-                        --this.lerpSteps;
-                        this.setPos(d7, d0, d1);
-                        this.setRot(this.getYRot(), this.getXRot());
-                    }
+                    this.interpolation.interpolate();
 
                     this.phaseManager.getCurrentPhase().clientTick();
                 } else {
@@ -353,8 +343,8 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
                 if (level() instanceof ServerLevel serverLevel && this.hurtTime == 0) {
                     this.collideWithEntities(serverLevel, this.level().getEntities(this, this.dragonPartRightWing.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(0.0D, -2.0D, 0.0D), EntitySelector.NO_CREATIVE_OR_SPECTATOR));
                     this.collideWithEntities(serverLevel, this.level().getEntities(this, this.dragonPartLeftWing.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(0.0D, -2.0D, 0.0D), EntitySelector.NO_CREATIVE_OR_SPECTATOR));
-                    this.attackEntitiesInList(this.level().getEntities(this, this.dragonPartHead.getBoundingBox().inflate(1.0D), EntitySelector.NO_CREATIVE_OR_SPECTATOR));
-                    this.attackEntitiesInList(this.level().getEntities(this, this.dragonPartNeck.getBoundingBox().inflate(1.0D), EntitySelector.NO_CREATIVE_OR_SPECTATOR));
+                    this.attackEntitiesInList(serverLevel, this.level().getEntities(this, this.dragonPartHead.getBoundingBox().inflate(1.0D), EntitySelector.NO_CREATIVE_OR_SPECTATOR));
+                    this.attackEntitiesInList(serverLevel, this.level().getEntities(this, this.dragonPartNeck.getBoundingBox().inflate(1.0D), EntitySelector.NO_CREATIVE_OR_SPECTATOR));
                 }
 
                 float f4 = Mth.sin(this.getYRot() * ((float) Math.PI / 180F) - this.yRotA * 0.01F);
@@ -462,18 +452,18 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
                 entity.push(d2 / d4 * 4.0D, 0.2F, d3 / d4 * 4.0D);
                 if (!this.phaseManager.getCurrentPhase().getIsStationary() && ((LivingEntity) entity).getLastHurtByMobTimestamp() < entity.tickCount - 2) {
                     DamageSource source = DEDamage.guardian(level(), this);
-                    entity.hurt(source, 15.0F);
+                    entity.hurtServer(level, source, 15.0F);
                     EnchantmentHelper.doPostAttackEffects(level, entity, source);
                 }
             }
         }
     }
 
-    private void attackEntitiesInList(List<Entity> entities) {
+    private void attackEntitiesInList(ServerLevel level, List<Entity> entities) {
         for (Entity entity : entities) {
             if (entity instanceof LivingEntity) {
                 DamageSource source = DEDamage.guardian(level(), this);
-                entity.hurt(source, 20.0F);
+                entity.hurtServer(level, source, 20.0F);
                 if (this.level() instanceof ServerLevel serverlevel) {
                     EnchantmentHelper.doPostAttackEffects(serverlevel, entity, source);
                 }
@@ -502,7 +492,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
                     BlockState blockstate = this.level().getBlockState(blockpos);
                     Block block = blockstate.getBlock();
                     if (!blockstate.isAir() && !blockstate.is(BlockTags.FIRE)) {
-                        if (CommonHooks.canEntityDestroy(this.level(), blockpos, this) && !blockstate.is(BlockTags.DRAGON_IMMUNE) && block != Blocks.NETHER_BRICKS && block != Blocks.NETHER_BRICK_SLAB) {
+                        if (CommonHooks.canEntityDestroy((ServerLevel) this.level(), blockpos, this) && !blockstate.is(BlockTags.DRAGON_IMMUNE) && block != Blocks.NETHER_BRICKS && block != Blocks.NETHER_BRICK_SLAB) {
                             flag1 = this.level().removeBlock(blockpos, false) || flag1;
                         } else {
                             flag = true;
@@ -520,7 +510,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
         return flag;
     }
 
-    public boolean attackEntityPartFrom(DraconicGuardianPartEntity part, DamageSource source, float damage) {
+    public boolean attackEntityPartFrom(ServerLevel level, DraconicGuardianPartEntity part, DamageSource source, float damage) {
         if (this.phaseManager.getCurrentPhase().getType() == PhaseType.DYING || source.getEntity() == this) {
             return false;
         } else {
@@ -562,7 +552,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
                 return false;
             } else {
                 if (source.getEntity() instanceof Player || source.is(DamageTypes.EXPLOSION)) {
-                    this.attackDragonFrom(source, damage);
+                    this.attackDragonFrom(level, source, damage);
                     if (this.isDeadOrDying() && !this.phaseManager.getCurrentPhase().getIsStationary()) {
                         this.setHealth(1.0F);
                         this.phaseManager.setPhase(PhaseType.DYING);
@@ -575,16 +565,16 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
-        return level().isClientSide() ? false : this.attackEntityPartFrom(this.dragonPartBody, source, amount);
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        return this.attackEntityPartFrom(level, this.dragonPartBody, source, amount);
     }
 
-    protected boolean attackDragonFrom(DamageSource source, float amount) {
-        return super.hurt(source, amount);
+    protected boolean attackDragonFrom(ServerLevel level, DamageSource source, float amount) {
+        return super.hurtServer(level, source, amount);
     }
 
     @Override
-    public void kill() {
+    public void kill(ServerLevel level) {
         this.remove(Entity.RemovalReason.KILLED);
         if (this.fightManager != null) {
             this.fightManager.guardianUpdate(this);
@@ -606,7 +596,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
             this.level().addParticle(ParticleTypes.EXPLOSION_EMITTER, this.getX() + (double) f, this.getY() + 2.0D + (double) f1, this.getZ() + (double) f2, 0.0D, 0.0D, 0.0D);
         }
 
-        boolean flag = this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT);
+        boolean flag = this.level() instanceof ServerLevel serverLevel && serverLevel.getGameRules().get(GameRules.MOB_DROPS);
         int xpAmount = 24000;
 
         if (!this.level().isClientSide()) {
@@ -778,24 +768,20 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putInt("dragon_phase", phaseManager.getCurrentPhase().getType().getId());
         if (getArenaOrigin() != null) {
-            compound.put("arena_origin", NbtUtils.writeBlockPos(getArenaOrigin()));
+            compound.store("arena_origin", BlockPos.CODEC, getArenaOrigin());
         }
         compound.putFloat("shield_power", getShieldPower());
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        if (compound.contains("dragon_phase")) {
-            phaseManager.setPhase(PhaseType.getById(compound.getIntOr("dragon_phase", 0)));
-        }
-        if (compound.contains("arena_origin")) {
-            setArenaOrigin(NbtUtils.readBlockPos(compound, "arena_origin").orElse(null));
-        }
+        compound.getInt("dragon_phase").ifPresent(id -> phaseManager.setPhase(PhaseType.getById(id)));
+        compound.read("arena_origin", BlockPos.CODEC).ifPresent(this::setArenaOrigin);
         if (level() instanceof ServerLevel) {
             fightManager = WorldEntityHandler.getWorldEntities()
                     .stream()
@@ -811,9 +797,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
         } else {
             fightManager = null;
         }
-        if (compound.getFloat("shield_power").isPresent()) {
-            setShieldPower(compound.getFloatOr("shield_power", 0));
-        }
+        compound.read("shield_power", Codec.FLOAT).ifPresent(this::setShieldPower);
     }
 
     @Override
@@ -870,11 +854,11 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
         if (dmgSrc.getEntity() instanceof Player) {
             playerentity = (Player) dmgSrc.getEntity();
         } else {
-            playerentity = this.level().getNearestPlayer(PLAYER_INVADER_CONDITION, pos.getX(), pos.getY(), pos.getZ());
+            playerentity = ((ServerLevel) this.level()).getNearestPlayer(PLAYER_INVADER_CONDITION, pos.getX(), pos.getY(), pos.getZ());
         }
 
         if (crystal == this.closestGuardianCrystal && destroyed) {
-            this.attackEntityPartFrom(this.dragonPartHead, damageSources().explosion(crystal, playerentity), 20.0F);
+            this.attackEntityPartFrom((ServerLevel) this.level(), this.dragonPartHead, damageSources().explosion(crystal, playerentity), 20.0F);
         }
 
         this.phaseManager.getCurrentPhase().onCrystalAttacked(crystal, pos, dmgSrc, playerentity, damage, destroyed);
@@ -921,8 +905,8 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
     }
 
     @Override
-    public @Nullable Entity changeDimension(DimensionTransition p_350951_) {
-        return null;
+    public @Nullable Entity teleport(TeleportTransition p_350951_) {
+        return p_350951_.newLevel() == level() ? super.teleport(p_350951_) : null;
     }
 
     @Nullable

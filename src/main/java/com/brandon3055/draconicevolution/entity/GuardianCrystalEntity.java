@@ -8,10 +8,10 @@ import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -27,6 +27,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.CommonHooks;
@@ -140,27 +142,23 @@ public class GuardianCrystalEntity extends Entity {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {
+    protected void addAdditionalSaveData(ValueOutput compound) {
         if (getBeamTarget() != null) {
-            compound.put("BeamTarget", NbtUtils.writeBlockPos(getBeamTarget()));
+            compound.store("BeamTarget", BlockPos.CODEC, getBeamTarget());
         }
 
         compound.putBoolean("ShowBottom", showsBottom());
-        compound.putUUID("manager_id", managerId);
+        compound.store("manager_id", UUIDUtil.CODEC, managerId);
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {
-        if (compound.getCompound("BeamTarget").isPresent()) {
-            setBeamTarget(NbtUtils.readBlockPos(compound, "BeamTarget").orElse(null));
+    protected void readAdditionalSaveData(ValueInput compound) {
+        if (compound.child("BeamTarget").isPresent()) {
+            setBeamTarget(compound.read("BeamTarget", BlockPos.CODEC).orElse(null));
         }
 
-        if (compound.getByte("ShowBottom").isPresent()) {
-            setShowBottom(compound.getBooleanOr("ShowBottom", false));
-        }
-        if (compound.contains("manager_id")) {
-            managerId = compound.getUUID("manager_id");
-        }
+        compound.read("ShowBottom", Codec.BOOL).ifPresent(this::setShowBottom);
+        compound.read("manager_id", UUIDUtil.CODEC).ifPresent(uuid -> managerId = uuid);
     }
 
     @Override
@@ -169,8 +167,8 @@ public class GuardianCrystalEntity extends Entity {
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
-        if (isInvulnerableTo(source)) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        if (isInvulnerableToBase(source)) {
             return false;
         } else {
             if (!isRemoved() && !level().isClientSide()) {
@@ -218,9 +216,9 @@ public class GuardianCrystalEntity extends Entity {
     }
 
     @Override
-    public void kill() {
+    public void kill(ServerLevel level) {
         onCrystalAttacked(level().damageSources().generic(), 0, true);
-        super.kill();
+        super.kill(level);
     }
 
     private void onCrystalAttacked(DamageSource source, float damage, boolean destroyed) {
