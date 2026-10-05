@@ -54,8 +54,6 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.Tags;
 import org.apache.logging.log4j.Logger;
@@ -833,7 +831,6 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
         return 5.0F;
     }
 
-    @OnlyIn (Dist.CLIENT)
     public float getHeadPartYOffset(int p_184667_1_, double[] spineEndOffsets, double[] headPartOffsets) {
         IPhase iphase = this.phaseManager.getCurrentPhase();
         PhaseType<? extends IPhase> phasetype = iphase.getType();

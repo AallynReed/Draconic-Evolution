@@ -29,8 +29,6 @@ import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.fml.util.thread.EffectiveSide;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -185,7 +183,6 @@ public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHo
         return moduleGrid;
     }
 
-    @OnlyIn (Dist.CLIENT)
     public void clientTick() {
         ItemStack stack = slot.getStackInSlot(player);
         if (stack != hostStack && !stack.isEmpty() && stack.getCapability(DECapabilities.Host.ITEM) != null) {

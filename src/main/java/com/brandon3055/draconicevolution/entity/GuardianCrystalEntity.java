@@ -29,8 +29,6 @@ import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.CommonHooks;
 
 import javax.annotation.Nullable;
@@ -255,7 +253,6 @@ public class GuardianCrystalEntity extends Entity {
     }
 
     @Override
-    @OnlyIn (Dist.CLIENT)
     public boolean shouldRenderAtSqrDistance(double distance) {
         return super.shouldRenderAtSqrDistance(distance) || getBeamTarget() != null;
     }

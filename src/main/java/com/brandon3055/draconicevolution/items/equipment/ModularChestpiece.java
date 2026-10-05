@@ -39,8 +39,6 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.equipment.ArmorMaterials;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.ClientHooks;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
@@ -121,21 +119,17 @@ public class ModularChestpiece extends Item implements IModularArmor, IDEEquipme
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flagIn) {
         List<Component> tooltip = new ArrayList<>();
         addModularItemInformation(stack, context, tooltip, flagIn);
         tooltip.forEach(builder);
     }
 
-    @OnlyIn(Dist.CLIENT)
     private ModularChestpieceModel<?> model;
 
-    @OnlyIn(Dist.CLIENT)
     private ModularChestpieceModel<?> model_on_armor;
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public EquippedItemModel getExtendedModel(LivingEntity entity, ItemStack stack, @Nullable EquipmentSlot slot, HumanoidModel<?> parentModel, boolean slim) {
         return Client.getExtendedModel(this, entity, slot, parentModel);
     }

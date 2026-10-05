@@ -33,8 +33,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -123,7 +121,6 @@ public class BinderHandler {
 
     public static Map<AABB, CCModel> modelCache = new HashMap<>();
 
-    @OnlyIn(Dist.CLIENT)
     public static void renderWorldOverlay(LocalPlayer player, PoseStack pStack, Level level, ItemStack stack, Minecraft mc, float partialTicks) {
         Client.renderWorldOverlay(player, pStack, level, stack, mc, partialTicks);
     }

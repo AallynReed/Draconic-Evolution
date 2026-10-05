@@ -8,8 +8,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.ExtractBlockOutlineRenderStateEvent;
 
 /**
@@ -41,7 +39,6 @@ public interface MultiBlockController {
         return Shapes.block();
     }
 
-    @OnlyIn (Dist.CLIENT)
     default boolean renderSelectionBox(ExtractBlockOutlineRenderStateEvent event) {
         return true;
     }

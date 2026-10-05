@@ -42,8 +42,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -422,7 +420,6 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
     //region Render
 
     @Override
-    @OnlyIn (Dist.CLIENT)
     public abstract CrystalFXBase createStaticFX();
 
     public void addDisplayData(List<Component> displayList) {
@@ -437,7 +434,6 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public ENetFXHandler createClientFXHandler() {
         return new ENetFXHandlerClient(this);
     }

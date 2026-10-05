@@ -38,8 +38,6 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -115,7 +113,6 @@ public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
     }
 
     @Override
-    @OnlyIn (Dist.CLIENT)
     protected SpriteSupplier getSlotOverlay() {
         return BCGuiTextures.get("slots/filter");
     }
@@ -208,7 +205,6 @@ public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
     }
 
     @Override
-    @OnlyIn (Dist.CLIENT)
     public void renderModule(GuiElement<?> parent, GuiGraphicsExtractor render, int x, int y, int width, int height, double mouseX, double mouseY, boolean renderStack, float partialTicks) {
         super.renderModule(parent, render, x, y, width, height, mouseX, mouseY, renderStack, partialTicks);
         if (frequencyTag.isEmpty() || !ModHelper.ENDERSTORAGE) {

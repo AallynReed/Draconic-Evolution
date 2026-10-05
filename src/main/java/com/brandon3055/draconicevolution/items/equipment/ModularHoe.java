@@ -41,8 +41,6 @@ import net.minecraft.world.level.block.SupportType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.util.BlockSnapshot;
@@ -126,7 +124,6 @@ public class ModularHoe extends HoeItem implements IModularTieredItem, IDraconic
     }
 
     @Override
-    @OnlyIn (Dist.CLIENT)
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flagIn) {
         List<Component> tooltip = new ArrayList<>();
         addModularItemInformation(stack, context, tooltip, flagIn);

@@ -49,8 +49,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.Tags;
 
 import javax.annotation.Nonnull;
@@ -138,7 +136,6 @@ public class DislocatorAdvanced extends Dislocator {
         return InteractionResult.PASS;
     }
 
-    @OnlyIn (Dist.CLIENT)
     private void openGui(ItemStack stack, Player player) {
         Client.openGui(stack, player);
     }
@@ -224,7 +221,6 @@ public class DislocatorAdvanced extends Dislocator {
         return DataUtils.safeGet(getTargetList(stack), getSelectedIndex(stack));
     }
 
-    @OnlyIn (Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flagIn) {
         List<Component> tooltip = new ArrayList<>();

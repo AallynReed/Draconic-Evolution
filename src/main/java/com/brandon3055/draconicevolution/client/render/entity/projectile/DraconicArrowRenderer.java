@@ -15,14 +15,11 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 import java.util.Random;
 
-@OnlyIn(Dist.CLIENT)
 public class DraconicArrowRenderer extends EntityRenderer<DraconicArrowEntity, DraconicArrowRenderer.RenderState> {
     public static final Identifier RES_ARROW = Identifier.withDefaultNamespace("textures/entity/projectiles/arrow.png");
     public static final Identifier RES_TIPPED_ARROW = Identifier.withDefaultNamespace("textures/entity/projectiles/arrow_tipped.png");

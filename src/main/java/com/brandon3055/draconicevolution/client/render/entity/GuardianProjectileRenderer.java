@@ -14,12 +14,9 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
-@OnlyIn(Dist.CLIENT)
 public class GuardianProjectileRenderer extends EntityRenderer<GuardianProjectileEntity, EntityRenderState> {
    private static final Identifier DRAGON_FIREBALL_TEXTURE = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/entity/guardian_fireball.png");
    private static final RenderType RENDER_TYPE = RenderTypes.entityCutout(DRAGON_FIREBALL_TEXTURE);

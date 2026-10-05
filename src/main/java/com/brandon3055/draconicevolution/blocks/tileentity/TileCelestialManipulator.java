@@ -40,8 +40,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
@@ -283,15 +281,12 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
 
     //endregion
 
-    @OnlyIn (Dist.CLIENT)
     private CelestialModifierSound sound;
 
     //region Weather Effect
 
-    @OnlyIn(Dist.CLIENT)
     private List<EffectTrackerCelestialManipulator> effects;
 
-    @OnlyIn(Dist.CLIENT)
     public void startWeatherEffect() {
         timer = 0;
 
@@ -307,7 +302,6 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         level.playLocalSound(vec.x, vec.y, vec.z, DESounds.FUSION_COMPLETE.get(), SoundSource.BLOCKS, getSoundVolume(), 0.5F, false);
     }
 
-    @OnlyIn(Dist.CLIENT)
     public void updateWeatherEffects() {
         if (effects == null || effects.size() < 8 || sound == null) {
             startWeatherEffect();
@@ -434,7 +428,6 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
 
     //region Sun Effect
 
-    @OnlyIn(Dist.CLIENT)
     public void startSunEffect() {
         timeWarpRunning.set(true);
         timeWarpStopping.set(false);
@@ -460,7 +453,6 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         Client.play(sound);
     }
 
-    @OnlyIn(Dist.CLIENT)
     public void stopSunEffect() {
         timeWarpRunning.set(false);
         timeWarpStopping.set(true);
@@ -469,7 +461,6 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     public void updateSunEffect() {
         if (effects == null || effects.size() < 2 || sound == null) {
             startSunEffect();
@@ -566,7 +557,6 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
 
     //region Rendering
 
-    @OnlyIn(Dist.CLIENT)
     private void standbyParticleEffect() {
         IntParticleData data = new IntParticleData(DEParticles.SPARK.get(),
                 76, //R
@@ -590,7 +580,6 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     public void renderEffects(float partialTicks) {
         if (effects != null) {
             if (weatherToggleRunning.get()) {

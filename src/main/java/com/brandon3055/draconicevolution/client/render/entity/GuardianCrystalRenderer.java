@@ -19,11 +19,8 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
-@OnlyIn(Dist.CLIENT)
 public class GuardianCrystalRenderer extends EntityRenderer<GuardianCrystalEntity, GuardianCrystalRenderer.RenderState> {
     private static Identifier ENDER_CRYSTAL_TEXTURES = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/entity/guardian_crystal.png");
     private static RenderType RENDER_TYPE = RenderTypes.entityCutout(ENDER_CRYSTAL_TEXTURES);

@@ -29,8 +29,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -185,7 +183,6 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularEner
     }
 
     @Override
-    @OnlyIn (Dist.CLIENT)
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flagIn) {
         List<Component> tooltip = new ArrayList<>();
         addModularItemInformation(stack, context, tooltip, flagIn);

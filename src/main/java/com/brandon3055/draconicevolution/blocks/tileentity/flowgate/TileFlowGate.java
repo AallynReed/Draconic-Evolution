@@ -16,8 +16,6 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * Created by brandon3055 on 15/11/2016.
@@ -48,12 +46,10 @@ public abstract class TileFlowGate extends TileBCore implements IChangeListener,
 
     public abstract String getUnits();
 
-    @OnlyIn(Dist.CLIENT)
     public void setMin(String value) {
         sendPacketToServer(output -> output.writeString(value), 0);
     }
 
-    @OnlyIn(Dist.CLIENT)
     public void setMax(String value) {
         sendPacketToServer(output -> output.writeString(value), 1);
     }

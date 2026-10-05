@@ -24,8 +24,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 
 import javax.annotation.Nonnull;
@@ -141,7 +139,6 @@ public class Dislocator extends Item implements IHudItem {
         return getTargetPos(stack, null) != null;
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flagIn) {
         List<Component> tooltip = new ArrayList<>();

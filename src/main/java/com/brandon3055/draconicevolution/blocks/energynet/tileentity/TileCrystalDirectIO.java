@@ -26,8 +26,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import java.util.List;
@@ -89,7 +87,6 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
         return EnergyCrystal.CrystalType.CRYSTAL_IO;
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public CrystalFXBase createStaticFX() {
         return Client.createStaticFX(this);

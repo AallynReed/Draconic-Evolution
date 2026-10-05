@@ -28,8 +28,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.ExtractBlockOutlineRenderStateEvent;
 import net.neoforged.neoforge.common.Tags;
@@ -345,7 +343,6 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
         }
     }
 
-    @OnlyIn (Dist.CLIENT)
     private void spawnParticles() {
         RandomSource rand = level.getRandom();
         if (getCore() == null || particleRate.get() <= 0) return;
@@ -378,7 +375,6 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     private Vec3D getParticleSpawn(RandomSource random) {
         if (ioMode.get().canExtract()) {
             double range = core.tier.get();
@@ -388,7 +384,6 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     private Vec3D getParticleDest(RandomSource random) {
         if (ioMode.get().canExtract()) {
             return Vec3D.getCenter(worldPosition.relative(direction.get()));

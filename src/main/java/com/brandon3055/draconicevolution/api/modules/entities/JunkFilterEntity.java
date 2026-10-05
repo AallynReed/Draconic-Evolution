@@ -17,8 +17,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +80,6 @@ public class JunkFilterEntity extends FilteredModuleEntity<NoData> {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     protected SpriteSupplier getSlotOverlay() {
         return BCGuiTextures.get("slots/trash");
     }

@@ -20,8 +20,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -115,7 +113,6 @@ public abstract class ChargeUpPhase extends Phase {
     int offGroundTime = 0;
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void clientTick() {
         if (chargeTime < requiredChargeTime) {
             chargeTime++;

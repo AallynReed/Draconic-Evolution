@@ -6,10 +6,7 @@ import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuardianCloudParticle extends SingleQuadParticle {
    private final SpriteSet sprites;
 
@@ -83,7 +80,6 @@ public class GuardianCloudParticle extends SingleQuadParticle {
       }
    }
 
-   @OnlyIn(Dist.CLIENT)
    public static class Factory implements ParticleProvider<SimpleParticleType> {
       private final SpriteSet sprites;
 

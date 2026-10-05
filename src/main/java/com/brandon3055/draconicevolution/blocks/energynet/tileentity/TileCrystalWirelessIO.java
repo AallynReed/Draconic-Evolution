@@ -35,8 +35,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import java.util.*;
@@ -302,7 +300,6 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         return EnergyCrystal.CrystalType.WIRELESS;
     }
 
-    @OnlyIn (Dist.CLIENT)
     @Override
     public CrystalFXBase createStaticFX() {
         return Client.createStaticFX(this);
@@ -342,7 +339,6 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         return new ENetFXHandlerServerWireless(this);
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public ENetFXHandler createClientFXHandler() {
         return new ENetFXHandlerClientWireless(this);

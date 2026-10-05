@@ -38,8 +38,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.ICancellableEvent;
 import net.neoforged.neoforge.client.event.RenderHandEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
@@ -186,7 +184,6 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
     }
 
     @Override
-    @OnlyIn (Dist.CLIENT)
     public void addHostHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         if (Minecraft.getInstance().hasShiftDown()) {
             tooltip.add(Component.translatable("module." + MODID + ".tree_harvest.single").withStyle(ChatFormatting.DARK_GRAY));
@@ -197,7 +194,6 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
     }
 
     @Override
-    @OnlyIn (Dist.CLIENT)
     public void modifyFirstPersonUsingPose(RenderHandEvent event, boolean leftHand) {
         PoseStack poseStack = event.getPoseStack();
         Player player = BrandonsCore.proxy.getClientPlayer();
@@ -227,7 +223,6 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
     }
 
     @Override
-    @OnlyIn (Dist.CLIENT)
     public void modifyPlayerModelPose(Player player, PlayerModel model, boolean leftHand) {
         if (!leftHand) {
             model.rightArm.yRot = -0.1F + model.head.yRot;

@@ -16,8 +16,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.RegisterParticleGroupsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
@@ -53,7 +51,6 @@ public class DEParticles {
     public static final DeferredHolder<ParticleType<?>, ParticleType<IntParticleData>>          SPARK                   = PARTICLE_TYPES.register("spark",                  () -> register(false, IntParticleData::codec, IntParticleData::streamCodec));
     //@formatter:on
 
-    @OnlyIn (Dist.CLIENT)
     public static void registerFactories(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(FLAME.get(), CustomFlameParticle.Factory::new);
         event.registerSpriteSet(LINE_INDICATOR.get(), ParticleLineIndicator.Factory::new);
@@ -67,13 +64,11 @@ public class DEParticles {
         event.registerSpriteSet(SPARK.get(), SparkParticle.Factory::new);
     }
 
-    @OnlyIn (Dist.CLIENT)
     public static void registerGroups(RegisterParticleGroupsEvent event) {
         event.register(FXParticleGroup.GROUP, FXParticleGroup::new);
     }
 
 
-    @OnlyIn (Dist.CLIENT)
     public static Particle addParticleDirect(Level world, Particle particle) {
         if (world instanceof ClientLevel) {
             Minecraft mc = Minecraft.getInstance();

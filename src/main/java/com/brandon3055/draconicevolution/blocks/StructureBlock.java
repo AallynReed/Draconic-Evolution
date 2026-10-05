@@ -31,8 +31,6 @@ import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.ExtractBlockOutlineRenderStateEvent;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.event.EventHooks;
@@ -183,7 +181,6 @@ public class StructureBlock extends EntityBlockBCore implements StructurePart, C
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public boolean renderSelectionBox(ExtractBlockOutlineRenderStateEvent event, Level level) {
         if (level.getBlockEntity(event.getHitResult().getBlockPos()) instanceof TileStructureBlock tile) {
             return tile.renderSelectionBox(event);

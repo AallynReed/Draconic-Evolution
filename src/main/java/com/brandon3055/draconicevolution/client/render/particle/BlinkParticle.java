@@ -5,10 +5,7 @@ import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.RandomSource;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class BlinkParticle extends SingleQuadParticle {
    private BlinkParticle(ClientLevel world, double x, double y, double z, double motionX, double motionY, double motionZ, TextureAtlasSprite sprite) {
       super(world, x, y, z, motionX, motionY, motionZ, sprite);
@@ -50,7 +47,6 @@ public class BlinkParticle extends SingleQuadParticle {
       return SingleQuadParticle.Layer.OPAQUE;
    }
 
-   @OnlyIn(Dist.CLIENT)
    public static class Factory implements ParticleProvider<SimpleParticleType> {
       private final SpriteSet spriteSet;
 

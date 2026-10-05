@@ -38,8 +38,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -178,7 +176,6 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
 
     //Render Stuff
 
-    @OnlyIn (Dist.CLIENT)
     private void updateSoundAndFX() {
         soundHandler.tick();
         if (!active.get() || worldPosition.distSqr(Minecraft.getInstance().player.blockPosition()) > 16 * 16) {
@@ -234,7 +231,6 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     private void spawnGrillParticle(RandomSource rand, double x, double y, double z) {
         level.addParticle(ParticleTypes.SMOKE, x, y, z, 0.0D, 0.0D, 0.0D);
         if (mode.get() != Mode.PERFORMANCE_PLUS && rand.nextInt(8) == 0) {
@@ -242,7 +238,6 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     private void spawnExhaustParticle(RandomSource rand, double x, double y, double z, Vec3D velocity) {
         if (rand.nextBoolean()) {
             level.addParticle(ParticleTypes.SMOKE, x, y, z, velocity.x, velocity.y, velocity.z);

@@ -31,14 +31,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Matrix4f;
 
 import javax.annotation.Nullable;
 import java.util.Random;
 
-@OnlyIn (Dist.CLIENT)
 public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEntity, DraconicGuardianRenderer.RenderState> {
     public static final Identifier ENDERCRYSTAL_BEAM_TEXTURES = Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/entity/guardian_crystal_beam.png");
     private static final Identifier DRAGON_EXPLODING_TEXTURES = Identifier.withDefaultNamespace("textures/entity/enderdragon/dragon_exploding.png");
@@ -355,7 +352,6 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
         public float partialTicks;
     }
 
-    @OnlyIn (Dist.CLIENT)
     public static class DragonModel {
         private final ModelPart head;
         private final ModelPart neck;

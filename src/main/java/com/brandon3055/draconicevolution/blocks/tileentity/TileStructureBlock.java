@@ -22,8 +22,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.ExtractBlockOutlineRenderStateEvent;
 import org.jetbrains.annotations.Nullable;
 
@@ -119,7 +117,6 @@ public class TileStructureBlock extends TileBCore implements IInteractTile {
         return controller == null ? Shapes.empty() : controller.getShapeForPart(getBlockPos(), context);
     }
 
-    @OnlyIn(Dist.CLIENT)
     public boolean renderSelectionBox(ExtractBlockOutlineRenderStateEvent event) {
         MultiBlockController controller = getController();
         return controller == null || controller.renderSelectionBox(event);

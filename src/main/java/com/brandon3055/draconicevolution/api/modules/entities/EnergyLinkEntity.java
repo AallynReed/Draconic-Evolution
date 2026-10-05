@@ -29,8 +29,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -191,7 +189,6 @@ public class EnergyLinkEntity extends ModuleEntity<EnergyLinkData> {
     }
 
     @Override
-    @OnlyIn (Dist.CLIENT)
     public void renderModule(GuiElement<?> parent, GuiGraphicsExtractor render, int x, int y, int width, int height, double mouseX, double mouseY, boolean stackRender, float partialTicks) {
         super.renderModule(parent, render, x, y, width, height, mouseX, mouseY, stackRender, partialTicks);
 

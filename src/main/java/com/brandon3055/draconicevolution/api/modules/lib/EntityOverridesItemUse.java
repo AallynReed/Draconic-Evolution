@@ -3,8 +3,6 @@ package com.brandon3055.draconicevolution.api.modules.lib;
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.RenderHandEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -42,12 +40,10 @@ public interface EntityOverridesItemUse {
      * The event is provides as a convenient way to retrieve the PoseStack and other relevant fields.
      * Note: The event is already canceled at this point and it needs to stay that way.
      */
-    @OnlyIn(Dist.CLIENT)
     default void modifyFirstPersonUsingPose(RenderHandEvent event, boolean leftHand) {}
 
     /**
      * Counterpart to modifyFirstPersonUsingPose that lets you modify the third person player model.
      */
-    @OnlyIn(Dist.CLIENT)
     default void modifyPlayerModelPose(Player player, PlayerModel model, boolean leftHand) {}
 }

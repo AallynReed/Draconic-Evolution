@@ -31,8 +31,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -303,7 +301,6 @@ public class TileEnergyCoreStabilizer extends TileBCore implements IInteractTile
         }
     }
 
-    @OnlyIn (Dist.CLIENT)
     private void updateVisual() {
         Vec3D spawn = new Vec3D(worldPosition);
         spawn.add(0.5, 0.5, 0.5);

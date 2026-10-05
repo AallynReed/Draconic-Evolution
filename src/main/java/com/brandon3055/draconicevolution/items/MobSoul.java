@@ -30,8 +30,6 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.event.EventHooks;
 
 import javax.annotation.Nullable;
@@ -153,7 +151,6 @@ public class MobSoul extends Item {
         return getRenderEntity(getEntity(stack));
     }
 
-    @OnlyIn (Dist.CLIENT)
     public Entity getRenderEntity(Identifier name) {
         if (name == null || name.equals(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "random_display_entity"))) {
             if (randomDisplayList == null) {

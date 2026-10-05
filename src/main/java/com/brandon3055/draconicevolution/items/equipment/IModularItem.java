@@ -40,8 +40,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.extensions.IItemExtension;
 import org.jetbrains.annotations.NotNull;
@@ -158,7 +156,6 @@ public interface IModularItem extends IItemExtension, IFusionDataTransfer {
     @NotNull
     ModularOPStorage instantiateOPStorage(ItemStack stack, Supplier<ModuleHost> hostSupplier);
 
-    @OnlyIn (Dist.CLIENT)
     default void addModularItemInformation(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
         if (!Minecraft.getInstance().hasShiftDown()) {
             tooltip.add(Component.translatable("[Modular Item]").withStyle(ChatFormatting.BLUE));

@@ -35,8 +35,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.List;
 import java.util.Objects;
@@ -142,7 +140,6 @@ public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void renderModule(GuiElement<?> parent, GuiGraphicsExtractor render, int x, int y, int width, int height, double mouseX, double mouseY, boolean renderStack, float partialTicks) {
         super.renderModule(parent, render, x, y, width, height, mouseX, mouseY, renderStack, partialTicks);
         AutoFeedData data = module.getData();
@@ -168,7 +165,6 @@ public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void addHostHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         if (Minecraft.getInstance().hasShiftDown()) {
             tooltip.add(Component.translatable("module.draconicevolution.auto_feed.stored").withStyle(ChatFormatting.GRAY).append(" ").append(Component.translatable("module.draconicevolution.auto_feed.stored.value", (int)getStoredFood()).withStyle(ChatFormatting.DARK_GREEN)));

@@ -22,8 +22,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 
@@ -44,7 +42,6 @@ public class Magnet extends Item /*implements IBauble*/ {
         this.range = range;
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public boolean isFoil(ItemStack stack) {
         return isEnabled(stack);
@@ -163,7 +160,6 @@ public class Magnet extends Item /*implements IBauble*/ {
         return super.use(world, player, hand);
     }
 
-    @OnlyIn(Dist.CLIENT)
     @SuppressWarnings("unchecked")
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag tooltipFlag) {

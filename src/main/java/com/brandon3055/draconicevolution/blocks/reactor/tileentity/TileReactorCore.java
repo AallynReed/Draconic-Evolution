@@ -44,8 +44,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -596,7 +594,6 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
         }
     }
 
-    @OnlyIn (Dist.CLIENT)
     @Override
     public void receivePacketFromServer(MCDataInput data, int id) {
         if (id == 1) {
@@ -1105,7 +1102,6 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
             return shieldActive;
         }
 
-        @OnlyIn (Dist.CLIENT)
         public Component localize() {
             ChatFormatting[] colours = {ChatFormatting.RED, ChatFormatting.DARK_AQUA, ChatFormatting.LIGHT_PURPLE, ChatFormatting.GREEN, ChatFormatting.LIGHT_PURPLE, ChatFormatting.LIGHT_PURPLE, ChatFormatting.DARK_RED};
             return Component.translatable("gui.reactor.status." + name().toLowerCase(Locale.ENGLISH) + ".info").withStyle(colours[ordinal()]);

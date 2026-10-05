@@ -17,8 +17,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.Event;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
@@ -154,13 +152,11 @@ public class StabilizedSpawnerLogic extends BaseSpawner {
         this.broadcastEvent(tile.getLevel(), tile.getBlockPos(), 1);
     }
 
-    @OnlyIn (Dist.CLIENT)
     @Override
     public double getSpin() {
         return mobRotation;
     }
 
-    @OnlyIn (Dist.CLIENT)
     @Override
     public double getOSpin() {
         return prevMobRotation;

@@ -19,8 +19,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -68,7 +66,6 @@ public class DefaultStaffDmgMod implements IDamageModifier {
         DraconicNetwork.sendStaffEffect(source, 0, e -> e.writeVector(new Vector3(finalPos)));
     }
 
-    @OnlyIn(Dist.CLIENT)
     public static void handleEffect(LivingEntity source, MCDataInput data) {
         Client.handleEffect(source, data);
     }

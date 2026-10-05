@@ -17,8 +17,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * Created by brandon3055 on 16/07/2016.
@@ -54,7 +52,6 @@ public class TilePortal extends TileBCore {
     // Client Stiff
 
     @Override
-    @OnlyIn (Dist.CLIENT)
     public void tick() {
         if (hidden && player != null) {
             BlockState state = getBlockState();

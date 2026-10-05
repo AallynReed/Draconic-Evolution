@@ -47,8 +47,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2fc;
 import org.joml.Matrix4f;
@@ -64,7 +62,6 @@ import java.util.stream.Stream;
  * Created by brandon3055 on 18/4/20.
  */
 public abstract class ModuleEntity<T extends ModuleData<T>> {
-    @OnlyIn (Dist.CLIENT)
     private static class ClientPipelines {
         private static final RenderPipeline GUI_GLINT = RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET)
                 .withLocation(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "pipeline/gui_glint"))
@@ -350,7 +347,6 @@ public abstract class ModuleEntity<T extends ModuleData<T>> {
 
     //end
 
-    @OnlyIn (Dist.CLIENT)
     public void renderModule(GuiElement<?> parent, GuiGraphicsExtractor render, int x, int y, int width, int height, double mouseX, double mouseY, boolean stackRender, float partialTicks) {
         if (stackRender) {
 //            render.pose().translate(0, 0, 210);
@@ -397,7 +393,6 @@ public abstract class ModuleEntity<T extends ModuleData<T>> {
      *
      * @return true to block further overlay rendering. (Equivalent to returning true in {@link GuiElement#renderOverlay(GuiRender, double, double, float, boolean)} )
      */
-    @OnlyIn (Dist.CLIENT)
     public boolean renderModuleOverlay(GuiElement<?> parent, ModuleContext context, GuiGraphicsExtractor render, int x, int y, int width, int height, double mouseX, double mouseY, float partialTicks, int hoverTicks) {
         if (hoverTicks > 10) {
             Minecraft mc = Minecraft.getInstance();
@@ -433,7 +428,6 @@ public abstract class ModuleEntity<T extends ModuleData<T>> {
      * @param context The current level
      * @param tooltip The tooltip list
      */
-    @OnlyIn (Dist.CLIENT)
     public void addHostHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
     }
 
@@ -577,7 +571,6 @@ public abstract class ModuleEntity<T extends ModuleData<T>> {
     //Render Utils
 
     @Deprecated //TODO, Can probably use RenderUtils version... maybe.
-    @OnlyIn (Dist.CLIENT)
     protected void drawChargeProgress(GuiGraphicsExtractor render, int x, int y, int width, int height, double progress, @Nullable Component text1, @Nullable Component text2) {
         double diameter = Math.min(width, height) * 0.425;
 
@@ -592,7 +585,6 @@ public abstract class ModuleEntity<T extends ModuleData<T>> {
         }
     }
 
-    @OnlyIn (Dist.CLIENT)
     public static void drawBackgroundString(GuiGraphicsExtractor render, Component text, float x, float y, int colour, int background, int padding, boolean shadow, boolean centered) {
         Font font = Minecraft.getInstance().font;
         int width = font.width(text);
@@ -601,7 +593,6 @@ public abstract class ModuleEntity<T extends ModuleData<T>> {
         render.cc$drawString(font, text, x, y, colour, shadow);
     }
 
-    @OnlyIn (Dist.CLIENT)
     private static void glintVertex(VertexConsumer builder, Matrix3x2fc pose, Matrix4f texMat, float x, float y, float u, float v) {
         Vector4f uv = texMat.transform(new Vector4f(u, v, 0, 1));
         builder.addVertexWith2DPose(pose, x, y).setUv(uv.x(), uv.y());

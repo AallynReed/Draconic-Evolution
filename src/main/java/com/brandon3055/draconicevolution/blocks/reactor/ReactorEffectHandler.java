@@ -10,8 +10,6 @@ import com.brandon3055.draconicevolution.client.sound.ReactorSound;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Direction;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * Created by brandon3055 on 11/02/2017.
@@ -20,17 +18,14 @@ import net.neoforged.api.distmarker.OnlyIn;
 public class ReactorEffectHandler {
 
     private TileReactorCore reactor;
-    @OnlyIn (Dist.CLIENT)
     private ReactorBeamFX[] effects;
 
-    @OnlyIn (Dist.CLIENT)
     private ReactorSound reactorSound;
 
     public ReactorEffectHandler(TileReactorCore reactor) {
         this.reactor = reactor;
     }
 
-    @OnlyIn (Dist.CLIENT)
     public void updateEffects() {
         if (effects == null) {
             effects = new ReactorBeamFX[6];
