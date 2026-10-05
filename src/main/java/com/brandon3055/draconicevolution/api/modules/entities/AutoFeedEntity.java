@@ -107,7 +107,7 @@ public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
                                 double rem = getStoredFood() + val - data.foodStorage();
                                 if (rem <= val * 0.25) {
                                     setStoredFood((float) Math.min(getStoredFood() + val, data.foodStorage()));
-                                    entity.level().playSound(null, entity.blockPosition(), SoundEvents.GENERIC_EAT, SoundSource.PLAYERS, 0.25F, (0.95F + (entity.level().getRandom().nextFloat() * 0.1F)));
+                                    entity.level().playSound(null, entity.blockPosition(), SoundEvents.GENERIC_EAT.value(), SoundSource.PLAYERS, 0.25F, (0.95F + (entity.level().getRandom().nextFloat() * 0.1F)));
                                     stack.shrink(1);
                                     break;
                                 }
