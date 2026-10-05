@@ -34,9 +34,9 @@ public class ModularShovel extends ShovelItem implements IModularMiningTool, IDr
     private final DETier itemTier;
 
     public ModularShovel(DETier tier, TechProperties props) {
-        super(tier, props);
+        super(tier.toolMaterial(), 0, 0, props);
         this.techLevel = props.getTechLevel();
-        this.itemTier = (DETier) getTier();
+        this.itemTier = tier;
     }
 
     @Override
@@ -78,7 +78,7 @@ public class ModularShovel extends ShovelItem implements IModularMiningTool, IDr
 
     @Override
     public float getBaseEfficiency() {
-        return getTier().getSpeed();
+        return itemTier.getSpeed();
     }
 
     @Override

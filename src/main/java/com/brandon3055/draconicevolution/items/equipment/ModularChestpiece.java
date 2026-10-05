@@ -21,6 +21,8 @@ import com.brandon3055.draconicevolution.init.TechProperties;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.integration.equipment.IDEEquipment;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -29,10 +31,12 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterials;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.equipment.ArmorMaterials;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -48,11 +52,11 @@ import java.util.function.Supplier;
 /**
  * Created by brandon3055 on 21/5/20.
  */
-public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEquipment, EquippedModelItem, IModularEnergyItem {
+public class ModularChestpiece extends Item implements IModularArmor, IDEEquipment, EquippedModelItem, IModularEnergyItem {
     private final TechLevel techLevel;
 
     public ModularChestpiece(TechProperties props) {
-        super(ArmorMaterials.DIAMOND, Type.CHESTPLATE, props);
+        super(props.humanoidArmor(ArmorMaterials.DIAMOND, ArmorType.CHESTPLATE));
         this.techLevel = props.getTechLevel();
     }
 
@@ -130,7 +134,7 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
     @OnlyIn(Dist.CLIENT)
     public EquippedItemModel getExtendedModel(LivingEntity entity, ItemStack stack, @Nullable EquipmentSlot slot, HumanoidModel<?> parentModel, boolean slim) {
         ItemStack chest = entity.getItemBySlot(EquipmentSlot.CHEST);
-        boolean onArmor = slot == null && !chest.isEmpty() && chest.getItem() instanceof ArmorItem;
+        boolean onArmor = slot == null && !chest.isEmpty() && HumanoidArmorLayer.shouldRender(chest, EquipmentSlot.CHEST) && !chest.has(DataComponents.GLIDER);
         if (model == null || model_on_armor == null) {
             model = new ModularChestpieceModel<>(techLevel, false);
             model_on_armor = new ModularChestpieceModel<>(techLevel, true);
@@ -138,6 +142,11 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
         ModularChestpieceModel<?> activeModel = onArmor ? model_on_armor : model;
         ClientHooks.copyModelProperties(parentModel, activeModel);
         return activeModel;
+    }
+
+    @Override
+    public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack) {
+        return ArmorMaterials.DIAMOND.createAttributes(ArmorType.CHESTPLATE);
     }
 
     @Override

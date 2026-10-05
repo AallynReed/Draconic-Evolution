@@ -21,7 +21,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DiggerItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.state.BlockState;
@@ -36,14 +36,14 @@ import java.util.function.Supplier;
 /**
  * Created by brandon3055 on 21/5/20.
  */
-public class ModularStaff extends DiggerItem implements IReaperItem, IModularMiningTool, IModularMelee, IModularEnergyItem {
+public class ModularStaff extends Item implements IReaperItem, IModularMiningTool, IModularMelee, IModularEnergyItem {
     private final TechLevel techLevel;
     private final DETier itemTier;
 
     public ModularStaff(DETier tier, TechProperties props) {
-        super(tier, DETags.Blocks.MINEABLE_WITH_STAFF, props);
+        super(props.tool(tier.toolMaterial(), DETags.Blocks.MINEABLE_WITH_STAFF, 0, 0, 0));
         this.techLevel = props.getTechLevel();
-        this.itemTier = (DETier) getTier();
+        this.itemTier = tier;
     }
 
     @Override
@@ -95,7 +95,7 @@ public class ModularStaff extends DiggerItem implements IReaperItem, IModularMin
 
     @Override
     public float getBaseEfficiency() {
-        return getTier().getSpeed() * EquipCfg.getStaffEffMult();
+        return itemTier.getSpeed() * EquipCfg.getStaffEffMult();
     }
 
     @Override

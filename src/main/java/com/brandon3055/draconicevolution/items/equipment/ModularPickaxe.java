@@ -12,8 +12,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,14 +28,14 @@ import java.util.function.Supplier;
 /**
  * Created by brandon3055 on 21/5/20.
  */
-public class ModularPickaxe extends PickaxeItem implements IModularMiningTool, IDraconicMelee, IModularEnergyItem {
+public class ModularPickaxe extends Item implements IModularMiningTool, IDraconicMelee, IModularEnergyItem {
     private final TechLevel techLevel;
     private final DETier itemTier;
 
     public ModularPickaxe(DETier tier, TechProperties props) {
-        super(tier, props);
+        super(props.pickaxe(tier.toolMaterial(), 0, 0));
         this.techLevel = props.getTechLevel();
-        this.itemTier = (DETier) getTier();
+        this.itemTier = tier;
     }
 
     @Override
@@ -75,7 +75,7 @@ public class ModularPickaxe extends PickaxeItem implements IModularMiningTool, I
 
     @Override
     public float getBaseEfficiency() {
-        return getTier().getSpeed();
+        return itemTier.getSpeed();
     }
 
     @Override

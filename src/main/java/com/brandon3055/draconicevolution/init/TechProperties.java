@@ -3,7 +3,9 @@ package com.brandon3055.draconicevolution.init;
 import com.brandon3055.brandonscore.api.TechLevel;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 
 /**
  * Created by brandon3055 on 05/05/2022
@@ -21,6 +23,16 @@ public class TechProperties extends Item.Properties {
     @Override
     public Item.Properties durability(int p_41504_) {
         this.component(DataComponents.MAX_STACK_SIZE, 1);
+        return this;
+    }
+
+    @Override
+    public Item.Properties attributes(ItemAttributeModifiers attributes) {
+        return this;
+    }
+
+    @Override
+    public Item.Properties repairable(TagKey<Item> repairItems) {
         return this;
     }
 

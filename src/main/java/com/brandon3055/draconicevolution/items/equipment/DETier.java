@@ -5,26 +5,23 @@ import com.brandon3055.draconicevolution.init.DETags;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.level.block.Block;
 
 /**
  * Created by brandon3055 on 16/6/20
  */
-public class DETier implements Tier {
+public class DETier {
     private TechLevel techLevel;
 
     public DETier(TechLevel techLevel) {
         this.techLevel = techLevel;
     }
 
-    @Override
     public int getUses() {
         return 0;
     }
 
-    @Override
     public TagKey<Block> getIncorrectBlocksForDrops() {
         return switch (techLevel) {
             case WYVERN -> DETags.Blocks.INCORRECT_FOR_WYVERN_TOOL;
@@ -34,7 +31,6 @@ public class DETier implements Tier {
         };
     }
 
-    @Override
     public int getEnchantmentValue() {
         return getEnchantability(techLevel);
     }
@@ -48,7 +44,6 @@ public class DETier implements Tier {
         };
     }
 
-    @Override
     public float getSpeed() { //Harvest Speed
         return switch (techLevel) {
             case DRACONIUM -> (float) EquipCfg.draconiumHarvestSpeed;
@@ -58,7 +53,6 @@ public class DETier implements Tier {
         };
     }
 
-    @Override
     public float getAttackDamageBonus() {
         return switch (techLevel) {
             case DRACONIUM -> (float) EquipCfg.draconiumDamage;
@@ -77,8 +71,7 @@ public class DETier implements Tier {
         };
     }
 
-    @Override
-    public Ingredient getRepairIngredient() {
-        return Ingredient.EMPTY;
+    public ToolMaterial toolMaterial() {
+        return new ToolMaterial(getIncorrectBlocksForDrops(), getUses(), getSpeed(), getAttackDamageBonus(), getEnchantmentValue(), null);
     }
 }

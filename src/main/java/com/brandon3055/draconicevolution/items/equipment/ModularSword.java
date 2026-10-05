@@ -12,8 +12,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
@@ -27,14 +27,14 @@ import java.util.function.Supplier;
 /**
  * Created by brandon3055 on 21/5/20.
  */
-public class ModularSword extends SwordItem implements IReaperItem, IModularMelee, IModularEnergyItem {
+public class ModularSword extends Item implements IReaperItem, IModularMelee, IModularEnergyItem {
     private final TechLevel techLevel;
     private final DETier itemTier;
 
     public ModularSword(DETier tier, TechProperties props) {
-        super(tier, props);
+        super(props.sword(tier.toolMaterial(), 0, 0));
         this.techLevel = props.getTechLevel();
-        this.itemTier = (DETier) getTier();
+        this.itemTier = tier;
     }
 
     @Override
