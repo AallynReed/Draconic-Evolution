@@ -7,6 +7,7 @@ import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.api.power.IOTracker;
 import com.brandon3055.brandonscore.api.power.IOTrackerSelfTimed;
 import com.brandon3055.brandonscore.lib.IMCDataSerializable;
+import com.brandon3055.brandonscore.lib.INBTSerializable;
 import com.brandon3055.brandonscore.lib.IValueHashable;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.google.common.math.BigIntegerMath;
@@ -14,7 +15,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import javax.annotation.Nullable;
