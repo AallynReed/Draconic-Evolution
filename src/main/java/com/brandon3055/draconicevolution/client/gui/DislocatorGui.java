@@ -20,6 +20,7 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced.DislocatorTarget;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
@@ -119,7 +120,7 @@ public class DislocatorGui implements GuiProvider {
                         Component.literal(GOLD + "X: " + (int) getTargetPos().getX()),
                         Component.literal(GOLD + "Y: " + (int) getTargetPos().getY()),
                         Component.literal(GOLD + "Z: " + (int) getTargetPos().getZ()),
-                        Component.literal(GOLD + (Screen.hasShiftDown() ? getTargetPos().getDimension().location().toString() : getTargetPos().getDimension().location().getPath()))
+                        Component.literal(GOLD + (Minecraft.getInstance().hasShiftDown() ? getTargetPos().getDimension().location().toString() : getTargetPos().getDimension().location().getPath()))
                 ));
 
         GuiText xLabel = new GuiText(infoBG)

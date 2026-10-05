@@ -21,6 +21,7 @@ import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
 import com.brandon3055.draconicevolution.client.DEGuiTextures;
 import com.brandon3055.draconicevolution.inventory.EnergyCoreMenu;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -278,7 +279,7 @@ public class EnergyCoreGui extends ContainerGuiProvider<EnergyCoreMenu> {
         if (ioInfo == null) return Component.literal("[Not Available]"); //Should never hit this
         String pfx = "mod_gui.brandonscore.energy_bar.";
 
-        if (Screen.hasShiftDown()) {
+        if (Minecraft.getInstance().hasShiftDown()) {
             return Component.empty().copy()
                     .append(Component.literal("+")
                             .withStyle(GREEN)

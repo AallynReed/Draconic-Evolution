@@ -14,6 +14,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.templates.ButtonRow;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEntityDetector;
 import com.brandon3055.draconicevolution.client.DEGuiTextures;
 import com.brandon3055.draconicevolution.inventory.EntityDetectorMenu;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -109,10 +110,10 @@ public class EntityDetectorGui extends ContainerGuiProvider<EntityDetectorMenu> 
                         .setScroll(false),
                 range, Constraints.LayoutPos.BOTTOM_CENTER);
 
-        GuiButton rangeMinus = TOOLKIT.createBorderlessButton(range, Component.literal("-")).onPress(() -> tile.adjustRange(true, Screen.hasShiftDown())).setOpaque(true);
+        GuiButton rangeMinus = TOOLKIT.createBorderlessButton(range, Component.literal("-")).onPress(() -> tile.adjustRange(true, Minecraft.getInstance().hasShiftDown())).setOpaque(true);
         Constraints.size(rangeMinus, 12, 12);
         Constraints.placeInside(rangeMinus, range, Constraints.LayoutPos.BOTTOM_LEFT, 1, 0);
-        GuiButton rangePlus = TOOLKIT.createBorderlessButton(range, Component.literal("+")).onPress(() -> tile.adjustRange(false, Screen.hasShiftDown())).setOpaque(true);
+        GuiButton rangePlus = TOOLKIT.createBorderlessButton(range, Component.literal("+")).onPress(() -> tile.adjustRange(false, Minecraft.getInstance().hasShiftDown())).setOpaque(true);
         Constraints.size(rangePlus, 12, 12);
         Constraints.placeInside(rangePlus, range, Constraints.LayoutPos.BOTTOM_RIGHT, -1, 0);
 
@@ -136,10 +137,10 @@ public class EntityDetectorGui extends ContainerGuiProvider<EntityDetectorMenu> 
                         .setScroll(false),
                 minStr, Constraints.LayoutPos.BOTTOM_CENTER);
 
-        GuiButton minMinus = TOOLKIT.createBorderlessButton(minStr, Component.literal("-")).onPress(() -> tile.adjustRSMin(true, Screen.hasShiftDown())).setOpaque(true);
+        GuiButton minMinus = TOOLKIT.createBorderlessButton(minStr, Component.literal("-")).onPress(() -> tile.adjustRSMin(true, Minecraft.getInstance().hasShiftDown())).setOpaque(true);
         Constraints.size(minMinus, 12, 12);
         Constraints.placeInside(minMinus, minStr, Constraints.LayoutPos.BOTTOM_LEFT, 1, 0);
-        GuiButton minPlus = TOOLKIT.createBorderlessButton(minStr, Component.literal("+")).onPress(() -> tile.adjustRSMin(false, Screen.hasShiftDown())).setOpaque(true);
+        GuiButton minPlus = TOOLKIT.createBorderlessButton(minStr, Component.literal("+")).onPress(() -> tile.adjustRSMin(false, Minecraft.getInstance().hasShiftDown())).setOpaque(true);
         Constraints.size(minPlus, 12, 12);
         Constraints.placeInside(minPlus, minStr, Constraints.LayoutPos.BOTTOM_RIGHT, -1, 0);
 
@@ -162,10 +163,10 @@ public class EntityDetectorGui extends ContainerGuiProvider<EntityDetectorMenu> 
                         .setScroll(false),
                 maxStr, Constraints.LayoutPos.BOTTOM_CENTER);
 
-        GuiButton maxMinus = TOOLKIT.createBorderlessButton(maxStr, Component.literal("-")).onPress(() -> tile.adjustRSMax(true, Screen.hasShiftDown())).setOpaque(true);
+        GuiButton maxMinus = TOOLKIT.createBorderlessButton(maxStr, Component.literal("-")).onPress(() -> tile.adjustRSMax(true, Minecraft.getInstance().hasShiftDown())).setOpaque(true);
         Constraints.size(maxMinus, 12, 12);
         Constraints.placeInside(maxMinus, maxStr, Constraints.LayoutPos.BOTTOM_LEFT, 1, 0);
-        GuiButton maxPlus = TOOLKIT.createBorderlessButton(maxStr, Component.literal("+")).onPress(() -> tile.adjustRSMax(false, Screen.hasShiftDown())).setOpaque(true);
+        GuiButton maxPlus = TOOLKIT.createBorderlessButton(maxStr, Component.literal("+")).onPress(() -> tile.adjustRSMax(false, Minecraft.getInstance().hasShiftDown())).setOpaque(true);
         Constraints.size(maxPlus, 12, 12);
         Constraints.placeInside(maxPlus, maxStr, Constraints.LayoutPos.BOTTOM_RIGHT, -1, 0);
 
@@ -188,10 +189,10 @@ public class EntityDetectorGui extends ContainerGuiProvider<EntityDetectorMenu> 
                         .setScroll(false),
                 rate, Constraints.LayoutPos.BOTTOM_CENTER);
 
-        GuiButton rateMinus = TOOLKIT.createBorderlessButton(rate, Component.literal("-")).onPress(() -> tile.adjustPulseRate(true, Screen.hasShiftDown())).setOpaque(true);
+        GuiButton rateMinus = TOOLKIT.createBorderlessButton(rate, Component.literal("-")).onPress(() -> tile.adjustPulseRate(true, Minecraft.getInstance().hasShiftDown())).setOpaque(true);
         Constraints.size(rateMinus, 12, 12);
         Constraints.placeInside(rateMinus, rate, Constraints.LayoutPos.BOTTOM_LEFT, 1, 0);
-        GuiButton ratePlus = TOOLKIT.createBorderlessButton(rate, Component.literal("+")).onPress(() -> tile.adjustPulseRate(false, Screen.hasShiftDown())).setOpaque(true);
+        GuiButton ratePlus = TOOLKIT.createBorderlessButton(rate, Component.literal("+")).onPress(() -> tile.adjustPulseRate(false, Minecraft.getInstance().hasShiftDown())).setOpaque(true);
         Constraints.size(ratePlus, 12, 12);
         Constraints.placeInside(ratePlus, rate, Constraints.LayoutPos.BOTTOM_RIGHT, -1, 0);
 

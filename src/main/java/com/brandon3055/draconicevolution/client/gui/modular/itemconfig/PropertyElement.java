@@ -11,7 +11,7 @@ import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.client.BCGuiTextures;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -292,7 +292,7 @@ public class PropertyElement extends GuiElement<PropertyElement> {
 
         @Override
         public boolean canScroll(Axis scrollAxis) {
-            return Screen.hasShiftDown();
+            return Minecraft.getInstance().hasShiftDown();
         }
     }
 

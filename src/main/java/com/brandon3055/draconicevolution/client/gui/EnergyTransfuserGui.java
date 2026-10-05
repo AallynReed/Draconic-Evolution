@@ -20,6 +20,7 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyTransfuser;
 import com.brandon3055.draconicevolution.client.DEGuiTextures;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileEnergyTransfuser;
 import com.brandon3055.draconicevolution.inventory.TransfuserMenu;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -81,7 +82,7 @@ public class EnergyTransfuserGui extends ContainerGuiProvider<TransfuserMenu> {
             GuiButton button = TOOLKIT.createBorderlessButton(column)
                     .setResetHoverOnPress(false)
                     .setTooltipSingle(() -> TOOLKIT.translate(tile.ioModes[fi].get().getName()))
-                    .onPress(() -> tile.ioModes[fi].set(tile.ioModes[fi].get().nextMode(Screen.hasShiftDown())), GuiButton.LEFT_CLICK)
+                    .onPress(() -> tile.ioModes[fi].set(tile.ioModes[fi].get().nextMode(Minecraft.getInstance().hasShiftDown())), GuiButton.LEFT_CLICK)
                     .onPress(() -> tile.ioModes[fi].set(tile.ioModes[fi].get().nextMode(true)), GuiButton.RIGHT_CLICK);
             Constraints.size(button, 16, 16);
             Constraints.placeOutside(button, slot, Constraints.LayoutPos.TOP_CENTER, 0, -1);

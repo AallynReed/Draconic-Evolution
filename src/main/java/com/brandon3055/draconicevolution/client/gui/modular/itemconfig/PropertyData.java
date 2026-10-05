@@ -14,7 +14,7 @@ import com.brandon3055.draconicevolution.inventory.ConfigurableItemMenu;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.google.gson.JsonParseException;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -207,10 +207,10 @@ public class PropertyData {
 
     public void increment(int dir) {
         if (type == Type.INTEGER) {
-            int inc = (int) (Math.max(1, getInc(maxValue - minValue)) * dir * (Screen.hasShiftDown() ? 2 : 1));
+            int inc = (int) (Math.max(1, getInc(maxValue - minValue)) * dir * (Minecraft.getInstance().hasShiftDown() ? 2 : 1));
             integerValue = (int) MathHelper.clip(integerValue + inc, minValue, maxValue);
         } else if (type == Type.DECIMAL) {
-            double inc = getInc(maxValue - minValue) * dir * (Screen.hasShiftDown() ? 2 : 1);
+            double inc = getInc(maxValue - minValue) * dir * (Minecraft.getInstance().hasShiftDown() ? 2 : 1);
             decimalValue = MathHelper.clip(decimalValue + inc, minValue, maxValue);
         }
 //        else if (type == Type.ENUM && enumValueOptions != null && enumValueOptions.contains(enumValueIndex)) {

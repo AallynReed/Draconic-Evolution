@@ -28,7 +28,7 @@ import com.brandon3055.draconicevolution.init.ItemData;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -160,7 +160,7 @@ public interface IModularItem extends IItemExtension, IFusionDataTransfer {
 
     @OnlyIn (Dist.CLIENT)
     default void addModularItemInformation(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
-        if (!Screen.hasShiftDown()) {
+        if (!Minecraft.getInstance().hasShiftDown()) {
             tooltip.add(Component.translatable("[Modular Item]").withStyle(ChatFormatting.BLUE));
         }
 

@@ -16,6 +16,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.templates.ButtonRow;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
 import com.brandon3055.draconicevolution.client.DEGuiTextures;
 import com.brandon3055.draconicevolution.inventory.GrinderMenu;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -97,7 +98,7 @@ public class GrinderGui extends ContainerGuiProvider<GrinderMenu> {
 
         GuiButton aoeSize = TOOLKIT.createFlat3DButton(root, () -> TOOLKIT.translate("aoe").append(" " + getAOEString()))
                 .setTooltipSingle(TOOLKIT.translate("aoe.info"))
-                .onPress(() -> modifyAOE(Screen.hasShiftDown()), GuiButton.LEFT_CLICK)
+                .onPress(() -> modifyAOE(Minecraft.getInstance().hasShiftDown()), GuiButton.LEFT_CLICK)
                 .onPress(() -> modifyAOE(true), GuiButton.RIGHT_CLICK)
                 .constrain(HEIGHT, literal(14))
                 .constrain(TOP, match(invBG.get(TOP)))

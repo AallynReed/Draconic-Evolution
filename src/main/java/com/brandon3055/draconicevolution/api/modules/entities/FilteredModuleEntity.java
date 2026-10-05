@@ -31,7 +31,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.covers1624.quack.collection.FastStream;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
@@ -228,7 +227,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
             return super.renderModuleOverlay(parent, context, render, x, y, width, height, mouseX, mouseY, partialTicks, hoverTicks);
         }
 
-        if (Screen.hasShiftDown()) {
+        if (Minecraft.getInstance().hasShiftDown()) {
             if (hoverTicks <= 10) return false;
             Minecraft mc = Minecraft.getInstance();
             Item item = getModule().getItem();
@@ -285,7 +284,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
         ItemStack carrying = player.containerMenu.getCarried();
 
         //Clear Filter
-        if (button == 1 && Screen.hasShiftDown()) {
+        if (button == 1 && Minecraft.getInstance().hasShiftDown()) {
             filters.removeIf(filter -> filter.slot() == index);
             sendConfigToServer(player.registryAccess());
             markDirty();

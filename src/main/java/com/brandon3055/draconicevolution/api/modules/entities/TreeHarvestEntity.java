@@ -25,7 +25,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -188,7 +187,7 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
     @Override
     @OnlyIn (Dist.CLIENT)
     public void addHostHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        if (Screen.hasShiftDown()) {
+        if (Minecraft.getInstance().hasShiftDown()) {
             tooltip.add(Component.translatable("module." + MODID + ".tree_harvest.single").withStyle(ChatFormatting.DARK_GRAY));
             if (getModule().getData().range() > 0) {
                 tooltip.add(Component.translatable("module." + MODID + ".tree_harvest.area").withStyle(ChatFormatting.DARK_GRAY));

@@ -24,6 +24,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
 import com.brandon3055.draconicevolution.client.DEGuiTextures;
 import com.brandon3055.draconicevolution.inventory.GeneratorMenu;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -112,7 +113,7 @@ public class GeneratorGui extends ContainerGuiProvider<GeneratorMenu> {
 
         //Mode Button
         GuiButton modButton = TOOLKIT.createFlat3DButton(root, () -> Component.translatable(tile.mode.get().unlocalizedName()));
-        modButton.onPress(() -> tile.mode.set(tile.mode.get().next(Screen.hasShiftDown())), GuiButton.LEFT_CLICK);
+        modButton.onPress(() -> tile.mode.set(tile.mode.get().next(Minecraft.getInstance().hasShiftDown())), GuiButton.LEFT_CLICK);
         modButton.onPress(() -> tile.mode.set(tile.mode.get().next(true)), GuiButton.RIGHT_CLICK);
         Constraints.size(modButton, 100, 14);
         Constraints.placeInside(modButton, playInv.container(), Constraints.LayoutPos.TOP_RIGHT, 0, -16);

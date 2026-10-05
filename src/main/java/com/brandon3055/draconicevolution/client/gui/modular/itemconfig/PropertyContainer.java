@@ -23,7 +23,6 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -203,12 +202,12 @@ public class PropertyContainer extends GuiManipulable {
                 .setTooltipSingle(() -> presetMode ? Component.translatable("gui.draconicevolution.item_config.edit_preset.info") : Component.translatable("gui.draconicevolution.item_config." + (collapsed ? "expand_group" : "collapse_group") + ".info"));
         Constraints.placeInside(toggleHidden, root, Constraints.LayoutPos.TOP_LEFT, 2, 2);
 
-        GuiButton dragZone = ConfigurableItemGui.TOOLKIT.createIconButton(root, 8, () -> Screen.hasShiftDown() ? BCGuiTextures.get("dark/copy") : Screen.hasControlDown() ? BCGuiTextures.get("delete") : BCGuiTextures.getThemed("reposition"))
-                .setTooltip(() -> isMoving() ? Collections.emptyList() : Collections.singletonList(Component.translatable(Screen.hasShiftDown() ? "gui.draconicevolution.item_config.copy_group.info" : Screen.hasControlDown() ? "gui.draconicevolution.item_config.delete_group.info" : "gui.draconicevolution.item_config.move_group.info")))
+        GuiButton dragZone = ConfigurableItemGui.TOOLKIT.createIconButton(root, 8, () -> Minecraft.getInstance().hasShiftDown() ? BCGuiTextures.get("dark/copy") : Minecraft.getInstance().hasControlDown() ? BCGuiTextures.get("delete") : BCGuiTextures.getThemed("reposition"))
+                .setTooltip(() -> isMoving() ? Collections.emptyList() : Collections.singletonList(Component.translatable(Minecraft.getInstance().hasShiftDown() ? "gui.draconicevolution.item_config.copy_group.info" : Minecraft.getInstance().hasControlDown() ? "gui.draconicevolution.item_config.delete_group.info" : "gui.draconicevolution.item_config.move_group.info")))
                 .onClick(() -> {
-                    if (Screen.hasShiftDown()) {
+                    if (Minecraft.getInstance().hasShiftDown()) {
                         duplicateContainer(root.mc().player.registryAccess());
-                    } else if (Screen.hasControlDown()) {
+                    } else if (Minecraft.getInstance().hasControlDown()) {
                         deleteContainer();
                     } else {
                         startDragging();
@@ -481,8 +480,8 @@ public class PropertyContainer extends GuiManipulable {
         });
 
         //TODO I think this is redundant?
-        GuiButton dragZone = ConfigurableItemGui.TOOLKIT.createIconButton(element, 8, () -> Screen.hasShiftDown() ? BCGuiTextures.get("dark/copy") : Screen.hasControlDown() ? BCGuiTextures.get("delete") : BCGuiTextures.get("reposition_gray"))
-                .setTooltip(() -> isMoving() ? Collections.emptyList() : Collections.singletonList(Component.translatable(Screen.hasShiftDown() ? "gui.draconicevolution.item_config.copy_group.info" : Screen.hasControlDown() ? "gui.draconicevolution.item_config.delete_group.info" : "gui.draconicevolution.item_config.move_group.info")));
+        GuiButton dragZone = ConfigurableItemGui.TOOLKIT.createIconButton(element, 8, () -> Minecraft.getInstance().hasShiftDown() ? BCGuiTextures.get("dark/copy") : Minecraft.getInstance().hasControlDown() ? BCGuiTextures.get("delete") : BCGuiTextures.get("reposition_gray"))
+                .setTooltip(() -> isMoving() ? Collections.emptyList() : Collections.singletonList(Component.translatable(Minecraft.getInstance().hasShiftDown() ? "gui.draconicevolution.item_config.copy_group.info" : Minecraft.getInstance().hasControlDown() ? "gui.draconicevolution.item_config.delete_group.info" : "gui.draconicevolution.item_config.move_group.info")));
         Constraints.placeInside(dragZone, element, Constraints.LayoutPos.TOP_RIGHT, -1, 1);
 
         if (!isGroup) {
@@ -496,11 +495,11 @@ public class PropertyContainer extends GuiManipulable {
             element.setEnabled(() -> DEConfig.configUiShowUnavailable || (data.isGlobal || data.isPropertyAvailable()));
             dragZone.onClick(() -> {
 
-                if (!Screen.hasShiftDown()) {
+                if (!Minecraft.getInstance().hasShiftDown()) {
                     dataList.remove(data);
                     reloadPropertyList(false);
                 }
-                if (Screen.hasShiftDown() || !Screen.hasControlDown()) {
+                if (Minecraft.getInstance().hasShiftDown() || !Minecraft.getInstance().hasControlDown()) {
                     PropertyContainer copy = new PropertyContainer(gui.root, gui, false);
                     copy.addProperty(data.copy());
                 }
