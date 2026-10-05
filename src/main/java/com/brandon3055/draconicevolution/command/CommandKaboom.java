@@ -32,7 +32,7 @@ public class CommandKaboom {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal("de_kaboom")
-                        .requires(cs -> cs.hasPermission(2))
+                        .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                         .then(Commands.argument("radius", IntegerArgumentType.integer(10, 50000))
 //                                .executes(ctx -> calculate(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "radius"), new BlockPos(ctx.getSource().getPos()), false))
                                         .then(Commands.argument("position", BlockPosArgument.blockPos())

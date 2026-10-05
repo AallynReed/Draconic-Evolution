@@ -22,7 +22,7 @@ public class CommandRespawnGuardian {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal("respawn_draconic_guardian")
-                        .requires(cs -> cs.hasPermission(2))
+                        .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                         .executes(context -> respawn(context, false))
 //                        .then(Commands.literal("spawn_here")
 //                                .executes(context -> respawn(context, true)))
