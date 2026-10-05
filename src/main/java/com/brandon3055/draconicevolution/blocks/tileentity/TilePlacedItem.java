@@ -12,6 +12,7 @@ import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -20,7 +21,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gamerules.GameRules;
@@ -77,7 +77,7 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
         }
         if (stacks.size() == 1) {
             ItemStack stack = stacks.get(0);
-            toolMode.set(stack.getItem() instanceof TieredItem || stack.isDamageableItem());
+            toolMode.set(stack.has(DataComponents.TOOL) || stack.isDamageableItem());
         } else {
             toolMode.set(false);
         }
