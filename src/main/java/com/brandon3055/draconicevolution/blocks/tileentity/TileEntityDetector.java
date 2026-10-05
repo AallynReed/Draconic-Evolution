@@ -346,7 +346,7 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
     public InteractionResult useWithoutItem(BlockState state, Player player, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
             player.openMenu(this, worldPosition);
-            MinecraftServer server = player.getServer();
+            MinecraftServer server = player.level().getServer();
             if (server != null) {
                 ListTag list = new ListTag();
                 for (String name : server.getPlayerList().getPlayerNamesArray()) {
