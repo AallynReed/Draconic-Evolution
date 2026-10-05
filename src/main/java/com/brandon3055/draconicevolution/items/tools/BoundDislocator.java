@@ -19,6 +19,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -44,13 +45,13 @@ public class BoundDislocator extends Dislocator {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level world, Entity entity, int itemSlot, boolean isSelected) {
+    public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot slot) {
         if (world instanceof ServerLevel && TimeKeeper.getServerTick() % 20 == 0) {
             if (isValid(stack) && !isPlayer(stack) && entity instanceof Player) {
                 DislocatorSaveData.updateLinkTarget(world, stack, new PlayerTarget((Player) entity));
             }
         }
-        super.inventoryTick(stack, world, entity, itemSlot, isSelected);
+        super.inventoryTick(stack, world, entity, slot);
     }
 
     @Override

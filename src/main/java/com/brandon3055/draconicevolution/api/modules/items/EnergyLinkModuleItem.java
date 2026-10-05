@@ -20,6 +20,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Util;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -28,6 +29,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.UUID;
 import java.util.function.Supplier;
+import javax.annotation.Nullable;
 
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
@@ -43,7 +45,7 @@ public class EnergyLinkModuleItem extends ModuleItem<EnergyLinkData> {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int p_41407_, boolean p_41408_) {
+    public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
         if (!(level instanceof ServerLevel serverLevel) || TimeKeeper.getServerTick() % 20 != 0) return;
         checkResetLink(stack, serverLevel);
     }

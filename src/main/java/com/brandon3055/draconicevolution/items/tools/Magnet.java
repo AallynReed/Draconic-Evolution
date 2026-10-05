@@ -5,11 +5,13 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.ItemData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -26,6 +28,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 
 import java.util.List;
 import java.util.function.Consumer;
+import javax.annotation.Nullable;
 
 /**
  * Created by brandon3055 on 9/3/2016.
@@ -47,13 +50,13 @@ public class Magnet extends Item /*implements IBauble*/ {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int itemSlot, boolean isSelected) {
+    public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
         updateMagnet(stack, entity);
     }
 
     private void updateMagnet(ItemStack stack, Entity entity) {
         if (!entity.isShiftKeyDown() && isEnabled(stack) && entity instanceof Player player) {
-            Level world = entity.getCommandSenderWorld();
+            Level world = entity.level();
             List<ItemEntity> items;
             if (entity.tickCount % 10 == 0) {
                 items = world.getEntitiesOfClass(ItemEntity.class, new AABB(entity.getX(), entity.getY(), entity.getZ(), entity.getX(), entity.getY(), entity.getZ()).inflate(range, range, range));
