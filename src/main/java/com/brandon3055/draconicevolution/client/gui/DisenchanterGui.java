@@ -140,7 +140,7 @@ public class DisenchanterGui extends ContainerGuiProvider<DisenchanterMenu> {
 
             GuiButton button = TOOLKIT.createFlat3DButton(scroll.getContentElement(), enchantment::description)
                     .setTooltip(Component.translatable("gui." + DraconicEvolution.MODID + ".disenchanter.level", lvl), Component.translatable("gui." + DraconicEvolution.MODID + ".disenchanter.cost", tile.getCostInLevels(enchantment, lvl)))
-                    .onPress(() -> tile.sendPacketToServer(output -> output.writeResourceLocation(enchantHolder.getKey().location()), 1))
+                    .onPress(() -> tile.sendPacketToServer(output -> output.writeResourceLocation(enchantHolder.getKey().identifier()), 1))
                     .constrain(HEIGHT, literal(14))
                     .constrain(LEFT, match(scroll.getContentElement().get(LEFT)))
                     .constrain(RIGHT, match(scroll.getContentElement().get(RIGHT)))

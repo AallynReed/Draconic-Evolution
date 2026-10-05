@@ -120,7 +120,7 @@ public class DislocatorGui implements GuiProvider {
                         Component.literal(GOLD + "X: " + (int) getTargetPos().getX()),
                         Component.literal(GOLD + "Y: " + (int) getTargetPos().getY()),
                         Component.literal(GOLD + "Z: " + (int) getTargetPos().getZ()),
-                        Component.literal(GOLD + (Minecraft.getInstance().hasShiftDown() ? getTargetPos().getDimension().location().toString() : getTargetPos().getDimension().location().getPath()))
+                        Component.literal(GOLD + (Minecraft.getInstance().hasShiftDown() ? getTargetPos().getDimension().identifier().toString() : getTargetPos().getDimension().identifier().getPath()))
                 ));
 
         GuiText xLabel = new GuiText(infoBG)
@@ -159,7 +159,7 @@ public class DislocatorGui implements GuiProvider {
         GuiText dimLabel = new GuiText(infoBG)
                 .setAlignment(Align.LEFT)
                 .setShadow(() -> BCConfig.darkMode)
-                .setTextSupplier(() -> Component.literal(getTargetPos().getDimension().location().getPath()))
+                .setTextSupplier(() -> Component.literal(getTargetPos().getDimension().identifier().getPath()))
                 .constrain(TOP, relative(zLabel.get(BOTTOM), 2))
                 .constrain(LEFT, relative(infoBG.get(LEFT), 2))
                 .constrain(RIGHT, relative(infoBG.get(RIGHT), -1))

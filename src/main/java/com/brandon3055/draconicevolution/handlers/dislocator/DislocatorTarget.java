@@ -46,7 +46,7 @@ public abstract class DislocatorTarget {
 
     public CompoundTag save(CompoundTag nbt) {
         nbt.putByte("target_type", (byte) getType().ordinal());
-        nbt.putString("world_key", worldKey.location().toString());
+        nbt.putString("world_key", worldKey.identifier().toString());
         return nbt;
     }
 

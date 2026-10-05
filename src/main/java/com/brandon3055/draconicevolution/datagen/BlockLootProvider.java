@@ -109,6 +109,6 @@ public class BlockLootProvider extends BlockLootSubProvider {
 
     @Override
     protected Iterable<Block> getKnownBlocks() {
-        return BuiltInRegistries.BLOCK.entrySet().stream().filter(e -> e.getKey().location().getNamespace().equals(DraconicEvolution.MODID)).map(Map.Entry::getValue).collect(Collectors.toList());
+        return BuiltInRegistries.BLOCK.entrySet().stream().filter(e -> e.getKey().identifier().getNamespace().equals(DraconicEvolution.MODID)).map(Map.Entry::getValue).collect(Collectors.toList());
     }
 }

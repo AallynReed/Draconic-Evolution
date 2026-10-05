@@ -230,7 +230,7 @@ public class EnergyLinkEntity extends ModuleEntity<EnergyLinkData> {
             list.add(Component.translatable("module.draconicevolution.energy_link.linked_core")
                     .withStyle(ChatFormatting.GRAY)
                     .append(": ")
-                    .append(Component.literal("X:" + gPos.pos().getX() + ", Y:" + gPos.pos().getY() + ", Z:" + gPos.pos().getZ() + ", " + gPos.dimension().location()).withStyle(ChatFormatting.DARK_GREEN)));
+                    .append(Component.literal("X:" + gPos.pos().getX() + ", Y:" + gPos.pos().getY() + ", Z:" + gPos.pos().getZ() + ", " + gPos.dimension().identifier()).withStyle(ChatFormatting.DARK_GREEN)));
         } else {
             list.add(Component.translatable("module.draconicevolution.energy_link.link_to_core").withStyle(ChatFormatting.GRAY));
         }
