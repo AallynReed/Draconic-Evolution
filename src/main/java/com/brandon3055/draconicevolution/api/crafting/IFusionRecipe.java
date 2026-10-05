@@ -5,11 +5,15 @@ import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.DraconicAPI;
 import com.brandon3055.draconicevolution.api.crafting.IFusionStateMachine.FusionState;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -25,7 +29,6 @@ import java.util.stream.Collectors;
  */
 public interface IFusionRecipe extends Recipe<IFusionInventory> {
 
-    @Override
     default ItemStack getToastSymbol() {
         if (DraconicAPI.CRAFTING_CORE != null) {
             return new ItemStack(DraconicAPI.CRAFTING_CORE);
@@ -35,7 +38,7 @@ public interface IFusionRecipe extends Recipe<IFusionInventory> {
     }
 
     @Override
-    default RecipeType<?> getType() {
+    default RecipeType<IFusionRecipe> getType() {
         return DraconicAPI.FUSION_RECIPE_TYPE.get();
     }
 
@@ -49,7 +52,6 @@ public interface IFusionRecipe extends Recipe<IFusionInventory> {
      *
      * @return A list of recipe ingredients NOT including the catalyst.
      */
-    @Override
     default NonNullList<Ingredient> getIngredients() {
         return fusionIngredients().stream().map(IFusionIngredient::get).collect(Collectors.toCollection(NonNullList::create));
     }
@@ -66,6 +68,8 @@ public interface IFusionRecipe extends Recipe<IFusionInventory> {
      * @return The catalyst ingredient required by this recipe.
      */
     Ingredient getCatalyst();
+
+    ItemStack getResultItem(HolderLookup.Provider provider);
 
     /**
      * Returns true if the ingredients in the inventory match this recipe.
@@ -177,8 +181,8 @@ public interface IFusionRecipe extends Recipe<IFusionInventory> {
                     if (!ingredient.consume()) {
                         break;
                     }
-                    if (stack.hasCraftingRemainingItem()) {
-                        stack = stack.getItem().getCraftingRemainingItem(stack);
+                    if (stack.getCraftingRemainder() != null) {
+                        stack = stack.getCraftingRemainder().create();
                     } else {
                         stack.shrink(1);
                     }
@@ -196,7 +200,7 @@ public interface IFusionRecipe extends Recipe<IFusionInventory> {
         }
 
         ItemStack catalyst = inv.getCatalystStack();
-        ItemStack result = recipe.assemble(inv, level.registryAccess());
+        ItemStack result = recipe.assemble(inv);
         catalyst.shrink(catCount);
         inv.setCatalystStack(catalyst);
         ItemStack outputStack = inv.getOutputStack();
@@ -225,7 +229,7 @@ public interface IFusionRecipe extends Recipe<IFusionInventory> {
     default boolean canStartCraft(IFusionInventory inv, Level level, @Nullable Consumer<Component> userStatus) {
         ItemStack output = inv.getOutputStack();
         if (!output.isEmpty()) {
-            ItemStack result = assemble(inv, level.registryAccess());
+            ItemStack result = assemble(inv);
             if (!ItemStack.isSameItemSameComponents(output, result) || output.getCount() + result.getCount() > result.getItem().getMaxStackSize(result)) {
                 if (userStatus != null) {
                     userStatus.accept(Component.translatable("fusion_status.draconicevolution.output_obstructed").withStyle(ChatFormatting.RED));
@@ -261,8 +265,23 @@ public interface IFusionRecipe extends Recipe<IFusionInventory> {
     }
 
     @Override
-    default boolean canCraftInDimensions(int width, int height) {
+    default boolean showNotification() {
         return true;
+    }
+
+    @Override
+    default String group() {
+        return "";
+    }
+
+    @Override
+    default PlacementInfo placementInfo() {
+        return PlacementInfo.NOT_PLACEABLE;
+    }
+
+    @Override
+    default RecipeBookCategory recipeBookCategory() {
+        return RecipeBookCategories.CRAFTING_MISC;
     }
 
     @Override

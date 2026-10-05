@@ -16,7 +16,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 public class DraconicAPI {
 
 
-    public static DeferredHolder<RecipeSerializer<?>, FusionRecipe.Serializer> FUSION_RECIPE_SERIALIZER;
+    public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<FusionRecipe>> FUSION_RECIPE_SERIALIZER;
 
     /**
      * Assigned by Draconic Evolution during mod construction.

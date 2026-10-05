@@ -426,7 +426,7 @@ public class DEContent {
     //#################################################################
 
     static {
-        DraconicAPI.FUSION_RECIPE_SERIALIZER = RECIPE_SERIAL.register("fusion_crafting", FusionRecipe.Serializer::new);
+        DraconicAPI.FUSION_RECIPE_SERIALIZER = RECIPE_SERIAL.register("fusion_crafting", () -> FusionRecipe.Serializer.INSTANCE);
         DraconicAPI.FUSION_RECIPE_TYPE = RECIPE_TYPES.register("fusion_crafting", () -> RecipeType.simple(Identifier.fromNamespaceAndPath(MODID, "fusion_crafting")));
     }
 

@@ -15,6 +15,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.*;
 
 import java.util.ArrayList;
@@ -26,13 +27,13 @@ import java.util.stream.Collectors;
  */
 public class FusionRecipe implements IFusionRecipe {
 
-    private final ItemStack result;
+    private final ItemStackTemplate result;
     private final Ingredient catalyst;
     private final long totalEnergy;
     private final TechLevel techLevel;
     private final List<FusionIngredient> ingredients;
 
-    public FusionRecipe(ItemStack result, Ingredient catalyst, long totalEnergy, TechLevel techLevel, List<FusionIngredient> ingredients) {
+    public FusionRecipe(ItemStackTemplate result, Ingredient catalyst, long totalEnergy, TechLevel techLevel, List<FusionIngredient> ingredients) {
         this.result = result;
         this.catalyst = catalyst;
         this.totalEnergy = totalEnergy;
@@ -66,27 +67,27 @@ public class FusionRecipe implements IFusionRecipe {
     }
 
     @Override
-    public ItemStack assemble(IFusionInventory inv, HolderLookup.Provider provider) {
-        ItemStack stack = result.copy();
+    public ItemStack assemble(IFusionInventory inv) {
+        ItemStack stack = result.create();
         if (stack.getItem() instanceof IFusionDataTransfer) {
-            ((IFusionDataTransfer) stack.getItem()).transferIngredientData(stack, inv, provider);
+            ((IFusionDataTransfer) stack.getItem()).transferIngredientData(stack, inv);
         }
         return stack;
     }
 
     @Override
     public ItemStack getResultItem(HolderLookup.Provider provider) {
-        return result;
+        return result.create();
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<FusionRecipe> getSerializer() {
         return DraconicAPI.FUSION_RECIPE_SERIALIZER.get();
     }
 
     public static class FusionIngredient implements IFusionIngredient {
         private static final Codec<FusionIngredient> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-                        Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(e -> e.ingredient),
+                        Ingredient.CODEC.fieldOf("ingredient").forGetter(e -> e.ingredient),
                         Codec.BOOL.fieldOf("consume").forGetter(e -> e.consume)
                 ).apply(builder, FusionIngredient::new)
         );
@@ -127,10 +128,10 @@ public class FusionRecipe implements IFusionRecipe {
 //        }
     }
 
-    public static class Serializer implements RecipeSerializer<FusionRecipe> {
+    public static class Serializer {
         private static final MapCodec<FusionRecipe> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-                        ItemStack.CODEC.fieldOf("result").forGetter(e -> e.result),
-                        Ingredient.CODEC_NONEMPTY.fieldOf("catalyst").forGetter(e -> e.catalyst),
+                        ItemStackTemplate.CODEC.fieldOf("result").forGetter(e -> e.result),
+                        Ingredient.CODEC.fieldOf("catalyst").forGetter(e -> e.catalyst),
                         Codec.LONG.fieldOf("totalEnergy").forGetter(e -> e.totalEnergy),
                         TechLevel.CODEC.fieldOf("techLevel").forGetter(e -> e.techLevel),
                         Codec.list(FusionIngredient.CODEC).fieldOf("ingredients").forGetter(e -> e.ingredients)
@@ -141,18 +142,10 @@ public class FusionRecipe implements IFusionRecipe {
                 FusionRecipe.Serializer::toNetwork, FusionRecipe.Serializer::fromNetwork
         );
 
-        @Override
-        public MapCodec<FusionRecipe> codec() {
-            return CODEC;
-        }
-
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, FusionRecipe> streamCodec() {
-            return STREAM_CODEC;
-        }
+        public static final RecipeSerializer<FusionRecipe> INSTANCE = new RecipeSerializer<>(CODEC, STREAM_CODEC);
 
         private static FusionRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
-            ItemStack result =  ItemStack.STREAM_CODEC.decode(buffer);
+            ItemStackTemplate result =  ItemStackTemplate.STREAM_CODEC.decode(buffer);
             Ingredient catalyst = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
 
             int count = buffer.readByte();
@@ -168,7 +161,7 @@ public class FusionRecipe implements IFusionRecipe {
         }
 
         private static void toNetwork(RegistryFriendlyByteBuf buffer, FusionRecipe recipe) {
-            ItemStack.STREAM_CODEC.encode(buffer, recipe.result);
+            ItemStackTemplate.STREAM_CODEC.encode(buffer, recipe.result);
             Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.catalyst);
 
             buffer.writeByte(recipe.ingredients.size());
