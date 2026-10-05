@@ -2,6 +2,9 @@ modLoader="javafml"
 loaderVersion="[2,)"
 license="CoFH \"Don't Be a Jerk\" License"
 
+[[mixins]]
+config="mixins.draconicevolution.json"
+
 [[mods]]
 	modId="draconicevolution"
 	displayName="Draconic Evolution"
