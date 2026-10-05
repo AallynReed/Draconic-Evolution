@@ -141,7 +141,7 @@ public class Magnet extends Item /*implements IBauble*/ {
                         world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * ((world.getRandom().nextFloat() - world.getRandom().nextFloat()) * 0.7F + 1.8F));
                     }
                     player.take(orb, 1);
-                    player.giveExperiencePoints(orb.value);
+                    player.giveExperiencePoints(orb.getValue());
                     orb.discard();
                 }
             }

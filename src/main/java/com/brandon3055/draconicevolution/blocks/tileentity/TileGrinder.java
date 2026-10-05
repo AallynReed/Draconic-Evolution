@@ -304,8 +304,8 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
         debug("Detected: " + xp.size() + " XP entities");
         for (ExperienceOrb orb : xp) {
             if (!orb.isAlive()) continue;
-            if (collectXP.get() && storedXP.get() + orb.value <= getXPStorageCapacity()) {
-                storedXP.add(orb.value);
+            if (collectXP.get() && storedXP.get() + orb.getValue() <= getXPStorageCapacity()) {
+                storedXP.add(orb.getValue());
                 orb.discard();
             } else if (orb.age < 5400) {
                 orb.age = 5700;
