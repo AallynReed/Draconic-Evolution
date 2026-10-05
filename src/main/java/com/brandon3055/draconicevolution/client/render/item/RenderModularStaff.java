@@ -1,22 +1,24 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
 import codechicken.lib.math.MathHelper;
+import codechicken.lib.model.PerspectiveModelState;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.model.OBJParser;
+import codechicken.lib.util.TransformUtils;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.modelfx.StaffModelEffect;
 import com.brandon3055.draconicevolution.items.equipment.ModularStaff;
+import com.google.common.collect.ImmutableMap;
+import com.mojang.math.Transformation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.resources.model.cuboid.ItemTransform;
-import net.minecraft.client.resources.model.cuboid.ItemTransforms;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -34,20 +36,20 @@ import java.util.Map;
 public class RenderModularStaff extends ToolRenderBase {
 
     private static final StaffModelEffect effectRenderer = new StaffModelEffect();
-    private static final ItemTransforms TRANSFORMATION;
+    private static final PerspectiveModelState TRANSFORMATION;
 
     static {
         // @formatter:off
-        Map<ItemDisplayContext, ItemTransform> map = new HashMap<>();
-        map.put(ItemDisplayContext.GROUND,                   DEItemTransforms.create(   0F,   2F,    0F, 0F,   0F,  0F,  0.5F));
-        map.put(ItemDisplayContext.FIXED,                    DEItemTransforms.create(   0F,   0F,    0F, 0F, 180F,  0F,    1F));
+        Map<ItemDisplayContext, Transformation> map = new HashMap<>();
+        map.put(ItemDisplayContext.GROUND,                   TransformUtils.create(   0F,   2F,    0F, 0F,   0F,  0F,  0.5F));
+        map.put(ItemDisplayContext.FIXED,                    TransformUtils.create(   0F,   0F,    0F, 0F, 180F,  0F,    1F));
 
-        map.put(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND,  DEItemTransforms.create(   0F,   1.5F,  -6.5F, 0F,  90F, -15F, 0.85F));
-        map.put(ItemDisplayContext.THIRD_PERSON_LEFT_HAND,   DEItemTransforms.create(   0F,   1.5F,  -6.5F, 0F, -90F,  15F, 0.85F));
+        map.put(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND,  TransformUtils.create(   0F,   1.5F,  -6.5F, 0F,  90F, -15F, 0.85F));
+        map.put(ItemDisplayContext.THIRD_PERSON_LEFT_HAND,   TransformUtils.create(   0F,   1.5F,  -6.5F, 0F, -90F,  15F, 0.85F));
 
-        map.put(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND,  DEItemTransforms.create(1.13F, 3.2F, 1.13F, 0F,  90F, -45F, 0.68F));
-        map.put(ItemDisplayContext.FIRST_PERSON_LEFT_HAND,   DEItemTransforms.create(1.13F, 3.2F, 1.13F, 0F,  -90F, 45F, 0.68F));
-        TRANSFORMATION = DEItemTransforms.of(map);
+        map.put(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND,  TransformUtils.create(1.13F, 3.2F, 1.13F, 0F,  90F, -45F, 0.68F));
+        map.put(ItemDisplayContext.FIRST_PERSON_LEFT_HAND,   TransformUtils.create(1.13F, 3.2F, 1.13F, 0F,  -90F, 45F, 0.68F));
+        TRANSFORMATION = new PerspectiveModelState(ImmutableMap.copyOf(map));
         // @formatter:on
     }
 
@@ -93,7 +95,7 @@ public class RenderModularStaff extends ToolRenderBase {
     }
 
     @Override
-    public ItemTransforms getModelState() {
+    public @Nullable PerspectiveModelState getModelState() {
         return TRANSFORMATION;
     }
 

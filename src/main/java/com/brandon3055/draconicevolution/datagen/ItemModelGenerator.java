@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.datagen;
 
+import codechicken.lib.model.ClassModelLoader;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.client.render.item.*;
@@ -291,7 +292,7 @@ public class ItemModelGenerator extends ModelProvider {
     }
 
     protected void clazz(DeferredHolder<? extends Item, ? extends Item> item, Class<?> renderer) {
-        definitions.put(item.get(), () -> new DEItemRendererModel.Unbaked(renderer.getName()));
+        definitions.put(item.get(), () -> new ClassModelLoader.Unbaked(renderer.getName()));
     }
 
     protected static Identifier modLoc(String path) {

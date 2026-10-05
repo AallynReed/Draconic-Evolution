@@ -1,7 +1,10 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
+import codechicken.lib.model.PerspectiveModelState;
 import codechicken.lib.render.CCModel;
+import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.render.model.OBJParser;
+import codechicken.lib.util.TransformUtils;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Scale;
 import codechicken.lib.vec.Vector3;
@@ -21,11 +24,11 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.resources.model.cuboid.ItemTransforms;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -34,7 +37,7 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 /**
  * Created by brandon3055 on 27/2/20.
  */
-public class RenderItemChaosShard implements DEItemRenderer {
+public class RenderItemChaosShard implements IItemRenderer {
 
     private static final BCRenderType CHAOS_CRYSTAL_INNER = BCShaders.CHAOS_ENTITY_SHADER.renderType(MODID + ":chaos_crystal_inner", RenderSetup.builder(BCShaders.CHAOS_ENTITY_SHADER.pipeline("de_chaos_shard_inner", builder -> builder
                     .withCull(false)
@@ -95,7 +98,9 @@ public class RenderItemChaosShard implements DEItemRenderer {
 
     // @formatter:off
     @Override
-    public ItemTransforms getModelState() { return DEItemTransforms.DEFAULT_ITEM; }
+    public @Nullable PerspectiveModelState getModelState() { return TransformUtils.DEFAULT_ITEM; }
+    @Override public boolean useAmbientOcclusion() { return false; }
+    @Override public boolean isGui3d() { return false; }
     @Override public boolean usesBlockLight() { return false; }
 
     //This is not cursed at all! idk what your talking about!

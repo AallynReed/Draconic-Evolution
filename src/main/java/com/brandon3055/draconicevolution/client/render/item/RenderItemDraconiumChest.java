@@ -1,5 +1,8 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
+import codechicken.lib.model.PerspectiveModelState;
+import codechicken.lib.render.item.IItemRenderer;
+import codechicken.lib.util.TransformUtils;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.draconicevolution.client.render.tile.DraconiumChestTileRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -7,20 +10,29 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.cuboid.ItemTransforms;
 import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by brandon3055 on 18/04/2017.
  */
-public class RenderItemDraconiumChest implements DEItemRenderer {
+public class RenderItemDraconiumChest implements IItemRenderer {
     public DraconiumChestTileRenderer renderer = new DraconiumChestTileRenderer(null);
 
     public RenderItemDraconiumChest() {}
+    @Override
+    public boolean useAmbientOcclusion() {
+        return true;
+    }
+
+    @Override
+    public boolean isGui3d() {
+        return true;
+    }
 
     @Override
     public TextureAtlasSprite getParticleIcon() {
@@ -40,8 +52,8 @@ public class RenderItemDraconiumChest implements DEItemRenderer {
     }
 
     @Override
-    public ItemTransforms getModelState() {
-        return DEItemTransforms.DEFAULT_BLOCK;
+    public @Nullable PerspectiveModelState getModelState() {
+        return TransformUtils.DEFAULT_BLOCK;
     }
 
     @Override

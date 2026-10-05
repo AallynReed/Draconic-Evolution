@@ -1,16 +1,19 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
+import codechicken.lib.model.PerspectiveModelState;
+import codechicken.lib.render.item.IItemRenderer;
+import codechicken.lib.util.TransformUtils;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.resources.model.cuboid.ItemTransforms;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by brandon3055 on 18/04/2017.
  */
-public class RenderItemStabilizedSpawner implements DEItemRenderer {
+public class RenderItemStabilizedSpawner implements IItemRenderer {
 
     private static ItemStack[] CORE_RENDER_ITEMS;
 
@@ -23,6 +26,16 @@ public class RenderItemStabilizedSpawner implements DEItemRenderer {
 
     //region Unused
 
+    @Override
+    public boolean useAmbientOcclusion() {
+        return false;
+    }
+
+    @Override
+    public boolean isGui3d() {
+        return true;
+    }
+
     //endregion
 
     @Override
@@ -31,8 +44,8 @@ public class RenderItemStabilizedSpawner implements DEItemRenderer {
     }
 
     @Override
-    public ItemTransforms getModelState() {
-        return DEItemTransforms.DEFAULT_BLOCK;
+    public @Nullable PerspectiveModelState getModelState() {
+        return TransformUtils.DEFAULT_BLOCK;
     }
 
     @Override

@@ -1,6 +1,9 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
 import codechicken.lib.math.MathHelper;
+import codechicken.lib.model.PerspectiveModelState;
+import codechicken.lib.render.item.IItemRenderer;
+import codechicken.lib.util.TransformUtils;
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -9,10 +12,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.resources.model.cuboid.ItemTransforms;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
 import java.util.HashSet;
@@ -21,7 +24,7 @@ import java.util.Set;
 /**
  * Created by brandon3055 on 18/04/2017.
  */
-public class RenderItemMobSoul implements DEItemRenderer {
+public class RenderItemMobSoul implements IItemRenderer {
 
     private static Set<Entity> brokenMobs = new HashSet<>();
 
@@ -29,6 +32,16 @@ public class RenderItemMobSoul implements DEItemRenderer {
     }
 
     //region Unused
+
+    @Override
+    public boolean useAmbientOcclusion() {
+        return false;
+    }
+
+    @Override
+    public boolean isGui3d() {
+        return true;
+    }
 
     //endregion
 
@@ -104,8 +117,8 @@ public class RenderItemMobSoul implements DEItemRenderer {
     }
 
     @Override
-    public ItemTransforms getModelState() {
-        return DEItemTransforms.DEFAULT_BLOCK;
+    public @Nullable PerspectiveModelState getModelState() {
+        return TransformUtils.DEFAULT_BLOCK;
     }
 
     @Override

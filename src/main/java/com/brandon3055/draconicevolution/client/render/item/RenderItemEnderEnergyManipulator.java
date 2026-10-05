@@ -1,17 +1,20 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
+import codechicken.lib.model.PerspectiveModelState;
+import codechicken.lib.render.item.IItemRenderer;
+import codechicken.lib.util.TransformUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.object.skull.SkullModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.resources.model.cuboid.ItemTransforms;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by brandon3055 on 18/04/2017.
  */
-public class RenderItemEnderEnergyManipulator implements DEItemRenderer {
+public class RenderItemEnderEnergyManipulator implements IItemRenderer {
 
 //    private final SkullModel skeletonHead = new SkullModel(0, 0, 64, 32);
 //    private static final ResourceLocation WITHER_SKELETON_TEXTURES = new ResourceLocation("textures/entity/skeleton/wither_skeleton.png");
@@ -21,6 +24,15 @@ public class RenderItemEnderEnergyManipulator implements DEItemRenderer {
     }
 
     //region Unused
+    @Override
+    public boolean useAmbientOcclusion() {
+        return false;
+    }
+
+    @Override
+    public boolean isGui3d() {
+        return true;
+    }
 
     //endregion
 
@@ -30,8 +42,8 @@ public class RenderItemEnderEnergyManipulator implements DEItemRenderer {
     }
 
     @Override
-    public ItemTransforms getModelState() {
-        return DEItemTransforms.DEFAULT_BLOCK;
+    public @Nullable PerspectiveModelState getModelState() {
+        return TransformUtils.DEFAULT_BLOCK;
     }
 
     @Override

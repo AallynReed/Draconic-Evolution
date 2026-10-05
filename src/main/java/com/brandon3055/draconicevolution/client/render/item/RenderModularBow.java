@@ -1,10 +1,12 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
 import codechicken.lib.math.MathHelper;
+import codechicken.lib.model.PerspectiveModelState;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.buffer.TransformingVertexConsumer;
 import codechicken.lib.render.model.OBJParser;
+import codechicken.lib.util.TransformUtils;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
@@ -31,7 +33,6 @@ import net.minecraft.client.renderer.entity.TippableArrowRenderer;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.cuboid.ItemTransforms;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -208,8 +209,8 @@ public class RenderModularBow extends ToolRenderBase {
     }
 
     @Override
-    public ItemTransforms getModelState() {
-        return DEItemTransforms.DEFAULT_BOW;
+    public @Nullable PerspectiveModelState getModelState() {
+        return TransformUtils.DEFAULT_BOW;
     }
 
     private void glUniformStringBaseColor(ToolShader shader) {

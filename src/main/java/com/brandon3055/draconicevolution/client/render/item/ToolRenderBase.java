@@ -1,8 +1,11 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
 import codechicken.lib.math.MathHelper;
+import codechicken.lib.model.PerspectiveModelState;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
+import codechicken.lib.render.item.IItemRenderer;
+import codechicken.lib.util.TransformUtils;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TechLevel;
@@ -21,7 +24,6 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
-import net.minecraft.client.resources.model.cuboid.ItemTransforms;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -33,7 +35,7 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 /**
  * Created by brandon3055 on 22/5/20.
  */
-public abstract class ToolRenderBase implements DEItemRenderer {
+public abstract class ToolRenderBase implements IItemRenderer {
 
     private static final PoseStack IDENTITY = new PoseStack();
     private static final RenderPipeline BASE_PIPELINE = DEShaders.TOOL_BASE_SHADER.pipeline("tool_base", builder -> builder.withVertexFormat(DefaultVertexFormat.ENTITY, VertexFormat.Mode.TRIANGLES));
@@ -75,9 +77,18 @@ public abstract class ToolRenderBase implements DEItemRenderer {
         mat.scale(scale);
     }
 
+    public PerspectiveModelState getModelState() {
+        return TransformUtils.DEFAULT_TOOL;
+    }
+
     @Override
-    public ItemTransforms getModelState() {
-        return DEItemTransforms.DEFAULT_TOOL;
+    public boolean useAmbientOcclusion() {
+        return false;
+    }
+
+    @Override
+    public boolean isGui3d() {
+        return false;
     }
 
     @Override

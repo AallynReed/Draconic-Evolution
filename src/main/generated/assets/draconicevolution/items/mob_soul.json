@@ -1,6 +1,6 @@
 {
   "model": {
-    "type": "draconicevolution:item_renderer",
+    "type": "codechickenlib:class",
     "class": "com.brandon3055.draconicevolution.client.render.item.RenderItemMobSoul"
   }
 }

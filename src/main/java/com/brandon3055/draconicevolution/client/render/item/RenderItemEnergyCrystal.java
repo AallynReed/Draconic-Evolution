@@ -1,8 +1,11 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
 import codechicken.lib.colour.Colour;
+import codechicken.lib.model.PerspectiveModelState;
 import codechicken.lib.render.CCModel;
+import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.render.model.OBJParser;
+import codechicken.lib.util.TransformUtils;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import com.brandon3055.brandonscore.api.TechLevel;
@@ -18,10 +21,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.resources.model.cuboid.ItemTransforms;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -30,7 +33,7 @@ import static com.brandon3055.draconicevolution.client.render.tile.RenderTileEne
 /**
  * Created by brandon3055 on 21/11/2016.
  */
-public class RenderItemEnergyCrystal implements DEItemRenderer {
+public class RenderItemEnergyCrystal implements IItemRenderer {
     public static final RenderType crystalBaseType = RenderTypes.entitySolid(Identifier.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/models/crystal_base.png"));
 
     private final CrystalType type;
@@ -50,6 +53,16 @@ public class RenderItemEnergyCrystal implements DEItemRenderer {
     }
 
     //region Unused
+
+    @Override
+    public boolean useAmbientOcclusion() {
+        return false;
+    }
+
+    @Override
+    public boolean isGui3d() {
+        return false;
+    }
 
     @Override
     public boolean usesBlockLight() {
@@ -93,8 +106,8 @@ public class RenderItemEnergyCrystal implements DEItemRenderer {
     }
 
     @Override
-    public ItemTransforms getModelState() {
-        return DEItemTransforms.DEFAULT_BLOCK;
+    public @Nullable PerspectiveModelState getModelState() {
+        return TransformUtils.DEFAULT_BLOCK;
     }
 
     private static float[] r = {0.0F, 0.47F, 1.0F};
