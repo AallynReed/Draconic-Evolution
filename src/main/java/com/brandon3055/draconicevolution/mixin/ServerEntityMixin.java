@@ -7,14 +7,12 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.world.entity.Entity;
-import net.neoforged.neoforge.network.bundle.PacketAndPayloadAcceptor;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import java.util.function.Consumer;
 
 /**
  * Created by covers1624 on 18/7/21.
@@ -30,48 +28,31 @@ public abstract class ServerEntityMixin {
             method = "sendChanges()V",
             at = @At(
                     value = "INVOKE",
-                    target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V",
-                    ordinal = 2
+                    target = "Lnet/minecraft/server/level/ServerEntity$Synchronizer;sendToTrackingPlayers(Lnet/minecraft/network/protocol/Packet;)V",
+                    ordinal = 1
             )
     )
-    public void onVelocity(Consumer<Object> consumer, Object t) {
+    public void onVelocity(ServerEntity.Synchronizer consumer, Packet<? super ClientGamePacketListener> t) {
         if (!(entity instanceof DraconicArrowEntity)) {
-            consumer.accept(t);
+            consumer.sendToTrackingPlayers(t);
             return;
         }
-        consumer.accept(BCoreNetwork.sendEntityVelocity(entity, false));
-    }
-
-    @Redirect(
-            method = "Lnet/minecraft/server/level/ServerEntity;sendPairingData(Lnet/minecraft/server/level/ServerPlayer;Lnet/neoforged/neoforge/network/bundle/PacketAndPayloadAcceptor;)V",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/neoforged/neoforge/network/bundle/PacketAndPayloadAcceptor;accept(Lnet/minecraft/network/protocol/Packet;)Lnet/neoforged/neoforge/network/bundle/PacketAndPayloadAcceptor;",
-                    ordinal = 3
-            )
-    )
-    public PacketAndPayloadAcceptor<?> onPairingData(PacketAndPayloadAcceptor<ClientGamePacketListener> instance, Packet t) {
-        if (!(entity instanceof DraconicArrowEntity)) {
-            instance.accept(t);
-            return null;
-        }
-        instance.accept((Packet<? super ClientGamePacketListener>) BCoreNetwork.sendEntityVelocity(entity, false));
-        return null;
+        consumer.sendToTrackingPlayers((Packet<? super ClientGamePacketListener>) BCoreNetwork.sendEntityVelocity(entity, false));
     }
 
     @Redirect(
             method = "sendChanges()V",
             at = @At(
                     value = "INVOKE",
-                    target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V",
-                    ordinal = 3
+                    target = "Lnet/minecraft/server/level/ServerEntity$Synchronizer;sendToTrackingPlayers(Lnet/minecraft/network/protocol/Packet;)V",
+                    ordinal = 2
             )
     )
-    public void onMovePacket(Consumer<Object> consumer, Object t) {
+    public void onMovePacket(ServerEntity.Synchronizer consumer, Packet<? super ClientGamePacketListener> t) {
         if (!(t instanceof ClientboundMoveEntityPacket.PosRot) || !(entity instanceof DraconicArrowEntity)) {
-            consumer.accept(t);
+            consumer.sendToTrackingPlayers(t);
             return;
         }
-        consumer.accept(BCoreNetwork.sendEntityVelocity(entity, true));
+        consumer.sendToTrackingPlayers((Packet<? super ClientGamePacketListener>) BCoreNetwork.sendEntityVelocity(entity, true));
     }
 }
