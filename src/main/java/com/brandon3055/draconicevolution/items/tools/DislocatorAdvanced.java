@@ -50,8 +50,8 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.Tags;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -489,7 +489,7 @@ public class DislocatorAdvanced extends Dislocator {
             return this;
         }
 
-        public void setPos(@NonNull TargetPos pos) {
+        public void setPos(@Nonnull TargetPos pos) {
             this.pos = pos;
         }
 

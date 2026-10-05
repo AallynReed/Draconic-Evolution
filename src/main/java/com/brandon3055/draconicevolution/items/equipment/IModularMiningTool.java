@@ -32,7 +32,6 @@ import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.event.level.BlockEvent;
-import org.antlr.v4.runtime.misc.IntegerStack;
 
 import java.util.List;
 import java.util.Random;
