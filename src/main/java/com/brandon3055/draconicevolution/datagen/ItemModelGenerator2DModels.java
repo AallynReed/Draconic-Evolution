@@ -1,20 +1,19 @@
 package com.brandon3055.draconicevolution.datagen;
 
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.resources.Identifier;
-import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraft.core.Holder;
+import net.minecraft.data.PackOutput;
+import net.minecraft.world.item.Item;
 
-import java.nio.file.Path;
+import java.util.stream.Stream;
 
 /**
  * Created by brandon3055 on 13/11/2024.
  */
 public class ItemModelGenerator2DModels extends ItemModelGenerator {
 
-    public ItemModelGenerator2DModels(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator, existingFileHelper);
+    public ItemModelGenerator2DModels(PackOutput output) {
+        super(new PackOutput(output.getOutputFolder().resolve("2d_item_models")));
     }
 
     @Override
@@ -46,9 +45,8 @@ public class ItemModelGenerator2DModels extends ItemModelGenerator {
     }
 
     @Override
-    protected Path getPath(ItemModelBuilder model) {
-        Identifier loc = model.getLocation();
-        return this.output.getOutputFolder().resolve("2d_item_models/assets").resolve(loc.getNamespace()).resolve("models").resolve(loc.getPath() + ".json");
+    protected Stream<? extends Holder<Item>> getKnownItems() {
+        return definedItems().map(Item::builtInRegistryHolder);
     }
 
     @Override

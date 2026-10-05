@@ -4,8 +4,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.DamageTypeTagsProvider;
 import net.minecraft.tags.DamageTypeTags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -16,8 +14,8 @@ import static com.brandon3055.draconicevolution.init.DEDamage.*;
  */
 public class DamageTypeGenerator extends DamageTypeTagsProvider {
 
-    public DamageTypeGenerator(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pLookupProvider, String modId, @Nullable ExistingFileHelper existingFileHelper) {
-        super(pOutput, pLookupProvider, modId, existingFileHelper);
+    public DamageTypeGenerator(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pLookupProvider, String modId) {
+        super(pOutput, pLookupProvider, modId);
     }
 
 

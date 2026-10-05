@@ -6,15 +6,15 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.gui.*;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.Identifier;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraft.server.packs.resources.ResourceManager;
 
 /**
  * Created by brandon3055 on 07/02/2024
  */
 public class DynamicTextures extends DynamicTextureProvider {
 
-    public DynamicTextures(DataGenerator gen, ExistingFileHelper fileHelper) {
-        super(gen, fileHelper, DraconicEvolution.MODID);
+    public DynamicTextures(DataGenerator gen, ResourceManager resourceManager) {
+        super(gen, resourceManager, DraconicEvolution.MODID);
     }
 
     @Override

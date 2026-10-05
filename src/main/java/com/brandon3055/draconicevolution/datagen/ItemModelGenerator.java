@@ -1,36 +1,61 @@
 package com.brandon3055.draconicevolution.datagen;
 
-import codechicken.lib.datagen.ItemModelProvider;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.client.render.item.*;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DEModules;
-import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.ModelProvider;
+import net.minecraft.client.data.models.model.ItemModelUtils;
+import net.minecraft.client.data.models.model.ModelLocationUtils;
+import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.renderer.item.EmptyModel;
+import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.core.Holder;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
 /**
  * Created by brandon3055 on 28/2/20.
  */
-public class ItemModelGenerator extends ItemModelProvider {
+public class ItemModelGenerator extends ModelProvider {
+    private final Map<Item, Supplier<ItemModel.Unbaked>> definitions = new LinkedHashMap<>();
+    private ItemModelGenerators itemModels;
 
-    public ItemModelGenerator(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator.getPackOutput(), MODID, existingFileHelper);
+    public ItemModelGenerator(PackOutput output) {
+        super(output, MODID);
     }
 
     @Override
+    protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
+        this.itemModels = itemModels;
+        registerModels();
+        definitions.forEach((item, model) -> itemModels.itemModelOutput.accept(item, model.get()));
+        getKnownItems().map(Holder::value).filter(item -> !definitions.containsKey(item)).forEach(item -> itemModels.itemModelOutput.accept(item, ItemModelUtils.plainModel(ModelLocationUtils.getModelLocation(item))));
+    }
+
+    @Override
+    protected Stream<? extends Holder<Block>> getKnownBlocks() {
+        return Stream.empty();
+    }
+
     protected void registerModels() {
         //region Block Items
         blockItem(DEContent.GENERATOR, modLoc("block/generator/generator"));
@@ -224,35 +249,22 @@ public class ItemModelGenerator extends ItemModelProvider {
         simpleItem(item, "item");
     }
 
-    @SuppressWarnings ("ConstantConditions")
     protected void simpleItem(DeferredHolder<? extends Item, ? extends Item> item, String textureFolder) {
         Identifier reg = item.getId();
         simpleItem(item, Identifier.fromNamespaceAndPath(reg.getNamespace(), textureFolder + "/" + reg.getPath()));
     }
 
-    @SuppressWarnings ("ConstantConditions")
     protected void simpleItem(DeferredHolder<? extends Item, ? extends Item> item, Identifier texture) {
-        Identifier reg = item.getId();
-        getBuilder(reg.getPath())
-                .parent(new ModelFile.UncheckedModelFile("item/generated"))
-                .texture("layer0", texture);
+        Item value = item.get();
+        definitions.put(value, () -> ItemModelUtils.plainModel(ModelTemplates.FLAT_ITEM.create(value, TextureMapping.layer0(new Material(texture)), itemModels.modelOutput)));
     }
 
-    @SuppressWarnings ("ConstantConditions")
     protected void multiLayerItem(DeferredHolder<? extends Item, ? extends Item> item, Identifier texture, Identifier overlay) {
-        Identifier reg = item.getId();
-        getBuilder(reg.getPath())
-                .parent(new ModelFile.UncheckedModelFile("item/generated"))
-                .texture("layer0", texture)
-                .texture("layer1", overlay);
+        multiLayerItem(item.get(), texture, overlay);
     }
 
     protected void multiLayerItem(Item item, Identifier texture, Identifier overlay) {
-        Identifier reg = BuiltInRegistries.ITEM.getKey(item);
-        getBuilder(reg.getPath())
-                .parent(new ModelFile.UncheckedModelFile("item/generated"))
-                .texture("layer0", texture)
-                .texture("layer1", overlay);
+        definitions.put(item, () -> ItemModelUtils.plainModel(ModelTemplates.TWO_LAYERED_ITEM.create(item, TextureMapping.layered(new Material(texture), new Material(overlay)), itemModels.modelOutput)));
     }
 
     protected void blockItem(DeferredHolder<? extends Block, ? extends Block> block) {
@@ -263,18 +275,31 @@ public class ItemModelGenerator extends ItemModelProvider {
 
     protected void blockItem(DeferredHolder<? extends Block, ? extends Block> block, Identifier blockModel) {
         if (block == null) return;
-        Identifier reg = block.getId();
-        getBuilder(reg.getPath()).parent(new ModelFile.UncheckedModelFile(blockModel));
+        Item item = block.get().asItem();
+        if (item == Items.AIR) return;
+        definitions.put(item, () -> ItemModelUtils.plainModel(blockModel));
     }
 
     protected void dummyBlock(DeferredHolder<? extends Block, ? extends Block> block) {
-        getBuilder(block.getId().getPath())//
-                .parent(new ModelFile.UncheckedModelFile("builtin/generated"));
+        Item item = block.get().asItem();
+        if (item == Items.AIR) return;
+        definitions.put(item, EmptyModel.Unbaked::new);
     }
 
     protected void dummyItem(DeferredHolder<? extends Item, ? extends Item> item) {
-        getBuilder(item.getId().getPath())//
-                .parent(new ModelFile.UncheckedModelFile("builtin/generated"));
+        definitions.put(item.get(), EmptyModel.Unbaked::new);
+    }
+
+    protected void clazz(DeferredHolder<? extends Item, ? extends Item> item, Class<?> renderer) {
+        definitions.put(item.get(), () -> new DEItemRendererModel.Unbaked(renderer.getName()));
+    }
+
+    protected static Identifier modLoc(String path) {
+        return Identifier.fromNamespaceAndPath(MODID, path);
+    }
+
+    protected Stream<Item> definedItems() {
+        return definitions.keySet().stream();
     }
 
     @Override

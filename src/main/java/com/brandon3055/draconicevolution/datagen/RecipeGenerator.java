@@ -16,6 +16,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
@@ -35,8 +36,8 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
  */
 public class RecipeGenerator extends RecipeProvider {
 
-    public RecipeGenerator(CompletableFuture<HolderLookup.Provider> registries, PackOutput pOutput) {
-        super(registries, pOutput, MODID);
+    public RecipeGenerator(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> registries) {
+        super(pOutput, registries, MODID);
     }
 
     @Override
@@ -73,17 +74,17 @@ public class RecipeGenerator extends RecipeProvider {
     private void components() {
 
         smelting(DEContent.INGOT_DRACONIUM, "components", s -> s + "_from_dust")
-                .ingredient(Ingredient.of(DETags.Items.DUSTS_DRACONIUM))
+                .ingredient(Ingredient.of(items().getOrThrow(DETags.Items.DUSTS_DRACONIUM)))
                 .cookingTime(200)
                 .experience(0);
 
         smelting(DEContent.INGOT_DRACONIUM, "components", s -> s + "_from_ore")
-                .ingredient(Ingredient.of(DETags.Items.ORES_DRACONIUM))
+                .ingredient(Ingredient.of(items().getOrThrow(DETags.Items.ORES_DRACONIUM)))
                 .cookingTime(200)
                 .experience(1);
 
         smelting(DEContent.INGOT_DRACONIUM_AWAKENED, "components", s -> s + "_from_dust")
-                .ingredient(Ingredient.of(DETags.Items.DUSTS_DRACONIUM_AWAKENED))
+                .ingredient(Ingredient.of(items().getOrThrow(DETags.Items.DUSTS_DRACONIUM_AWAKENED)))
                 .cookingTime(200)
                 .experience(0);
 
@@ -1749,99 +1750,99 @@ public class RecipeGenerator extends RecipeProvider {
     }
 
     protected FusionRecipeBuilder fusionRecipe(Supplier<? extends ItemLike> result, Identifier id) {
-        return builder(FusionRecipeBuilder.builder(result.get(), 1, id));
+        return builder(FusionRecipeBuilder.builder(items(), result.get(), 1, id));
     }
 
     protected FusionRecipeBuilder fusionRecipe(ItemLike result) {
-        return builder(FusionRecipeBuilder.builder(result));
+        return builder(FusionRecipeBuilder.builder(items(), result));
     }
 
     protected FusionRecipeBuilder fusionRecipe(ItemLike result, int count) {
-        return builder(FusionRecipeBuilder.builder(new ItemStack(result, count)));
+        return builder(FusionRecipeBuilder.builder(items(), new ItemStackTemplate(result.asItem(), count)));
     }
 
     protected FusionRecipeBuilder fusionRecipe(Supplier<? extends ItemLike> result) {
-        return builder(FusionRecipeBuilder.builder(result.get(), 1));
+        return builder(FusionRecipeBuilder.builder(items(), result.get(), 1));
     }
 
     protected FusionRecipeBuilder fusionRecipe(Supplier<? extends ItemLike> result, String folder) {
         Identifier id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
-        return builder(FusionRecipeBuilder.builder(result.get(), 1, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
+        return builder(FusionRecipeBuilder.builder(items(), result.get(), 1, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
     protected FusionRecipeBuilder fusionRecipe(Supplier<? extends ItemLike> result, String folder, Function<String, String> customPath) {
         Identifier id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
-        return builder(FusionRecipeBuilder.builder(result.get(), 1, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
+        return builder(FusionRecipeBuilder.builder(items(), result.get(), 1, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
     }
 
     protected FusionRecipeBuilder fusionRecipe(Supplier<? extends ItemLike> result, int count, String folder) {
         Identifier id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
-        return builder(FusionRecipeBuilder.builder(result.get(), count, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
+        return builder(FusionRecipeBuilder.builder(items(), result.get(), count, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
     protected FusionRecipeBuilder fusionRecipe(Supplier<? extends ItemLike> result, int count) {
-        return builder(FusionRecipeBuilder.builder(new ItemStack(result.get(), count)));
+        return builder(FusionRecipeBuilder.builder(items(), new ItemStackTemplate(result.get().asItem(), count)));
     }
 
-    protected FusionRecipeBuilder fusionRecipe(ItemStack result) {
-        return builder(FusionRecipeBuilder.builder(result, BuiltInRegistries.ITEM.getKey(result.getItem())));
+    protected FusionRecipeBuilder fusionRecipe(ItemStackTemplate result) {
+        return builder(FusionRecipeBuilder.builder(items(), result, BuiltInRegistries.ITEM.getKey(result.item().value())));
     }
 
-    protected FusionRecipeBuilder fusionRecipe(ItemStack result, Identifier id) {
-        return builder(FusionRecipeBuilder.builder(result, id));
+    protected FusionRecipeBuilder fusionRecipe(ItemStackTemplate result, Identifier id) {
+        return builder(FusionRecipeBuilder.builder(items(), result, id));
     }
 
     protected FurnaceRecipeBuilder smelting(Supplier<? extends ItemLike> result, String folder) {
         Identifier id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
-        return builder(FurnaceRecipeBuilder.smelting(result.get(), 1, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
+        return builder(FurnaceRecipeBuilder.smelting(items(), result.get(), 1, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
     protected FurnaceRecipeBuilder smelting(Supplier<? extends ItemLike> result, String folder, Function<String, String> customPath) {
         Identifier id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
-        return builder(FurnaceRecipeBuilder.smelting(result.get(), 1, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
+        return builder(FurnaceRecipeBuilder.smelting(items(), result.get(), 1, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
     }
 
     protected ShapedRecipeBuilder shapedRecipe(Supplier<? extends ItemLike> result, String folder) {
         Identifier id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
-        return builder(ShapedRecipeBuilder.builder(result.get(), 1, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
+        return builder(ShapedRecipeBuilder.builder(items(), result.get(), 1, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
     protected ShapedRecipeBuilder shapedRecipe(ItemLike result, String folder) {
         Identifier id = BuiltInRegistries.ITEM.getKey(result.asItem());
-        return builder(ShapedRecipeBuilder.builder(result, 1, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
+        return builder(ShapedRecipeBuilder.builder(items(), result, 1, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
     protected ShapedRecipeBuilder shapedRecipe(Supplier<? extends ItemLike> result, int count, String folder) {
         Identifier id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
-        return builder(ShapedRecipeBuilder.builder(result.get(), count, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
+        return builder(ShapedRecipeBuilder.builder(items(), result.get(), count, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
     protected ShapedRecipeBuilder shapedRecipe(Supplier<? extends ItemLike> result, int count, String folder, Function<String, String> customPath) {
         Identifier id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
-        return builder(ShapedRecipeBuilder.builder(result.get(), count, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
+        return builder(ShapedRecipeBuilder.builder(items(), result.get(), count, Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
     }
 
     protected ShapelessRecipeBuilder shapelessRecipe(Supplier<? extends ItemLike> result, String folder) {
         Identifier id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
-        return builder(ShapelessRecipeBuilder.builder(new ItemStack(result.get(), 1), Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
+        return builder(ShapelessRecipeBuilder.builder(items(), new ItemStackTemplate(result.get().asItem(), 1), Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
     protected ShapelessRecipeBuilder shapelessRecipe(Supplier<? extends ItemLike> result, String folder, Function<String, String> customPath) {
         Identifier id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
-        return builder(ShapelessRecipeBuilder.builder(new ItemStack(result.get(), 1), Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
+        return builder(ShapelessRecipeBuilder.builder(items(), new ItemStackTemplate(result.get().asItem(), 1), Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
     }
 
     protected ShapelessRecipeBuilder shapelessRecipe(Supplier<? extends ItemLike> result, int count, String folder) {
         Identifier id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
-        return builder(ShapelessRecipeBuilder.builder(new ItemStack(result.get(), count), Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
+        return builder(ShapelessRecipeBuilder.builder(items(), new ItemStackTemplate(result.get().asItem(), count), Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
     protected ShapelessRecipeBuilder shapelessRecipe(ItemLike result, int count, Identifier id) {
-        return builder(ShapelessRecipeBuilder.builder(new ItemStack(result, count), id));
+        return builder(ShapelessRecipeBuilder.builder(items(), new ItemStackTemplate(result.asItem(), count), id));
     }
 
     protected ShapelessRecipeBuilder shapelessRecipe(ItemLike result, int count, String folder, Function<String, String> customPath) {
         Identifier id = BuiltInRegistries.ITEM.getKey(result.asItem());
-        return builder(ShapelessRecipeBuilder.builder(new ItemStack(result, count), Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
+        return builder(ShapelessRecipeBuilder.builder(items(), new ItemStackTemplate(result.asItem(), count), Identifier.fromNamespaceAndPath(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
     }
 }

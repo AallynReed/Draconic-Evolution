@@ -4,53 +4,56 @@ import codechicken.lib.datagen.recipe.AbstractItemStackRecipeBuilder;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.crafting.FusionRecipe;
 import com.brandon3055.draconicevolution.api.crafting.StackIngredient;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
 public class FusionRecipeBuilder extends AbstractItemStackRecipeBuilder<FusionRecipeBuilder> {
-    private final ItemStack result;
+    private final ItemStackTemplate result;
     private Ingredient catalyst = null;
     private long energy = -1;
     private TechLevel techLevel = null;
     private List<FusionRecipe.FusionIngredient> ingredients = new ArrayList<>();
 
-    protected FusionRecipeBuilder(Identifier id, ItemStack result) {
-        super(id, result);
+    protected FusionRecipeBuilder(Identifier id, HolderGetter<Item> items, ItemStackTemplate result) {
+        super(id, items, result);
         this.result = result;
     }
 
-    public static FusionRecipeBuilder builder(ItemLike result) {
-        return builder(result, 1);
+    public static FusionRecipeBuilder builder(HolderGetter<Item> items, ItemLike result) {
+        return builder(items, result, 1);
     }
 
-    public static FusionRecipeBuilder builder(ItemLike result, int count) {
-        return builder(new ItemStack(result, count));
+    public static FusionRecipeBuilder builder(HolderGetter<Item> items, ItemLike result, int count) {
+        return builder(items, new ItemStackTemplate(result.asItem(), count));
     }
 
-    public static FusionRecipeBuilder builder(ItemLike result, int count, Identifier id) {
-        return builder(new ItemStack(result, count), id);
+    public static FusionRecipeBuilder builder(HolderGetter<Item> items, ItemLike result, int count, Identifier id) {
+        return builder(items, new ItemStackTemplate(result.asItem(), count), id);
     }
 
-    public static FusionRecipeBuilder builder(ItemStack result) {
-        return builder(result, BuiltInRegistries.ITEM.getKey(result.getItem()));
+    public static FusionRecipeBuilder builder(HolderGetter<Item> items, ItemStackTemplate result) {
+        return builder(items, result, BuiltInRegistries.ITEM.getKey(result.item().value()));
     }
 
-    public static FusionRecipeBuilder builder(ItemStack result, Identifier id) {
-        return new FusionRecipeBuilder(id, result);
+    public static FusionRecipeBuilder builder(HolderGetter<Item> items, ItemStackTemplate result, Identifier id) {
+        return new FusionRecipeBuilder(id, items, result);
     }
 
     public FusionRecipeBuilder catalyst(TagKey<Item> catalyst) {
-        return catalyst(Ingredient.of(catalyst));
+        return catalyst(Ingredient.of(items.getOrThrow(catalyst)));
     }
 
     public FusionRecipeBuilder catalyst(Supplier<? extends ItemLike> catalyst) {
@@ -62,7 +65,7 @@ public class FusionRecipeBuilder extends AbstractItemStackRecipeBuilder<FusionRe
     }
 
     public FusionRecipeBuilder catalyst(ItemStack... catalyst) {
-        return catalyst(Ingredient.of(catalyst));
+        return catalyst(Ingredient.of(Arrays.stream(catalyst).map(ItemStack::getItem)));
     }
 
 //    public FusionRecipeBuilder catalyst(int count, TagKey<Item> catalyst) {
@@ -106,7 +109,7 @@ public class FusionRecipeBuilder extends AbstractItemStackRecipeBuilder<FusionRe
     }
 
     public FusionRecipeBuilder ingredient(boolean consume, ItemStack... ingredient) {
-        return ingredient(consume, Ingredient.of(ingredient));
+        return ingredient(consume, Ingredient.of(Arrays.stream(ingredient).map(ItemStack::getItem)));
     }
 
     public FusionRecipeBuilder ingredient(ItemStack... ingredient) {
@@ -130,7 +133,7 @@ public class FusionRecipeBuilder extends AbstractItemStackRecipeBuilder<FusionRe
     }
 
     public FusionRecipeBuilder ingredient(boolean consume, TagKey<Item> ingredient) {
-        return ingredient(consume, Ingredient.of(ingredient));
+        return ingredient(consume, Ingredient.of(items.getOrThrow(ingredient)));
     }
 
     public FusionRecipeBuilder ingredient(TagKey<Item> ingredient) {
