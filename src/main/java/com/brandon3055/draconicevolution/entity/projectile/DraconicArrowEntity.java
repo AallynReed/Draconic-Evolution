@@ -7,6 +7,7 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DEDamage;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.covers1624.quack.util.SneakyUtils;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -15,7 +16,6 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -48,6 +48,8 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
@@ -164,14 +166,14 @@ public class DraconicArrowEntity extends AbstractArrow {
         superTick();
 
         if (this.level().isClientSide()) {
-            if (this.inGround) {
+            if (this.isInGround()) {
                 if (this.inGroundTime % 5 == 0) {
                     this.makeParticle(1);
                 }
             } else {
                 this.makeParticle(2);
             }
-        } else if (this.inGround && this.inGroundTime != 0 && !this.getPotionContents().equals(PotionContents.EMPTY) && this.inGroundTime >= 600) {
+        } else if (this.isInGround() && this.inGroundTime != 0 && !this.getPotionContents().equals(PotionContents.EMPTY) && this.inGroundTime >= 600) {
             this.level().broadcastEntityEvent(this, (byte)0);
             this.setPickupItemStack(new ItemStack(Items.ARROW));
         }
@@ -179,9 +181,8 @@ public class DraconicArrowEntity extends AbstractArrow {
 
     private void superTick() {
         //Projectile Entity Tick
-        if (!this.leftOwner) {
-            this.leftOwner = this.checkLeftOwner();
-        }
+        this.checkLeftOwner();
+        this.leftOwnerChecked = false;
         //Entity Tick
         if (!level().isClientSide()) {
             this.setSharedFlag(6, this.isCurrentlyGlowing());
@@ -208,7 +209,7 @@ public class DraconicArrowEntity extends AbstractArrow {
 
                 for (AABB axisalignedbb : voxelshape.toAabbs()) {
                     if (axisalignedbb.move(blockpos).contains(vector3d1)) {
-                        this.inGround = true;
+                        this.setInGround(true);
                         break;
                     }
                 }
@@ -223,7 +224,7 @@ public class DraconicArrowEntity extends AbstractArrow {
             this.clearFire();
         }
 
-        if (this.inGround && !flag) {
+        if (this.isInGround() && !flag) {
             if (this.lastState != blockstate && this.shouldFall()) {
                 this.startFalling();
             } else if (!level().isClientSide()) {
@@ -260,7 +261,7 @@ public class DraconicArrowEntity extends AbstractArrow {
                         break;
                     }
                     this.onHit(raytraceresult);
-                    this.hasImpulse = true;
+                    this.needsSync = true;
                 }
 
                 if (entityraytraceresult == null || (this.getPierceLevel() <= 0 && entityData.get(PENETRATION) <= 0)) {
@@ -308,7 +309,7 @@ public class DraconicArrowEntity extends AbstractArrow {
             if (!this.isNoGravity() && !flag) {
                 Vec3 vector3d4 = this.getDeltaMovement();
                 float antiGrav = entityData.get(GRAV_COMPENSATION);
-                if (antiGrav > 0 && !inGround) {
+                if (antiGrav > 0 && !isInGround()) {
                     float antiGravActivation = Math.min((float) getDeltaMovement().length() / (Math.max(entityData.get(INIT_VELOCITY) * 0.75F, 2F)), 1);
                     this.setDeltaMovement(vector3d4.x, vector3d4.y - ((double) 0.05F * (1 - (antiGravActivation * antiGrav))), vector3d4.z);
                 } else {
@@ -317,7 +318,7 @@ public class DraconicArrowEntity extends AbstractArrow {
             }
 
             this.setPos(d5, d1, d2);
-            this.checkInsideBlocks();
+            this.applyEffectsFromBlocks();
         }
     }
 
@@ -325,7 +326,7 @@ public class DraconicArrowEntity extends AbstractArrow {
     protected void onHitEntity(EntityHitResult p_213868_1_) {
         Entity entity = p_213868_1_.getEntity();
         float velLength = (float) this.getDeltaMovement().length();
-        double baseDamage = this.getBaseDamage();
+        double baseDamage = this.baseDamage;
         Entity owner = this.getOwner();
         DamageSource damagesource = getDamageSource(entity);
         if (this.getWeaponItem() != null && this.level() instanceof ServerLevel serverlevel) {
@@ -366,13 +367,13 @@ public class DraconicArrowEntity extends AbstractArrow {
         if (penetration > 1 && entity instanceof Player) {
             Player player = (Player) entity;
             if (player.isUsingItem() && player.getUseItem().getItem() instanceof ShieldItem) {
-                player.getCooldowns().addCooldown(player.getUseItem().getItem(), 100);
+                player.getCooldowns().addCooldown(player.getUseItem(), 100);
                 level().broadcastEntityEvent(player, (byte) 30);
                 player.stopUsingItem();
             }
         }
 
-        if (entity.hurt(damagesource, (float) damage)) {
+        if (entity.hurtOrSimulate(damagesource, (float) damage)) {
             if (isEnderman) {
                 return;
             }
@@ -389,7 +390,7 @@ public class DraconicArrowEntity extends AbstractArrow {
 
                 this.doPostHurtEffects(livingentity);
                 if (livingentity != owner && livingentity instanceof Player && owner instanceof ServerPlayer && !this.isSilent()) {
-                    ((ServerPlayer) owner).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
+                    ((ServerPlayer) owner).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.PLAY_ARROW_HIT_SOUND, 0.0F));
                 }
 
                 if (!entity.isAlive() && this.piercedAndKilledEntities != null) {
@@ -397,10 +398,10 @@ public class DraconicArrowEntity extends AbstractArrow {
                 }
 
                 if (!level().isClientSide() && owner instanceof ServerPlayer serverPlayer) {
-                    if (this.piercedAndKilledEntities != null && this.shotFromCrossbow()) {
-                        CriteriaTriggers.KILLED_BY_CROSSBOW.trigger(serverPlayer, this.piercedAndKilledEntities);
-                    } else if (!entity.isAlive() && this.shotFromCrossbow()) {
-                        CriteriaTriggers.KILLED_BY_CROSSBOW.trigger(serverPlayer, Arrays.asList(entity));
+                    if (this.piercedAndKilledEntities != null) {
+                        CriteriaTriggers.KILLED_BY_ARROW.trigger(serverPlayer, this.piercedAndKilledEntities, this.firedFromWeapon);
+                    } else if (!entity.isAlive()) {
+                        CriteriaTriggers.KILLED_BY_ARROW.trigger(serverPlayer, Arrays.asList(entity), this.firedFromWeapon);
                     }
                 }
             }
@@ -416,7 +417,7 @@ public class DraconicArrowEntity extends AbstractArrow {
             this.yRotO += 180.0F;
             if (!level().isClientSide() && this.getDeltaMovement().lengthSqr() < 1.0E-7D) {
                 if (this.pickup == AbstractArrow.Pickup.ALLOWED) {
-                    this.spawnAtLocation(this.getPickupItem(), 0.1F);
+                    this.spawnAtLocation((ServerLevel) level(), this.getPickupItem(), 0.1F);
                 }
 
                 this.discard();
@@ -473,7 +474,7 @@ public class DraconicArrowEntity extends AbstractArrow {
                             Entity entity = result.getEntity();
                             DamageSource damagesource = getDamageSource(entity);
                             float velocity = (float) this.getDeltaMovement().length();
-                            int damage = Mth.ceil(Mth.clamp((double) velocity * this.getBaseDamage(), 0.0D, 2.147483647E9D));
+                            int damage = Mth.ceil(Mth.clamp((double) velocity * this.baseDamage, 0.0D, 2.147483647E9D));
                             entity.hurt(damagesource, (float) damage * 0.75F);
                         }
                     }
@@ -489,7 +490,7 @@ public class DraconicArrowEntity extends AbstractArrow {
         Vec3 vector3d1 = vector3d.normalize().scale((double) 0.05F);
         this.setPosRaw(this.getX() - vector3d1.x, this.getY() - vector3d1.y, this.getZ() - vector3d1.z);
         this.playSound(this.getHitGroundSoundEvent(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
-        this.inGround = true;
+        this.setInGround(true);
         this.shakeTime = 7;
         this.setCritArrow(false);
         this.setPierceLevel((byte) 0);
@@ -550,7 +551,7 @@ public class DraconicArrowEntity extends AbstractArrow {
 //    private static final DataParameter<Float> INIT_VELOCITY = EntityDataManager.defineId(DraconicArrowEntity.class, DataSerializers.FLOAT); //(Grav comp will deactivate when velocity decreases by say 25%)
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(ValueOutput compound) {
         super.addAdditionalSaveData(compound);
 
         if (this.fixedColor) {
@@ -568,27 +569,15 @@ public class DraconicArrowEntity extends AbstractArrow {
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(ValueInput compound) {
         super.readAdditionalSaveData(compound);
         
-        if (compound.contains("spectral_time")) {
-            setSpectral(compound.getIntOr("spectral_time", 0));
-        }
-        if (compound.contains("tech_level")) {
-            entityData.set(TECH_LEVEL, compound.getByte("tech_level"));
-        }
-        if (compound.contains("penetration")) {
-            entityData.set(PENETRATION, compound.getByte("penetration"));
-        }
-        if (compound.contains("grav_comp")) {
-            entityData.set(GRAV_COMPENSATION, compound.getFloat("grav_comp"));
-        }
-        if (compound.contains("init_velocity")) {
-            entityData.set(INIT_VELOCITY, compound.getFloat("init_velocity"));
-        }
-        if (compound.contains("proj_anti_immune")) {
-            entityData.set(PROJ_ANTI_IMMUNE, compound.getBoolean("proj_anti_immune"));
-        }
+        compound.getInt("spectral_time").ifPresent(this::setSpectral);
+        compound.read("tech_level", Codec.BYTE).ifPresent(e -> entityData.set(TECH_LEVEL, e));
+        compound.read("penetration", Codec.BYTE).ifPresent(e -> entityData.set(PENETRATION, e));
+        compound.read("grav_comp", Codec.FLOAT).ifPresent(e -> entityData.set(GRAV_COMPENSATION, e));
+        compound.read("init_velocity", Codec.FLOAT).ifPresent(e -> entityData.set(INIT_VELOCITY, e));
+        compound.read("proj_anti_immune", Codec.BOOL).ifPresent(e -> entityData.set(PROJ_ANTI_IMMUNE, e));
 
     }
 
@@ -651,7 +640,7 @@ public class DraconicArrowEntity extends AbstractArrow {
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
-        return source.is(DamageTypeTags.IS_FIRE) || super.isInvulnerableTo(source);
+    public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+        return !source.is(DamageTypeTags.IS_FIRE) && super.hurtServer(level, source, damage);
     }
 }
